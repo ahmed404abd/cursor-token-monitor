@@ -19,9 +19,11 @@ import {
   buildDailySpendFromEvents,
   buildDailySpendFromHistory,
   DaySpend,
+  loadDailyModelHistory,
   loadHistory,
   longestSessions,
   mergeDailySpend,
+  recordDailyModelHistory,
   recordDailySnapshot,
   resetHistory,
   summarizeSpend,
@@ -59,6 +61,8 @@ let lastAuth: CursorAuthData | undefined;
 let lastUsage: UsageSnapshot | undefined;
 let lastUpdated: Date | undefined;
 let lastProjects: ProjectUsageRecord[] = [];
+let lastDailyHistory: ReturnType<typeof loadHistory> = [];
+let lastModelHistory: ReturnType<typeof loadDailyModelHistory> = [];
 let lastVm: CockpitViewModel | undefined;
 let extensionContext: vscode.ExtensionContext | undefined;
 
@@ -121,7 +125,11 @@ function scheduleRefresh(context: vscode.ExtensionContext) {
 }
 
 function computeDailySpend(usage: UsageSnapshot): DaySpend[] {
-  const history = extensionContext ? loadHistory(extensionContext) : [];
+  const history = lastDailyHistory.length
+    ? lastDailyHistory
+    : extensionContext
+      ? loadHistory(extensionContext)
+      : [];
   return mergeDailySpend(
     buildDailySpendFromEvents(usage, 30),
     buildDailySpendFromHistory(history, 30),
@@ -134,12 +142,15 @@ function buildVm(context: vscode.ExtensionContext, usage: UsageSnapshot): Cockpi
   const settings = loadSettings();
   const projects =
     lastProjects.length > 0 ? lastProjects : loadProjectRecords(context);
+  const dailyHistory = lastDailyHistory.length ? lastDailyHistory : loadHistory(context);
   const dailySpend = computeDailySpend(usage);
   return buildCockpitViewModel({
     auth: lastAuth,
     usage,
     projects,
     dailySpend,
+    dailyHistory,
+    modelHistory: lastModelHistory.length ? lastModelHistory : loadDailyModelHistory(context),
     sessions: longestSessions(usage, 5),
     spendSummary: summarizeSpend(dailySpend),
     session: getSessionStats(usage),
@@ -226,7 +237,8 @@ async function refresh(context: vscode.ExtensionContext) {
     lastUsage = await fetchUsage(auth);
     lastUpdated = new Date();
     lastProjects = updateProjectUsage(context, lastUsage);
-    recordDailySnapshot(context, lastUsage);
+    lastDailyHistory = recordDailySnapshot(context, lastUsage);
+    lastModelHistory = recordDailyModelHistory(context, lastUsage);
     ensureSessionBaseline(lastUsage);
     const settings = loadSettings();
     checkUsageAlerts(context, lastUsage, computeDailySpend(lastUsage), settings);
@@ -301,6 +313,8 @@ async function resetCache(context: vscode.ExtensionContext) {
   resetProjectCache(context);
   resetHistory(context);
   lastProjects = [];
+  lastDailyHistory = [];
+  lastModelHistory = [];
   lastUsage = undefined;
   lastAuth = undefined;
   lastUpdated = undefined;

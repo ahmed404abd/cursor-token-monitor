@@ -1,8 +1,20 @@
 # Cursor Token Monitor
 
-A **cockpit-style** Cursor AI usage dashboard — interactive model cards with circular progress rings, drag-to-reorder, status-bar formats, QuickPick mode, and CSV/JSON/Markdown export.
+**Know where your Cursor allowance goes — not just how much is left.**
 
-Works in **Cursor** (VS Code–compatible). Reads your already signed-in Cursor account locally and calls Cursor’s own usage APIs. Nothing is sent to third-party servers.
+Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, model comparisons, recent trends, a 90-day activity heatmap, and configurable alerts without sending usage to a third-party service.
+
+![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
+
+### Built for questions Cursor's basic usage page cannot answer
+
+- Which model is consuming the most of my allowance?
+- Was today's activity normal, unusually high, or already beyond my warning threshold?
+- Which days and models drove a spike?
+- How much did this editor session use?
+- When will the current allowance reset?
+
+Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor sign-in and calls Cursor’s own usage APIs. Your code, chats, and usage history stay on your machine.
 
 ## Requirements
 
@@ -20,9 +32,9 @@ Works in **Cursor** (VS Code–compatible). Reads your already signed-in Cursor 
 
 ## What you’ll see
 
-### Cockpit dashboard
+### Model-aware cockpit
 
-Dark cockpit theme (independent of the editor theme):
+![Model quota cards with spend and token details](media/screenshots/model-cards.png)
 
 - **Plan details** card with SVG circular allowance ring, billing cycle, reset countdown, and collapsible today/yesterday/7-day spend
 - **Quota cards** for models (or workspaces) with:
@@ -36,6 +48,20 @@ Dark cockpit theme (independent of the editor theme):
 - **Trends**: daily spend + daily tokens charts
 - Live activity feed, top spending days, longest sessions, Auto estimate
 - Toolbar: Refresh, Reset Order, CSV / JSON / MD export, Copy, Settings gear
+
+### A GitHub-style heatmap, built for AI usage
+
+![90-day model-aware usage heatmap](media/screenshots/usage-heatmap.png)
+
+The rolling 90-day heatmap adds signals that a plain contribution count cannot:
+
+- **Rich hover details** — date, spend, request count, top model, allowance signal, and a model breakdown
+- **Per-model filtering** — isolate activity for one model without losing account-level threshold context
+- **Threshold overlays** — orange and red days reuse the configured warning and critical allowance thresholds
+- **Meaningful empty states** — dashed cells mean no local history; dark cells mean history exists with $0 spend
+- **Cockpit-native scale** — healthy activity uses the same green palette as model health instead of copying GitHub green blindly
+
+History is kept locally for 90 days. Earlier cells remain visibly unavailable until the extension has observed enough data.
 
 ### Status bar
 

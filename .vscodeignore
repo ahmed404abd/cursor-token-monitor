@@ -11,3 +11,4 @@ tsconfig.json
 scripts/_probe_*.py
 **/*.tsbuildinfo
 media/cover-source.png
+media/screenshots/*.svg

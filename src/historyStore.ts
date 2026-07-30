@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { UsageSnapshot } from './cursorApi';
+import { UsageSnapshot, displayModelName } from './cursorApi';
 import { centsToDollars } from './usageIntelligence';
 
 export interface DailySnapshot {
@@ -24,6 +24,16 @@ export interface DaySpend {
   outputTokens: number;
 }
 
+export interface DailyModelUsage {
+    date: string;
+    modelId: string;
+    modelLabel: string;
+    chargedCents: number;
+    eventCount: number;
+    inputTokens: number;
+    outputTokens: number;
+}
+
 export interface SessionStat {
   conversationId: string;
   shortId: string;
@@ -36,6 +46,7 @@ export interface SessionStat {
 }
 
 const HISTORY_KEY = 'cursorTokenMonitor.dailyHistory';
+const MODEL_HISTORY_KEY = 'cursorTokenMonitor.dailyModelHistory';
 const MAX_DAYS = 90;
 
 export function dayKey(d = new Date()): string {
@@ -51,6 +62,68 @@ export function loadHistory(context: vscode.ExtensionContext): DailySnapshot[] {
 
 export function resetHistory(context: vscode.ExtensionContext): void {
   void context.globalState.update(HISTORY_KEY, []);
+    void context.globalState.update(MODEL_HISTORY_KEY, []);
+}
+
+export function loadDailyModelHistory(context: vscode.ExtensionContext): DailyModelUsage[] {
+    return context.globalState.get<DailyModelUsage[]>(MODEL_HISTORY_KEY, []);
+}
+
+/**
+ * Persist event-derived daily model totals. Existing values are merged by
+ * maximum so a capped/partial API page cannot reduce a previously observed day.
+ */
+export function recordDailyModelHistory(
+    context: vscode.ExtensionContext,
+    usage: UsageSnapshot
+): DailyModelUsage[] {
+    const current = loadDailyModelHistory(context);
+    const observed = new Map<string, DailyModelUsage>();
+
+    for (const event of usage.recentEvents) {
+        const timestamp = Number(event.timestamp);
+        if (!Number.isFinite(timestamp) || timestamp <= 0) continue;
+        const date = dayKey(new Date(timestamp));
+        const modelId = event.model || 'unknown';
+        const key = `${date}\u0000${modelId}`;
+        const row = observed.get(key) ?? {
+            date,
+            modelId,
+            modelLabel: displayModelName(modelId),
+            chargedCents: 0,
+            eventCount: 0,
+            inputTokens: 0,
+            outputTokens: 0,
+        };
+        row.chargedCents += event.chargedCents ?? 0;
+        row.eventCount += 1;
+        row.inputTokens += event.tokenUsage?.inputTokens ?? 0;
+        row.outputTokens += event.tokenUsage?.outputTokens ?? 0;
+        observed.set(key, row);
+    }
+
+    const merged = new Map(
+        current.map((row) => [`${row.date}\u0000${row.modelId}`, { ...row }])
+    );
+    for (const [key, fresh] of observed) {
+        const previous = merged.get(key);
+        merged.set(key, previous
+            ? {
+                ...fresh,
+                chargedCents: Math.max(previous.chargedCents, fresh.chargedCents),
+                eventCount: Math.max(previous.eventCount, fresh.eventCount),
+                inputTokens: Math.max(previous.inputTokens, fresh.inputTokens),
+                outputTokens: Math.max(previous.outputTokens, fresh.outputTokens),
+            }
+            : fresh);
+    }
+
+    const cutoff = dayKey(new Date(Date.now() - (MAX_DAYS - 1) * 86_400_000));
+    const trimmed = [...merged.values()]
+        .filter((row) => row.date >= cutoff)
+        .sort((a, b) => a.date.localeCompare(b.date) || a.modelId.localeCompare(b.modelId));
+    void context.globalState.update(MODEL_HISTORY_KEY, trimmed);
+    return trimmed;
 }
 
 /** Upsert today's cumulative plan snapshot (for trend of included spend). */

@@ -141,6 +141,62 @@ describe('view model', () => {
     assert.equal(vm.percentUsed, 20);
   });
 
+  it('builds a 90-day model heatmap with availability and threshold signals', () => {
+    const today = new Date();
+    const date = [
+      today.getFullYear(),
+      String(today.getMonth() + 1).padStart(2, '0'),
+      String(today.getDate()).padStart(2, '0'),
+    ].join('-');
+    const vm = buildCockpitViewModel({
+      usage: sampleUsage(),
+      projects: [],
+      dailySpend: [],
+      dailyHistory: [{
+        date,
+        includedSpendCents: 1900,
+        remainingCents: 100,
+        limitCents: 2000,
+        eventCount: 3,
+        chargedCents: 250,
+        inputTokens: 100,
+        outputTokens: 50,
+        updatedAt: new Date().toISOString(),
+      }],
+      modelHistory: [{
+        date,
+        modelId: 'gpt-5',
+        modelLabel: 'GPT 5',
+        chargedCents: 250,
+        eventCount: 3,
+        inputTokens: 100,
+        outputTokens: 50,
+      }],
+      sessions: [],
+      spendSummary: {
+        todayCents: 250,
+        yesterdayCents: 0,
+        sevenDayAvgCents: 35.7,
+        sevenDayTotalCents: 250,
+      },
+      prefs: {
+        groupMode: 'model',
+        cardOrderModel: [],
+        cardOrderWorkspace: [],
+        modelAliases: {},
+        pinnedModelIds: [],
+      },
+      settings: baseSettings,
+      issuesUrl: 'https://example.com',
+    });
+
+    assert.equal(vm.heatmap.days.length, 90);
+    assert.equal(vm.heatmap.days[0].availability, 'unavailable');
+    assert.equal(vm.heatmap.days.at(-1)?.availability, 'usage');
+    assert.equal(vm.heatmap.days.at(-1)?.severity, 'critical');
+    assert.deepEqual(vm.heatmap.models, [{ id: 'gpt-5', label: 'GPT 5' }]);
+  });
+
   it('resetCountdown returns labels', () => {
     const { resetInLabel, resetTimeLabel } = resetCountdown(Date.now() + 2 * 86_400_000);
     assert.ok(resetInLabel.includes('d') || resetInLabel.includes('h'));

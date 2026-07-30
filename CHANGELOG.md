@@ -1,3 +1,17 @@
+## [1.4.1] - 2026-07-31
+
+### Added
+- Rolling 90-day, GitHub-style activity heatmap in the cockpit
+- Per-model heatmap filtering with spend, request, token, and top-model detail
+- Hover/focus tooltip with a compact daily model breakdown
+- Warning and critical day overlays driven by the configured allowance thresholds
+- Separate visual states for `$0` days and days with no locally observed history
+- Sanitized cockpit, model-card, and heatmap previews in the README
+
+### Changed
+- Marketplace description now focuses on private, model-aware usage intelligence
+- Daily model totals are retained locally for up to 90 days
+
 ## [1.4.0] - 2026-07-30
 
 ### Added

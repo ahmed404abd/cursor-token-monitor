@@ -2,9 +2,12 @@ import { CursorAuthData } from '../dbReader';
 import { UsageSnapshot, displayModelName } from '../cursorApi';
 import { ProjectUsageRecord } from '../projectTracker';
 import {
+  DailyModelUsage,
+  DailySnapshot,
   DaySpend,
   SessionStat,
   SpendSummary,
+  dayKey,
   formatDuration,
   topSpendingDays,
 } from '../historyStore';
@@ -67,6 +70,25 @@ export interface ActivityItem {
   kind: string;
 }
 
+export interface HeatmapModelUsage {
+  modelId: string;
+  modelLabel: string;
+  spendCents: number;
+  events: number;
+  tokens: number;
+}
+
+export interface HeatmapDay {
+  date: string;
+  label: string;
+  availability: 'unavailable' | 'zero' | 'usage';
+  spendCents: number;
+  events: number;
+  topModel: string;
+  severity: 'healthy' | 'warning' | 'critical';
+  models: HeatmapModelUsage[];
+}
+
 export interface CockpitViewModel {
   accountEmail: string;
   planName: string;
@@ -99,6 +121,11 @@ export interface CockpitViewModel {
   charts: {
     spend: ChartPoint[];
     tokens: ChartPoint[];
+  };
+  heatmap: {
+    days: HeatmapDay[];
+    models: { id: string; label: string }[];
+    observedFrom?: string;
   };
   activity: ActivityItem[];
   topDays: { label: string; spendLabel: string; events: number }[];
@@ -289,6 +316,8 @@ export interface BuildViewModelInput {
   usage: UsageSnapshot;
   projects: ProjectUsageRecord[];
   dailySpend: DaySpend[];
+  dailyHistory?: DailySnapshot[];
+  modelHistory?: DailyModelUsage[];
   sessions: SessionStat[];
   spendSummary: SpendSummary;
   session?: SessionStats;
@@ -298,8 +327,110 @@ export interface BuildViewModelInput {
   issuesUrl: string;
 }
 
+function buildHeatmap(
+  dailySpend: DaySpend[],
+  dailyHistory: DailySnapshot[],
+  modelHistory: DailyModelUsage[],
+  settings: CockpitSettings
+): CockpitViewModel['heatmap'] {
+  const modelRowsByDate = new Map<string, DailyModelUsage[]>();
+  for (const row of modelHistory) {
+    const rows = modelRowsByDate.get(row.date) ?? [];
+    rows.push(row);
+    modelRowsByDate.set(row.date, rows);
+  }
+  const spendByDate = new Map(dailySpend.map((row) => [row.date, row]));
+  const snapshotByDate = new Map(dailyHistory.map((row) => [row.date, row]));
+  const observedDates = [
+    ...dailyHistory.map((row) => row.date),
+    ...modelHistory.map((row) => row.date),
+    ...dailySpend.map((row) => row.date),
+  ].sort();
+  const observedFrom = observedDates[0];
+
+  const modelMap = new Map<string, string>();
+  for (const row of modelHistory) modelMap.set(row.modelId, row.modelLabel);
+
+  const days: HeatmapDay[] = [];
+  for (let offset = 89; offset >= 0; offset -= 1) {
+    const dateValue = new Date();
+    dateValue.setHours(12, 0, 0, 0);
+    dateValue.setDate(dateValue.getDate() - offset);
+    const date = dayKey(dateValue);
+    const modelRows = modelRowsByDate.get(date) ?? [];
+    const fallback = spendByDate.get(date);
+    const spendCents = modelRows.length
+      ? modelRows.reduce((sum, row) => sum + row.chargedCents, 0)
+      : fallback?.chargedCents ?? 0;
+    const events = modelRows.length
+      ? modelRows.reduce((sum, row) => sum + row.eventCount, 0)
+      : fallback?.eventCount ?? 0;
+    const top = [...modelRows].sort((a, b) => b.chargedCents - a.chargedCents)[0];
+    const snapshot = snapshotByDate.get(date);
+    const percent = snapshot && snapshot.limitCents > 0
+      ? (snapshot.includedSpendCents / snapshot.limitCents) * 100
+      : 0;
+    const severity: HeatmapDay['severity'] =
+      percent >= settings.criticalThreshold
+        ? 'critical'
+        : percent >= settings.warningThreshold
+          ? 'warning'
+          : 'healthy';
+    const availability: HeatmapDay['availability'] =
+      !observedFrom || date < observedFrom
+        ? 'unavailable'
+        : spendCents > 0 || events > 0
+          ? 'usage'
+          : 'zero';
+
+    days.push({
+      date,
+      label: dateValue.toLocaleDateString(undefined, {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      }),
+      availability,
+      spendCents,
+      events,
+      topModel: top?.modelLabel ?? 'None',
+      severity,
+      models: modelRows.map((row) => ({
+        modelId: row.modelId,
+        modelLabel: row.modelLabel,
+        spendCents: row.chargedCents,
+        events: row.eventCount,
+        tokens: row.inputTokens + row.outputTokens,
+      })),
+    });
+  }
+
+  return {
+    days,
+    models: [...modelMap.entries()]
+      .map(([id, label]) => ({ id, label }))
+      .sort((a, b) => a.label.localeCompare(b.label)),
+    observedFrom,
+  };
+}
+
 export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewModel {
-  const { usage, auth, projects, dailySpend, sessions, spendSummary, session, updated, prefs, settings, issuesUrl } =
+  const {
+    usage,
+    auth,
+    projects,
+    dailySpend,
+    dailyHistory = [],
+    modelHistory = [],
+    sessions,
+    spendSummary,
+    session,
+    updated,
+    prefs,
+    settings,
+    issuesUrl,
+  } =
     input;
   const plan = usage.planUsage;
   const pct = usedPercent(usage) ?? 0;
@@ -365,6 +496,7 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
         events: d.eventCount,
       })),
     },
+    heatmap: buildHeatmap(dailySpend, dailyHistory, modelHistory, settings),
     activity: usage.recentEvents.slice(0, 15).map((e) => {
       const tokens = (e.tokenUsage?.inputTokens ?? 0) + (e.tokenUsage?.outputTokens ?? 0);
       return {

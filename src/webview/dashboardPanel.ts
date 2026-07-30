@@ -151,6 +151,43 @@ function htmlShell(
   </section>
 
   <section class="section">
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>90-day usage heatmap</h2>
+        <p>Recent activity with allowance warning and critical overlays</p>
+      </div>
+      <label class="heatmap-filter">
+        <span>Model</span>
+        <select id="heatmapModel" aria-label="Filter heatmap by model">
+          <option value="">All models</option>
+        </select>
+      </label>
+    </div>
+    <div class="panel heatmap-panel">
+      <div class="heatmap-scroll">
+        <div class="heatmap-weekdays" aria-hidden="true">
+          <span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span>
+        </div>
+        <div>
+          <div class="heatmap-months" id="heatmapMonths"></div>
+          <div class="heatmap-grid" id="heatmapGrid" role="grid" aria-label="Daily AI usage over the last 90 days"></div>
+        </div>
+      </div>
+      <div class="heatmap-footer">
+        <span id="heatmapCoverage"></span>
+        <div class="heatmap-legend" aria-label="Heatmap legend">
+          <span>No history</span><i class="heatmap-cell unavailable"></i>
+          <span>$0</span><i class="heatmap-cell zero"></i>
+          <span>Less</span><i class="heatmap-cell level-1"></i><i class="heatmap-cell level-2"></i><i class="heatmap-cell level-3"></i><i class="heatmap-cell level-4"></i><span>More</span>
+          <i class="heatmap-cell warning"></i><span>Warning</span>
+          <i class="heatmap-cell critical"></i><span>Critical</span>
+        </div>
+      </div>
+      <div class="heatmap-tooltip" id="heatmapTooltip" role="tooltip"></div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="section__head"><div><h2>Live activity</h2><p>Latest billable requests</p></div></div>
     <div class="panel feed" id="activityFeed"></div>
   </section>

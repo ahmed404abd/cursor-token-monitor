@@ -34,6 +34,11 @@
     groupLabel: document.getElementById('groupLabel'),
     spendChart: document.getElementById('spendChart'),
     tokenChart: document.getElementById('tokenChart'),
+    heatmapModel: document.getElementById('heatmapModel'),
+    heatmapMonths: document.getElementById('heatmapMonths'),
+    heatmapGrid: document.getElementById('heatmapGrid'),
+    heatmapCoverage: document.getElementById('heatmapCoverage'),
+    heatmapTooltip: document.getElementById('heatmapTooltip'),
     activityFeed: document.getElementById('activityFeed'),
     topDaysBody: document.getElementById('topDaysBody'),
     sessionsBody: document.getElementById('sessionsBody'),
@@ -131,6 +136,125 @@
       })
       .join('');
     return `<svg viewBox="0 0 ${width} ${height}" class="chart" role="img">${bars}${labels}</svg>`;
+  }
+
+  function heatmapValue(day, modelId) {
+    if (!modelId) {
+      return { spendCents: day.spendCents, events: day.events, tokens: 0, topModel: day.topModel };
+    }
+    const row = (day.models || []).find((model) => model.modelId === modelId);
+    return {
+      spendCents: row?.spendCents || 0,
+      events: row?.events || 0,
+      tokens: row?.tokens || 0,
+      topModel: row?.modelLabel || 'None',
+    };
+  }
+
+  function heatmapLevel(value, max) {
+    if (value <= 0 || max <= 0) return 0;
+    const ratio = value / max;
+    if (ratio <= 0.12) return 1;
+    if (ratio <= 0.32) return 2;
+    if (ratio <= 0.62) return 3;
+    return 4;
+  }
+
+  function renderHeatmap(heatmap) {
+    if (!heatmap || !heatmap.days?.length) {
+      els.heatmapGrid.innerHTML = '<div class="empty">No heatmap history yet.</div>';
+      return;
+    }
+
+    const previousSelection = state.heatmapModel || '';
+    els.heatmapModel.innerHTML = '<option value="">All models</option>' +
+      (heatmap.models || [])
+        .map((model) => `<option value="${esc(model.id)}">${esc(model.label)}</option>`)
+        .join('');
+    state.heatmapModel = (heatmap.models || []).some((model) => model.id === previousSelection)
+      ? previousSelection
+      : '';
+    els.heatmapModel.value = state.heatmapModel;
+
+    const values = heatmap.days.map((day) => heatmapValue(day, state.heatmapModel));
+    const maxSpend = Math.max(...values.map((value) => value.spendCents), 1);
+    const firstDate = new Date(`${heatmap.days[0].date}T12:00:00`);
+    const leading = (firstDate.getDay() + 6) % 7;
+    const blanks = Array.from({ length: leading }, () => '<span class="heatmap-blank"></span>').join('');
+    const cells = heatmap.days.map((day, index) => {
+      const value = values[index];
+      const availability = day.availability === 'unavailable'
+        ? 'unavailable'
+        : value.spendCents > 0 || value.events > 0
+          ? 'usage'
+          : 'zero';
+      const level = heatmapLevel(value.spendCents, maxSpend);
+      const severity = availability !== 'unavailable' && day.severity !== 'healthy'
+        ? day.severity
+        : '';
+      const classes = ['heatmap-cell', availability, level ? `level-${level}` : '', severity]
+        .filter(Boolean)
+        .join(' ');
+      const label = availability === 'unavailable'
+        ? `${day.label}: no local history`
+        : `${day.label}: ${money(value.spendCents)}, ${value.events} requests, top model ${value.topModel}`;
+      return `<button type="button" class="${classes}" data-day-index="${index}" role="gridcell" aria-label="${esc(label)}"></button>`;
+    }).join('');
+    els.heatmapGrid.innerHTML = blanks + cells;
+
+    const columns = Math.ceil((leading + heatmap.days.length) / 7);
+    els.heatmapGrid.style.gridTemplateColumns = `repeat(${columns}, 14px)`;
+    const monthLabels = [];
+    let previousMonth = '';
+    heatmap.days.forEach((day, index) => {
+      const date = new Date(`${day.date}T12:00:00`);
+      const month = `${date.getFullYear()}-${date.getMonth()}`;
+      if (month !== previousMonth) {
+        monthLabels.push({
+          label: date.toLocaleDateString(undefined, { month: 'short' }),
+          column: Math.floor((leading + index) / 7) + 1,
+        });
+        previousMonth = month;
+      }
+    });
+    els.heatmapMonths.style.gridTemplateColumns = `repeat(${columns}, 14px)`;
+    els.heatmapMonths.innerHTML = monthLabels
+      .map((month) => `<span style="grid-column:${month.column}">${esc(month.label)}</span>`)
+      .join('');
+    els.heatmapCoverage.textContent = heatmap.observedFrom
+      ? `Local history available since ${new Date(`${heatmap.observedFrom}T12:00:00`).toLocaleDateString()}`
+      : 'History starts after the first successful refresh';
+  }
+
+  function showHeatmapTooltip(cell, clientX, clientY) {
+    const heatmap = state.vm?.heatmap;
+    const day = heatmap?.days?.[Number(cell.dataset.dayIndex)];
+    if (!day) return;
+    const value = heatmapValue(day, state.heatmapModel || '');
+    const modelBreakdown = (day.models || [])
+      .slice()
+      .sort((a, b) => b.spendCents - a.spendCents)
+      .slice(0, 3)
+      .map((model) => `<li><span>${esc(model.modelLabel)}</span><strong>${money(model.spendCents)}</strong></li>`)
+      .join('');
+    const unavailable = day.availability === 'unavailable';
+    els.heatmapTooltip.innerHTML = unavailable
+      ? `<strong>${esc(day.label)}</strong><p>No local history. The extension had not observed this day.</p>`
+      : `<strong>${esc(day.label)}</strong>
+         <dl><div><dt>${state.heatmapModel ? 'Filtered spend' : 'Total spend'}</dt><dd>${money(value.spendCents)}</dd></div>
+         <div><dt>Requests</dt><dd>${value.events}</dd></div>
+         <div><dt>Top model</dt><dd>${esc(value.topModel)}</dd></div>
+         <div><dt>Allowance signal</dt><dd class="${esc(day.severity)}">${esc(day.severity)}</dd></div></dl>
+         ${modelBreakdown ? `<ul>${modelBreakdown}</ul>` : '<p>$0 spent — history is available for this day.</p>'}`;
+    els.heatmapTooltip.classList.add('visible');
+    const x = Math.min(window.innerWidth - 275, Math.max(8, clientX + 12));
+    const y = Math.min(window.innerHeight - 190, Math.max(8, clientY + 12));
+    els.heatmapTooltip.style.left = `${x}px`;
+    els.heatmapTooltip.style.top = `${y}px`;
+  }
+
+  function hideHeatmapTooltip() {
+    els.heatmapTooltip.classList.remove('visible');
   }
 
   function tokenBar(value, max, cls) {
@@ -272,6 +396,7 @@
 
     els.spendChart.innerHTML = barChart(vm.charts.spend, 'spend');
     els.tokenChart.innerHTML = barChart(vm.charts.tokens, 'tokens');
+    renderHeatmap(vm.heatmap);
 
     els.activityFeed.innerHTML = (vm.activity || [])
       .map(
@@ -365,6 +490,23 @@
   els.btnExportJson?.addEventListener('click', () => vscode.postMessage({ type: 'exportJson' }));
   els.btnExportMd?.addEventListener('click', () => vscode.postMessage({ type: 'exportMarkdown' }));
   els.btnCopy?.addEventListener('click', () => vscode.postMessage({ type: 'copyReport' }));
+  els.heatmapModel?.addEventListener('change', () => {
+    state.heatmapModel = els.heatmapModel.value;
+    vscode.setState(state);
+    renderHeatmap(state.vm?.heatmap);
+  });
+  els.heatmapGrid?.addEventListener('mousemove', (event) => {
+    const cell = event.target.closest('[data-day-index]');
+    if (cell) showHeatmapTooltip(cell, event.clientX, event.clientY);
+  });
+  els.heatmapGrid?.addEventListener('mouseleave', hideHeatmapTooltip);
+  els.heatmapGrid?.addEventListener('focusin', (event) => {
+    const cell = event.target.closest('[data-day-index]');
+    if (!cell) return;
+    const rect = cell.getBoundingClientRect();
+    showHeatmapTooltip(cell, rect.right, rect.bottom);
+  });
+  els.heatmapGrid?.addEventListener('focusout', hideHeatmapTooltip);
   els.issuesLink?.addEventListener('click', (e) => {
     e.preventDefault();
     vscode.postMessage({ type: 'openIssues' });

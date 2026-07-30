@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Cursor AI usage cockpit — interactive model cards, circular progress rings, drag-reorder, status-bar formats, QuickPick mode, and CSV/JSON/Markdown export.",
+  "description": "Private Cursor AI usage cockpit with model analytics, a 90-day activity heatmap, allowance alerts, status-bar tracking, and local exports.",
   "publisher": "ahmed404abd",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -28,7 +28,8 @@
     "pro",
     "export",
     "dashboard",
-    "cockpit"
+    "cockpit",
+    "heatmap"
   ],
   "galleryBanner": {
     "color": "#0d1117",

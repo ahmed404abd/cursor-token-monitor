@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101722"/><stop offset="1" stop-color="#0d1117"/></linearGradient>
+    <pattern id="cells" width="31" height="31" patternUnits="userSpaceOnUse"><rect width="24" height="24" rx="4" fill="#21262d" stroke="#30363d"/></pattern>
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-opacity=".4"/></filter>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#e6edf3}.muted{fill:#8b949e}.tiny{font-size:12px}.small{font-size:14px}.title{font-size:21px;font-weight:700}.strong{font-weight:700}.card{fill:#161b22;stroke:#30363d}.green1{fill:#173d2a}.green2{fill:#226c39}.green3{fill:#2f9848}.green4{fill:#3fb950}.warn{fill:#d29922}.critical{fill:#f85149}.cell{width:24px;height:24px;rx:4}
+    </style>
+  </defs>
+  <rect width="1200" height="430" rx="18" fill="url(#bg)"/>
+  <text x="28" y="42" class="title">90-day usage heatmap</text>
+  <text x="28" y="65" class="small muted">GitHub-style contribution view, enhanced with model filters and allowance-risk overlays</text>
+  <rect x="925" y="25" width="245" height="44" rx="9" class="card"/>
+  <text x="942" y="43" class="tiny muted">MODEL</text>
+  <text x="942" y="60" class="small strong">All models</text><text x="1148" y="53" text-anchor="middle" class="muted"> </text>
+  <rect x="28" y="88" width="1142" height="296" rx="12" class="card" filter="url(#shadow)"/>
+  <g transform="translate(72 137)">
+    <text x="0" y="20" class="tiny muted">Mon</text><text x="0" y="82" class="tiny muted">Wed</text><text x="0" y="144" class="tiny muted">Fri</text><text x="0" y="206" class="tiny muted">Sun</text>
+    <text x="58" y="-12" class="tiny muted">May</text><text x="182" y="-12" class="tiny muted">Jun</text><text x="337" y="-12" class="tiny muted">Jul</text>
+    <rect x="58" y="0" width="403" height="217" fill="url(#cells)"/>
+    <g fill="none" stroke="#30363d" stroke-dasharray="3 2" opacity=".75">
+      <rect x="58" y="0" class="cell"/><rect x="58" y="31" class="cell"/><rect x="58" y="62" class="cell"/><rect x="58" y="93" class="cell"/><rect x="58" y="124" class="cell"/><rect x="58" y="155" class="cell"/><rect x="58" y="186" class="cell"/>
+      <rect x="89" y="0" class="cell"/><rect x="89" y="31" class="cell"/><rect x="89" y="62" class="cell"/>
+    </g>
+    <g>
+      <rect x="89" y="93" class="cell green1"/><rect x="89" y="155" class="cell green2"/>
+      <rect x="120" y="31" class="cell green2"/><rect x="120" y="62" class="cell green1"/><rect x="120" y="124" class="cell green3"/>
+      <rect x="151" y="0" class="cell green1"/><rect x="151" y="93" class="cell green2"/><rect x="151" y="186" class="cell green1"/>
+      <rect x="182" y="31" class="cell green3"/><rect x="182" y="62" class="cell green1"/><rect x="182" y="155" class="cell green2"/>
+      <rect x="213" y="0" class="cell green2"/><rect x="213" y="93" class="cell green4"/><rect x="213" y="124" class="cell green1"/>
+      <rect x="244" y="31" class="cell green1"/><rect x="244" y="62" class="cell green2"/><rect x="244" y="155" class="cell green3"/>
+      <rect x="275" y="0" class="cell green3"/><rect x="275" y="93" class="cell green1"/><rect x="275" y="124" class="cell green2"/><rect x="275" y="186" class="cell green1"/>
+      <rect x="306" y="31" class="cell green2"/><rect x="306" y="62" class="cell green4"/><rect x="306" y="155" class="cell green2"/>
+      <rect x="337" y="0" class="cell green1"/><rect x="337" y="93" class="cell green3"/><rect x="337" y="124" class="cell warn"/>
+      <rect x="368" y="31" class="cell green2"/><rect x="368" y="62" class="cell green1"/><rect x="368" y="155" class="cell green4"/><rect x="368" y="186" class="cell warn"/>
+      <rect x="399" y="0" class="cell green3"/><rect x="399" y="93" class="cell critical"/><rect x="399" y="124" class="cell green2"/>
+      <rect x="430" y="31" class="cell green4"/><rect x="430" y="62" class="cell critical"/><rect x="430" y="155" class="cell green2"/>
+    </g>
+    <rect x="430" y="62" width="24" height="24" rx="4" fill="none" stroke="#e6edf3" stroke-width="2"/>
+  </g>
+  <g transform="translate(590 127)">
+    <rect width="322" height="188" rx="10" fill="#0d1117" stroke="#28517c" filter="url(#shadow)"/>
+    <text x="18" y="29" class="small strong">Wed, Jul 29, 2026</text>
+    <line x1="18" y1="42" x2="304" y2="42" stroke="#30363d"/>
+    <text x="18" y="67" class="tiny muted">Total spend</text><text x="304" y="67" text-anchor="end" class="small strong">$3.84</text>
+    <text x="18" y="91" class="tiny muted">Requests</text><text x="304" y="91" text-anchor="end" class="small strong">27</text>
+    <text x="18" y="115" class="tiny muted">Top model</text><text x="304" y="115" text-anchor="end" class="small strong">Composer 2.5 Fast</text>
+    <text x="18" y="139" class="tiny muted">Allowance signal</text><text x="304" y="139" text-anchor="end" class="small strong critical">critical</text>
+    <text x="18" y="169" class="tiny">Composer 2.5 Fast</text><text x="304" y="169" text-anchor="end" class="tiny strong">$2.46</text>
+  </g>
+  <g transform="translate(74 355)">
+    <text class="tiny muted">No history</text><rect x="65" y="-12" width="14" height="14" rx="3" fill="none" stroke="#30363d" stroke-dasharray="2 2"/>
+    <text x="92" class="tiny muted">$0</text><rect x="112" y="-12" width="14" height="14" rx="3" fill="#21262d"/>
+    <text x="142" class="tiny muted">Less</text><rect x="172" y="-12" width="14" height="14" rx="3" class="green1"/><rect x="191" y="-12" width="14" height="14" rx="3" class="green2"/><rect x="210" y="-12" width="14" height="14" rx="3" class="green3"/><rect x="229" y="-12" width="14" height="14" rx="3" class="green4"/><text x="250" class="tiny muted">More</text>
+    <rect x="294" y="-12" width="14" height="14" rx="3" class="warn"/><text x="315" class="tiny muted">Warning</text>
+    <rect x="378" y="-12" width="14" height="14" rx="3" class="critical"/><text x="399" class="tiny muted">Critical</text>
+  </g>
+  <text x="1140" y="355" text-anchor="end" class="tiny muted">Model filter: All models   rolling 90 days</text>
+  <text x="1170" y="414" text-anchor="end" class="tiny muted">Sample data   interactive tooltip shown</text>
+</svg>
