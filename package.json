@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "See your Cursor AI usage in the status bar — included spend, tokens, models, and per-chat activity for your signed-in account.",
-  "publisher": "ahmedabdullah",
-  "version": "1.0.1",
+  "description": "Cursor AI usage in the status bar — daily/session stats, model analytics, spend alerts, rotating status bar, CSV/JSON/Markdown export.",
+  "publisher": "ahmed404abd",
+  "version": "1.3.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -25,7 +25,8 @@
     "status bar",
     "ai",
     "spend",
-    "pro"
+    "pro",
+    "export"
   ],
   "galleryBanner": {
     "color": "#1a1a1a",
@@ -43,6 +44,42 @@
       {
         "command": "cursorTokenMonitor.showDetails",
         "title": "Cursor Token Monitor: Show Details"
+      },
+      {
+        "command": "cursorTokenMonitor.openDashboard",
+        "title": "Cursor Token Monitor: Open Usage Dashboard"
+      },
+      {
+        "command": "cursorTokenMonitor.copyUsageReport",
+        "title": "Cursor Token Monitor: Copy Usage Report"
+      },
+      {
+        "command": "cursorTokenMonitor.exportCsv",
+        "title": "Cursor Token Monitor: Export CSV"
+      },
+      {
+        "command": "cursorTokenMonitor.exportJson",
+        "title": "Cursor Token Monitor: Export JSON"
+      },
+      {
+        "command": "cursorTokenMonitor.exportMarkdown",
+        "title": "Cursor Token Monitor: Export Markdown"
+      },
+      {
+        "command": "cursorTokenMonitor.exportData",
+        "title": "Cursor Token Monitor: Export Usage Data…"
+      },
+      {
+        "command": "cursorTokenMonitor.resetCache",
+        "title": "Cursor Token Monitor: Reset Cache"
+      },
+      {
+        "command": "cursorTokenMonitor.checkConnection",
+        "title": "Cursor Token Monitor: Check Connection"
+      },
+      {
+        "command": "cursorTokenMonitor.privacyAudit",
+        "title": "Cursor Token Monitor: Run Privacy Audit"
       }
     ],
     "configuration": {
@@ -64,6 +101,16 @@
           "type": "string",
           "default": "",
           "description": "Path to a Python 3 executable. Leave empty to auto-detect (py / python / python3)."
+        },
+        "cursorTokenMonitor.statusBarMode": {
+          "type": "string",
+          "enum": ["spend", "rotate"],
+          "default": "spend",
+          "enumDescriptions": [
+            "Always show spend vs allowance (e.g. $4.12/$20).",
+            "Rotate every few seconds between spend, top model, and total tokens."
+          ],
+          "description": "What the status bar item shows."
         }
       }
     }

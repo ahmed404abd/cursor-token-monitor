@@ -31,13 +31,21 @@ If you see a warning icon, hover or click it — usually Python is missing or yo
 
 **Status bar** (Pro / Team / Ultra): included dollar spend vs allowance (not legacy “request count”).
 
-**Detail panel:**
+Set `cursorTokenMonitor.statusBarMode` to `rotate` to cycle the status bar between spend, top model, and total tokens.
+
+**Dashboard:**
 - Used / remaining / % with progress bar
-- Billing cycle
-- Events & token totals
-- **Models used** (Auto labeled clearly; named models when you pick them)
-- Auto candidate pool (models Auto may route to)
-- Per-chat rollups and recent activity
+- **Today / Yesterday / 7-day average** spend cards (built from local snapshots)
+- **Session stats** — requests, tokens, and spend since this window opened
+- Daily spend + daily tokens trend charts, top spending days
+- **Model analytics** — % share of spend and in/out tokens per model (Auto labeled clearly)
+- Live activity feed of the latest requests
+- Workspace comparison pie chart
+- Per-chat rollups (collapsible) and recent events
+
+**Alerts:** a notification at 80% / 90% of your allowance (once per billing cycle) and when today's spend is well above your recent daily average.
+
+**Export:** CSV, JSON, or Markdown from the dashboard toolbar or the command palette.
 
 > **Note on Auto:** Cursor’s usage API reports Auto as `default`. It does **not** reveal which underlying model Auto picked for each turn. Explicitly selected models do show by name.
 
@@ -50,6 +58,7 @@ Open Settings and search **Cursor Token Monitor**:
 | `cursorTokenMonitor.refreshIntervalSeconds` | `60` | How often to refresh |
 | `cursorTokenMonitor.pythonPath` | _(empty)_ | Full path to Python if not on PATH |
 | `cursorTokenMonitor.customDatabasePath` | _(empty)_ | Override `state.vscdb` path (rare) |
+| `cursorTokenMonitor.statusBarMode` | `spend` | `spend` or `rotate` (cycles spend / top model / tokens) |
 
 ## Privacy & security
 
@@ -69,8 +78,17 @@ Open Settings and search **Cursor Token Monitor**:
 
 ## Commands
 
+- **Cursor Token Monitor: Open Usage Dashboard**
 - **Cursor Token Monitor: Refresh Usage**
-- **Cursor Token Monitor: Show Details**
+- **Cursor Token Monitor: Copy Usage Report**
+- **Cursor Token Monitor: Export Usage Data…** (CSV / JSON / Markdown, also available individually)
+- **Cursor Token Monitor: Check Connection**
+- **Cursor Token Monitor: Reset Cache**
+- **Cursor Token Monitor: Run Privacy Audit**
+
+## What's not possible (yet)
+
+Live per-chat context-window meters, token counts of the currently open conversation, and streaming token growth require Cursor internals that aren't exposed to extensions — the usage API only reports completed billable events. If Cursor exposes these, they'll be added.
 
 ## License
 
