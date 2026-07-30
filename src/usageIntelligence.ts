@@ -23,11 +23,15 @@ export function usedPercent(usage: UsageSnapshot): number | undefined {
   return undefined;
 }
 
-export function usageHealth(usage: UsageSnapshot): UsageHealth {
+export function usageHealth(
+  usage: UsageSnapshot,
+  warningThreshold = 75,
+  criticalThreshold = 90
+): UsageHealth {
   const pct = usedPercent(usage);
   if (pct === undefined) return 'safe';
-  if (pct >= 90) return 'critical';
-  if (pct >= 75) return 'warning';
+  if (pct >= criticalThreshold) return 'critical';
+  if (pct >= warningThreshold) return 'warning';
   return 'safe';
 }
 
@@ -40,6 +44,7 @@ export function formatPercent(value?: number): string {
   return `${value.toFixed(value < 10 ? 1 : 0)}%`;
 }
 
+/** @deprecated Prefer formatStatusBar from statusBar.ts */
 export function formatStatusBarText(usage: UsageSnapshot): string {
   const plan = usage.planUsage;
   if (plan && plan.limit > 0) {
@@ -108,19 +113,23 @@ export function estimateAutoModels(usage: UsageSnapshot): AutoModelEstimate {
   };
 }
 
-export function buildUsageInsights(usage: UsageSnapshot): UsageInsight[] {
+export function buildUsageInsights(
+  usage: UsageSnapshot,
+  warningThreshold = 75,
+  criticalThreshold = 90
+): UsageInsight[] {
   const insights: UsageInsight[] = [];
   const pct = usedPercent(usage);
   const plan = usage.planUsage;
 
   if (pct !== undefined && plan) {
-    if (pct >= 90) {
+    if (pct >= criticalThreshold) {
       insights.push({
         level: 'alert',
         title: 'Near included limit',
         detail: `You've used ${formatPercent(pct)} of your ${centsToDollars(plan.limit)} allowance.`,
       });
-    } else if (pct >= 75) {
+    } else if (pct >= warningThreshold) {
       insights.push({
         level: 'warn',
         title: 'Usage trending high',

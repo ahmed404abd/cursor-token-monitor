@@ -2,32 +2,42 @@ import * as vscode from 'vscode';
 import { UsageSnapshot } from './cursorApi';
 import { centsToDollars, usedPercent } from './usageIntelligence';
 import { DaySpend, dayKey } from './historyStore';
+import { CockpitSettings, loadSettings } from './webview/preferences';
 
 const ALERT_STATE_KEY = 'cursorTokenMonitor.alertState';
 
 interface AlertState {
   cycleStartMs?: number;
+  firedWarning?: boolean;
+  firedCritical?: boolean;
+  /** legacy flags kept for migration */
   fired80?: boolean;
   fired90?: boolean;
   highSpendNotifiedDate?: string;
 }
 
 /**
- * Fire one-time notifications: 80% / 90% of allowance used (once per billing
- * cycle), and unusually high daily spend vs the recent average (once per day).
+ * Fire one-time notifications at configured warning/critical thresholds
+ * (once per billing cycle), and unusually high daily spend vs the recent
+ * average (once per day). Honors notificationsEnabled setting.
  */
 export function checkUsageAlerts(
   context: vscode.ExtensionContext,
   usage: UsageSnapshot,
-  dailySpend: DaySpend[]
+  dailySpend: DaySpend[],
+  settings?: CockpitSettings
 ): void {
+  const cfg = settings ?? loadSettings();
+  if (!cfg.notificationsEnabled) return;
+
   const state = context.globalState.get<AlertState>(ALERT_STATE_KEY, {});
   let changed = false;
 
-  // Reset threshold flags when a new billing cycle starts
   const cycleStart = usage.billingCycleStartMs;
   if (cycleStart && state.cycleStartMs !== cycleStart) {
     state.cycleStartMs = cycleStart;
+    state.firedWarning = false;
+    state.firedCritical = false;
     state.fired80 = false;
     state.fired90 = false;
     changed = true;
@@ -35,14 +45,17 @@ export function checkUsageAlerts(
 
   const pct = usedPercent(usage);
   if (pct !== undefined) {
-    if (pct >= 90 && !state.fired90) {
+    if (pct >= cfg.criticalThreshold && !state.firedCritical && !state.fired90) {
+      state.firedCritical = true;
+      state.firedWarning = true;
       state.fired90 = true;
       state.fired80 = true;
       changed = true;
       void vscode.window.showWarningMessage(
         `Cursor Token Monitor: ${pct.toFixed(0)}% of your included allowance is used — limit risk.`
       );
-    } else if (pct >= 80 && !state.fired80) {
+    } else if (pct >= cfg.warningThreshold && !state.firedWarning && !state.fired80) {
+      state.firedWarning = true;
       state.fired80 = true;
       changed = true;
       void vscode.window.showWarningMessage(
@@ -51,7 +64,6 @@ export function checkUsageAlerts(
     }
   }
 
-  // Unusual daily spend: today > 2x the average of the previous days (min $0.50)
   const today = dayKey();
   const todayRow = dailySpend.find((d) => d.date === today);
   const priorDays = dailySpend.filter((d) => d.date !== today).slice(-7);

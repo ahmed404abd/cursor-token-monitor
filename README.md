@@ -1,94 +1,113 @@
 # Cursor Token Monitor
 
-See your **Cursor AI usage** in the status bar — included spend, tokens, models, and per-chat activity.
+A **cockpit-style** Cursor AI usage dashboard — interactive model cards with circular progress rings, drag-to-reorder, status-bar formats, QuickPick mode, and CSV/JSON/Markdown export.
 
 Works in **Cursor** (VS Code–compatible). Reads your already signed-in Cursor account locally and calls Cursor’s own usage APIs. Nothing is sent to third-party servers.
 
 ## Requirements
 
-Before installing, make sure you have:
-
-1. **Cursor** desktop app (signed in to your account)
-2. **Python 3** on your PATH (`python --version` or `py --version`)
+1. **Cursor** desktop app (signed in)
+2. **Python 3** on PATH (`python --version` or `py --version`)
    - Used only to read one auth key from Cursor’s local SQLite DB (`state.vscdb`)
-   - If Python isn’t on PATH, set `cursorTokenMonitor.pythonPath` in Settings
+   - Or set `cursorTokenMonitor.pythonPath`
 
-That’s it. No API keys, no PAT, no extra Cursor settings.
+## Getting started
 
-## Getting started (after install)
-
-1. Install the extension in Cursor
+1. Install the extension
 2. Reload the window if needed (**Developer: Reload Window**)
-3. Look at the **bottom-right status bar** for something like:
-   ```
-   ⚡ $0.18/$20.00 · 0.9%
-   ```
-4. Click it for the full usage panel (spend, models, chats, recent events)
-
-If you see a warning icon, hover or click it — usually Python is missing or you’re not signed into Cursor.
+3. Look at the **bottom-right status bar**
+4. Click it to open the **Token Cockpit** dashboard
 
 ## What you’ll see
 
-**Status bar** (Pro / Team / Ultra): included dollar spend vs allowance (not legacy “request count”).
+### Cockpit dashboard
 
-Set `cursorTokenMonitor.statusBarMode` to `rotate` to cycle the status bar between spend, top model, and total tokens.
+Dark cockpit theme (independent of the editor theme):
 
-**Dashboard:**
-- Used / remaining / % with progress bar
-- **Today / Yesterday / 7-day average** spend cards (built from local snapshots)
-- **Session stats** — requests, tokens, and spend since this window opened
-- Daily spend + daily tokens trend charts, top spending days
-- **Model analytics** — % share of spend and in/out tokens per model (Auto labeled clearly)
-- Live activity feed of the latest requests
-- Workspace comparison pie chart
-- Per-chat rollups (collapsible) and recent events
+- **Plan details** card with SVG circular allowance ring, billing cycle, reset countdown, and collapsible today/yesterday/7-day spend
+- **Quota cards** for models (or workspaces) with:
+  - Circular % ring (spend share)
+  - Health status (Healthy / Warning / Critical)
+  - Input vs output token bars
+  - Chat / request-type pills
+  - Rename + pin-to-status-bar (models)
+  - Drag-and-drop reorder (persisted)
+- **Group toggle**: model vs workspace
+- **Trends**: daily spend + daily tokens charts
+- Live activity feed, top spending days, longest sessions, Auto estimate
+- Toolbar: Refresh, Reset Order, CSV / JSON / MD export, Copy, Settings gear
 
-**Alerts:** a notification at 80% / 90% of your allowance (once per billing cycle) and when today's spend is well above your recent daily average.
+### Status bar
 
-**Export:** CSV, JSON, or Markdown from the dashboard toolbar or the command palette.
+Six formats via `cursorTokenMonitor.statusBarFormat`:
 
-> **Note on Auto:** Cursor’s usage API reports Auto as `default`. It does **not** reveal which underlying model Auto picked for each turn. Explicitly selected models do show by name.
+| Format | Example |
+|--------|---------|
+| `icon` | icon only |
+| `dot` | health dot + icon |
+| `percent` | icon + % |
+| `dotPercent` | dot + % |
+| `namePercent` | pinned/top model + % |
+| `full` | Safe · $4.12/$20.00 |
+
+Set `statusBarMode` to `rotate` to cycle spend / model / tokens.
+
+### QuickPick mode
+
+Set `displayMode` to `quickpick` (or run **Open QuickPick**) for a keyboard-friendly list with Refresh and Open dashboard buttons.
+
+### Alerts
+
+Configurable warning/critical thresholds (defaults 75% / 90%). Can be disabled with `notificationsEnabled`. Also notifies when today’s spend is unusually high vs your recent average.
 
 ## Settings
 
-Open Settings and search **Cursor Token Monitor**:
-
 | Setting | Default | Purpose |
 |--------|---------|---------|
-| `cursorTokenMonitor.refreshIntervalSeconds` | `60` | How often to refresh |
-| `cursorTokenMonitor.pythonPath` | _(empty)_ | Full path to Python if not on PATH |
-| `cursorTokenMonitor.customDatabasePath` | _(empty)_ | Override `state.vscdb` path (rare) |
-| `cursorTokenMonitor.statusBarMode` | `spend` | `spend` or `rotate` (cycles spend / top model / tokens) |
+| `refreshIntervalSeconds` | `60` | Poll interval |
+| `pythonPath` | _(empty)_ | Python executable |
+| `customDatabasePath` | _(empty)_ | Override `state.vscdb` |
+| `statusBarMode` | `spend` | `spend` or `rotate` |
+| `statusBarFormat` | `full` | One of the six formats above |
+| `notificationsEnabled` | `true` | Allowance / spend alerts |
+| `warningThreshold` | `75` | Warning % (must be &lt; critical) |
+| `criticalThreshold` | `90` | Critical % |
+| `viewMode` | `card` | `card` or `list` |
+| `displayMode` | `dashboard` | `dashboard` or `quickpick` |
+
+You can also change these from the cockpit **⚙ Settings** modal.
+
+## Commands
+
+- **Open Usage Dashboard** / **Show Details**
+- **Open QuickPick**
+- **Refresh Usage**
+- **Copy Usage Report**
+- **Export Usage Data…** (CSV / JSON / Markdown)
+- **Check Connection**
+- **Reset Cache**
+- **Run Privacy Audit**
 
 ## Privacy & security
 
 - Reads `cursorAuth/accessToken` from your **local** Cursor database (read-only)
-- Uses that token only to call `api2.cursor.sh` (same family of APIs Cursor’s dashboard uses)
-- Does **not** upload your code, chats, or token to any other service
+- Uses that token only to call `api2.cursor.sh`
+- Does **not** upload your code, chats, or token elsewhere
 - Does **not** modify `state.vscdb`
+- Workspace cards are **estimated** account snapshots associated with the open folder — Cursor does not expose per-project billing IDs
 
 ## Troubleshooting
 
 | Problem | Fix |
 |--------|-----|
-| “Could not read Cursor auth data” | Install Python 3, or set `cursorTokenMonitor.pythonPath` |
-| “No cursorAuth/accessToken found” | Sign into Cursor (account icon) |
-| Status bar warning | Click the item for details |
-| Still shows old “0 req” UI | Update to 1.0.0+ and reload |
-
-## Commands
-
-- **Cursor Token Monitor: Open Usage Dashboard**
-- **Cursor Token Monitor: Refresh Usage**
-- **Cursor Token Monitor: Copy Usage Report**
-- **Cursor Token Monitor: Export Usage Data…** (CSV / JSON / Markdown, also available individually)
-- **Cursor Token Monitor: Check Connection**
-- **Cursor Token Monitor: Reset Cache**
-- **Cursor Token Monitor: Run Privacy Audit**
+| “Could not read Cursor auth data” | Install Python 3, or set `pythonPath` |
+| “No cursorAuth/accessToken found” | Sign into Cursor |
+| Status bar warning | Click the item / Check Connection |
+| Cards won’t drag | Ensure `media/vendor/Sortable.min.js` is packaged (reinstall VSIX) |
 
 ## What's not possible (yet)
 
-Live per-chat context-window meters, token counts of the currently open conversation, and streaming token growth require Cursor internals that aren't exposed to extensions — the usage API only reports completed billable events. If Cursor exposes these, they'll be added.
+Live per-chat context-window meters, streaming token growth, and conversation DB sizes require Cursor internals that aren’t exposed to extensions.
 
 ## License
 

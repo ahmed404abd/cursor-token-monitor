@@ -1,3 +1,21 @@
+## [1.4.0] - 2026-07-30
+
+### Added
+- Cockpit-style webview dashboard (dark theme, local CSS/JS assets)
+- SVG circular progress rings for plan allowance and per-card spend share
+- Drag-to-reorder cards via bundled SortableJS (persisted in globalState)
+- Group toggle: model vs workspace cards
+- Model rename aliases + pin-to-status-bar
+- In-webview Settings modal (formats, thresholds, view/display mode)
+- Six status bar formats: icon, dot, percent, dotPercent, namePercent, full
+- QuickPick alternate display mode + Open QuickPick command
+- Configurable warning/critical thresholds and notifications toggle
+- Unit tests for order helpers, status formats, and view-model construction
+
+### Changed
+- Dashboard updates via `postMessage` (`usageUpdate`) instead of full HTML rebuild each poll
+- Alerts honor configured thresholds and `notificationsEnabled`
+
 ## [1.3.0] - 2026-07-30
 
 ### Added

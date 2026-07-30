@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Cursor AI usage in the status bar — daily/session stats, model analytics, spend alerts, rotating status bar, CSV/JSON/Markdown export.",
+  "description": "Cursor AI usage cockpit — interactive model cards, circular progress rings, drag-reorder, status-bar formats, QuickPick mode, and CSV/JSON/Markdown export.",
   "publisher": "ahmed404abd",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -26,10 +26,12 @@
     "ai",
     "spend",
     "pro",
-    "export"
+    "export",
+    "dashboard",
+    "cockpit"
   ],
   "galleryBanner": {
-    "color": "#1a1a1a",
+    "color": "#0d1117",
     "theme": "dark"
   },
   "activationEvents": ["onStartupFinished"],
@@ -48,6 +50,10 @@
       {
         "command": "cursorTokenMonitor.openDashboard",
         "title": "Cursor Token Monitor: Open Usage Dashboard"
+      },
+      {
+        "command": "cursorTokenMonitor.openQuickPick",
+        "title": "Cursor Token Monitor: Open QuickPick"
       },
       {
         "command": "cursorTokenMonitor.copyUsageReport",
@@ -107,10 +113,55 @@
           "enum": ["spend", "rotate"],
           "default": "spend",
           "enumDescriptions": [
-            "Always show spend vs allowance (e.g. $4.12/$20).",
-            "Rotate every few seconds between spend, top model, and total tokens."
+            "Keep a single status-bar format.",
+            "Rotate every few seconds between formatted spend, top/pinned model, and total tokens."
           ],
-          "description": "What the status bar item shows."
+          "description": "Whether the status bar stays fixed or rotates metrics."
+        },
+        "cursorTokenMonitor.statusBarFormat": {
+          "type": "string",
+          "enum": ["icon", "dot", "percent", "dotPercent", "namePercent", "full"],
+          "default": "full",
+          "enumDescriptions": [
+            "Icon only",
+            "Health dot + icon",
+            "Icon + percent",
+            "Dot + percent",
+            "Pinned/top model name + percent",
+            "Full spend vs allowance with health label"
+          ],
+          "description": "Status bar text format."
+        },
+        "cursorTokenMonitor.notificationsEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show allowance and unusual-spend notifications."
+        },
+        "cursorTokenMonitor.warningThreshold": {
+          "type": "number",
+          "default": 75,
+          "minimum": 1,
+          "maximum": 99,
+          "description": "Percent of included allowance that triggers warning styling/alerts. Must be lower than criticalThreshold."
+        },
+        "cursorTokenMonitor.criticalThreshold": {
+          "type": "number",
+          "default": 90,
+          "minimum": 2,
+          "maximum": 100,
+          "description": "Percent of included allowance that triggers critical styling/alerts."
+        },
+        "cursorTokenMonitor.viewMode": {
+          "type": "string",
+          "enum": ["card", "list"],
+          "default": "card",
+          "description": "Cockpit card layout: grid of cards or denser list rows."
+        },
+        "cursorTokenMonitor.displayMode": {
+          "type": "string",
+          "enum": ["dashboard", "quickpick"],
+          "default": "dashboard",
+          "description": "Open the webview cockpit or a keyboard-friendly QuickPick list."
         }
       }
     }
@@ -119,13 +170,18 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
+    "test": "tsc -p ./ && node --test out/__tests__/*.js",
     "package": "vsce package --no-dependencies",
     "publish:marketplace": "vsce publish --no-dependencies"
   },
+  "dependencies": {
+    "sortablejs": "^1.15.6"
+  },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.4.0",
-    "@vscode/vsce": "^2.32.0"
+    "@types/sortablejs": "^1.15.8",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.32.0",
+    "typescript": "^5.4.0"
   }
 }

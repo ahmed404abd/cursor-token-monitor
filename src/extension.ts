@@ -5,8 +5,6 @@ import {
   buildUsageInsights,
   centsToDollars,
   estimateAutoModels,
-  formatStatusBarText,
-  usageHealth,
 } from './usageIntelligence';
 import {
   loadProjectRecords,
@@ -30,7 +28,26 @@ import {
 } from './historyStore';
 import { ensureSessionBaseline, getSessionStats } from './sessionTracker';
 import { checkUsageAlerts } from './alerts';
-import { buildDashboardHtml } from './dashboard';
+import { formatStatusBar, statusBarVariants } from './statusBar';
+import {
+  CockpitPreferences,
+  CockpitSettings,
+  GroupMode,
+  SettingsPatch,
+  loadPreferences,
+  loadSettings,
+  resetCardOrder,
+  savePreferences,
+  updateSettings,
+} from './webview/preferences';
+import { buildCockpitViewModel, CockpitViewModel } from './webview/dashboardViewModel';
+import {
+  MessageHandler,
+  postError,
+  postUsageUpdate,
+  showDashboardPanel,
+} from './webview/dashboardPanel';
+import { showUsageQuickPick } from './webview/quickPick';
 
 const ISSUES_URL = 'https://github.com/ahmed404abd/cursor-token-monitor/issues';
 
@@ -42,8 +59,8 @@ let lastAuth: CursorAuthData | undefined;
 let lastUsage: UsageSnapshot | undefined;
 let lastUpdated: Date | undefined;
 let lastProjects: ProjectUsageRecord[] = [];
+let lastVm: CockpitViewModel | undefined;
 let extensionContext: vscode.ExtensionContext | undefined;
-let dashboardPanel: vscode.WebviewPanel | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
   extensionContext = context;
@@ -56,8 +73,9 @@ export function activate(context: vscode.ExtensionContext) {
 
   const cmds: [string, (...args: any[]) => any][] = [
     ['cursorTokenMonitor.refresh', () => refresh(context)],
-    ['cursorTokenMonitor.showDetails', () => showDetails()],
-    ['cursorTokenMonitor.openDashboard', () => showDetails()],
+    ['cursorTokenMonitor.showDetails', () => openUsageView(context, 'dashboard')],
+    ['cursorTokenMonitor.openDashboard', () => openUsageView(context)],
+    ['cursorTokenMonitor.openQuickPick', () => openUsageView(context, 'quickpick')],
     ['cursorTokenMonitor.copyUsageReport', () => copyUsageReport()],
     ['cursorTokenMonitor.exportCsv', () => exportUsage('csv')],
     ['cursorTokenMonitor.exportJson', () => exportUsage('json')],
@@ -77,9 +95,15 @@ export function activate(context: vscode.ExtensionContext) {
       if (e.affectsConfiguration('cursorTokenMonitor.refreshIntervalSeconds')) {
         scheduleRefresh(context);
       }
-      if (e.affectsConfiguration('cursorTokenMonitor.statusBarMode')) {
+      if (
+        e.affectsConfiguration('cursorTokenMonitor.statusBarMode') ||
+        e.affectsConfiguration('cursorTokenMonitor.statusBarFormat') ||
+        e.affectsConfiguration('cursorTokenMonitor.warningThreshold') ||
+        e.affectsConfiguration('cursorTokenMonitor.criticalThreshold')
+      ) {
         scheduleRotation();
         applyStatusBarText();
+        if (lastUsage) pushViewModel(context);
       }
     })
   );
@@ -92,46 +116,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 function scheduleRefresh(context: vscode.ExtensionContext) {
   if (timer) clearInterval(timer);
-  const seconds = vscode.workspace
-    .getConfiguration('cursorTokenMonitor')
-    .get<number>('refreshIntervalSeconds', 60);
+  const seconds = loadSettings().refreshIntervalSeconds;
   timer = setInterval(() => refresh(context), Math.max(15, seconds) * 1000);
-}
-
-async function refresh(context: vscode.ExtensionContext) {
-  try {
-    statusBarItem.text = '$(sync~spin) Cursor usage';
-    const auth = await readCursorAuth(context);
-    lastAuth = auth;
-    lastUsage = await fetchUsage(auth);
-    lastUpdated = new Date();
-    lastProjects = updateProjectUsage(context, lastUsage);
-    recordDailySnapshot(context, lastUsage);
-    ensureSessionBaseline(lastUsage);
-    checkUsageAlerts(context, lastUsage, computeDailySpend(lastUsage));
-    statusBarItem.command = 'cursorTokenMonitor.openDashboard';
-
-    applyStatusBarText();
-    statusBarItem.tooltip = buildTooltip(auth, lastUsage);
-    statusBarItem.backgroundColor = warningColor(lastUsage);
-    if (dashboardPanel) renderDashboard(dashboardPanel);
-  } catch (err: any) {
-    const message = err?.message ?? String(err);
-    const issue = classifySetupError(message);
-    statusBarItem.text =
-      issue === 'python'
-        ? '$(warning) Setup Python'
-        : issue === 'auth'
-          ? '$(warning) Sign in to Cursor'
-          : '$(warning) Cursor usage';
-    statusBarItem.tooltip = `Failed to fetch Cursor usage:\n${message}\n\nClick for setup help, or run "Cursor Token Monitor: Check Connection".`;
-    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
-    statusBarItem.command = 'cursorTokenMonitor.checkConnection';
-
-    if (issue === 'python' || issue === 'auth' || issue === 'database') {
-      void showSetupGuide(issue, message);
-    }
-  }
 }
 
 function computeDailySpend(usage: UsageSnapshot): DaySpend[] {
@@ -143,38 +129,43 @@ function computeDailySpend(usage: UsageSnapshot): DaySpend[] {
   );
 }
 
-function compactTokens(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}k`;
-  return String(n);
+function buildVm(context: vscode.ExtensionContext, usage: UsageSnapshot): CockpitViewModel {
+  const prefs = loadPreferences(context);
+  const settings = loadSettings();
+  const projects =
+    lastProjects.length > 0 ? lastProjects : loadProjectRecords(context);
+  const dailySpend = computeDailySpend(usage);
+  return buildCockpitViewModel({
+    auth: lastAuth,
+    usage,
+    projects,
+    dailySpend,
+    sessions: longestSessions(usage, 5),
+    spendSummary: summarizeSpend(dailySpend),
+    session: getSessionStats(usage),
+    updated: lastUpdated,
+    prefs,
+    settings,
+    issuesUrl: ISSUES_URL,
+  });
 }
 
-/** Alternate status bar texts when statusBarMode is "rotate". */
-function statusBarVariants(usage: UsageSnapshot): string[] {
-  const variants = [formatStatusBarText(usage)];
-  const topModel = (usage.modelUsage ?? [])
-    .slice()
-    .sort((a, b) => b.chargedCents - a.chargedCents)[0];
-  if (topModel) {
-    variants.push(`$(zap) ${topModel.label} ${centsToDollars(topModel.chargedCents)}`);
-  }
-  const tokens = (usage.totalInputTokens ?? 0) + (usage.totalOutputTokens ?? 0);
-  if (tokens > 0) {
-    variants.push(`$(zap) ${compactTokens(tokens)} tokens`);
-  }
-  return variants;
+function pushViewModel(context: vscode.ExtensionContext): CockpitViewModel | undefined {
+  if (!lastUsage) return undefined;
+  lastVm = buildVm(context, lastUsage);
+  postUsageUpdate(lastVm);
+  return lastVm;
 }
 
 function applyStatusBarText() {
-  if (!lastUsage) return;
-  const mode = vscode.workspace
-    .getConfiguration('cursorTokenMonitor')
-    .get<string>('statusBarMode', 'spend');
-  if (mode !== 'rotate') {
-    statusBarItem.text = formatStatusBarText(lastUsage);
+  if (!lastUsage || !extensionContext) return;
+  const settings = loadSettings();
+  const prefs = loadPreferences(extensionContext);
+  if (settings.statusBarMode !== 'rotate') {
+    statusBarItem.text = formatStatusBar(lastUsage, settings, prefs.pinnedModelIds);
     return;
   }
-  const variants = statusBarVariants(lastUsage);
+  const variants = statusBarVariants(lastUsage, settings, prefs.pinnedModelIds);
   statusBarItem.text = variants[rotateIndex % variants.length];
 }
 
@@ -183,29 +174,29 @@ function scheduleRotation() {
     clearInterval(rotateTimer);
     rotateTimer = undefined;
   }
-  const mode = vscode.workspace
-    .getConfiguration('cursorTokenMonitor')
-    .get<string>('statusBarMode', 'spend');
-  if (mode !== 'rotate') return;
+  if (loadSettings().statusBarMode !== 'rotate') return;
   rotateTimer = setInterval(() => {
     rotateIndex += 1;
     applyStatusBarText();
   }, 8000);
 }
 
-function warningColor(usage: UsageSnapshot): vscode.ThemeColor | undefined {
-  const health = usageHealth(usage);
-  if (health === 'critical') {
+function warningColor(usage: UsageSnapshot, settings: CockpitSettings): vscode.ThemeColor | undefined {
+  const pct = usage.planUsage && usage.planUsage.limit > 0
+    ? (usage.planUsage.includedSpend / usage.planUsage.limit) * 100
+    : undefined;
+  if (pct === undefined) return undefined;
+  if (pct >= settings.criticalThreshold) {
     return new vscode.ThemeColor('statusBarItem.errorBackground');
   }
-  if (health === 'warning') {
+  if (pct >= settings.warningThreshold) {
     return new vscode.ThemeColor('statusBarItem.warningBackground');
   }
   return undefined;
 }
 
-function buildTooltip(auth: CursorAuthData, usage: UsageSnapshot): string {
-  const insights = buildUsageInsights(usage);
+function buildTooltip(auth: CursorAuthData, usage: UsageSnapshot, settings: CockpitSettings): string {
+  const insights = buildUsageInsights(usage, settings.warningThreshold, settings.criticalThreshold);
   const autoEst = estimateAutoModels(usage);
   const lines = [
     auth.email ? `Account: ${auth.email}` : undefined,
@@ -222,9 +213,46 @@ function buildTooltip(auth: CursorAuthData, usage: UsageSnapshot): string {
       : undefined,
     lastUpdated ? `Updated: ${lastUpdated.toLocaleTimeString()}` : undefined,
     '',
-    'Click for usage dashboard',
+    'Click for usage cockpit',
   ].filter((l): l is string => l !== undefined);
   return lines.join('\n');
+}
+
+async function refresh(context: vscode.ExtensionContext) {
+  try {
+    statusBarItem.text = '$(sync~spin) Cursor usage';
+    const auth = await readCursorAuth(context);
+    lastAuth = auth;
+    lastUsage = await fetchUsage(auth);
+    lastUpdated = new Date();
+    lastProjects = updateProjectUsage(context, lastUsage);
+    recordDailySnapshot(context, lastUsage);
+    ensureSessionBaseline(lastUsage);
+    const settings = loadSettings();
+    checkUsageAlerts(context, lastUsage, computeDailySpend(lastUsage), settings);
+    statusBarItem.command = 'cursorTokenMonitor.openDashboard';
+    applyStatusBarText();
+    statusBarItem.tooltip = buildTooltip(auth, lastUsage, settings);
+    statusBarItem.backgroundColor = warningColor(lastUsage, settings);
+    pushViewModel(context);
+  } catch (err: any) {
+    const message = err?.message ?? String(err);
+    const issue = classifySetupError(message);
+    statusBarItem.text =
+      issue === 'python'
+        ? '$(warning) Setup Python'
+        : issue === 'auth'
+          ? '$(warning) Sign in to Cursor'
+          : '$(warning) Cursor usage';
+    statusBarItem.tooltip = `Failed to fetch Cursor usage:\n${message}\n\nClick for setup help, or run "Cursor Token Monitor: Check Connection".`;
+    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+    statusBarItem.command = 'cursorTokenMonitor.checkConnection';
+    postError(message);
+
+    if (issue === 'python' || issue === 'auth' || issue === 'database') {
+      void showSetupGuide(issue, message);
+    }
+  }
 }
 
 async function ensureUsage(context?: vscode.ExtensionContext): Promise<boolean> {
@@ -276,6 +304,7 @@ async function resetCache(context: vscode.ExtensionContext) {
   lastUsage = undefined;
   lastAuth = undefined;
   lastUpdated = undefined;
+  lastVm = undefined;
   vscode.window.showInformationMessage('Local usage cache & history cleared. Refreshing…');
   await refresh(context);
 }
@@ -283,22 +312,13 @@ async function resetCache(context: vscode.ExtensionContext) {
 async function checkConnection(context: vscode.ExtensionContext) {
   try {
     statusBarItem.text = '$(sync~spin) Checking…';
-    const auth = await readCursorAuth(context);
-    const usage = await fetchUsage(auth);
-    lastAuth = auth;
-    lastUsage = usage;
-    lastUpdated = new Date();
-    lastProjects = updateProjectUsage(context, usage);
-    recordDailySnapshot(context, usage);
-    ensureSessionBaseline(usage);
-    statusBarItem.text = formatStatusBarText(usage);
-    statusBarItem.tooltip = buildTooltip(auth, usage);
-    statusBarItem.backgroundColor = warningColor(usage);
-    statusBarItem.command = 'cursorTokenMonitor.openDashboard';
-    if (dashboardPanel) renderDashboard(dashboardPanel);
-    vscode.window.showInformationMessage(
-      `Connected. Plan ${usage.planName ?? auth.membershipType ?? 'unknown'} · ${formatStatusBarText(usage).replace(/\$\([^)]+\)\s*/, '')}`
-    );
+    await refresh(context);
+    if (lastUsage && lastAuth) {
+      const settings = loadSettings();
+      vscode.window.showInformationMessage(
+        `Connected. Plan ${lastUsage.planName ?? lastAuth.membershipType ?? 'unknown'} · ${formatStatusBar(lastUsage, settings, loadPreferences(context).pinnedModelIds).replace(/\$\([^)]+\)\s*/, '')}`
+      );
+    }
   } catch (err: any) {
     const message = err?.message ?? String(err);
     const issue = classifySetupError(message);
@@ -306,82 +326,116 @@ async function checkConnection(context: vscode.ExtensionContext) {
   }
 }
 
-function showDetails() {
-  if (dashboardPanel) {
-    dashboardPanel.reveal(vscode.ViewColumn.Beside);
-    renderDashboard(dashboardPanel);
-    return;
-  }
+const handleWebviewMessage: MessageHandler = async (msg) => {
+  const context = extensionContext;
+  if (!context) return;
 
-  const panel = vscode.window.createWebviewPanel(
-    'cursorTokenMonitorDetails',
-    'Cursor Usage',
-    vscode.ViewColumn.Beside,
-    { enableScripts: true, retainContextWhenHidden: true }
-  );
-  dashboardPanel = panel;
-  panel.onDidDispose(() => {
-    dashboardPanel = undefined;
-  });
-
-  panel.webview.onDidReceiveMessage(async (msg) => {
-    switch (msg?.type) {
-      case 'exportCsv':
-        await exportUsage('csv');
-        break;
-      case 'exportJson':
-        await exportUsage('json');
-        break;
-      case 'exportMarkdown':
-        await exportUsage('markdown');
-        break;
-      case 'copyReport':
-        await copyUsageReport();
-        break;
-      case 'refresh':
-        if (extensionContext) await refresh(extensionContext);
-        break;
-      case 'openIssues':
-        await vscode.env.openExternal(vscode.Uri.parse(ISSUES_URL));
-        break;
+  switch (msg.type) {
+    case 'ready':
+      if (lastVm) postUsageUpdate(lastVm);
+      else if (lastUsage) pushViewModel(context);
+      break;
+    case 'refresh':
+      await refresh(context);
+      break;
+    case 'reorder': {
+      const prefs = loadPreferences(context);
+      if (msg.groupMode === 'workspace') prefs.cardOrderWorkspace = msg.order;
+      else prefs.cardOrderModel = msg.order;
+      await savePreferences(context, prefs);
+      pushViewModel(context);
+      break;
     }
-  });
+    case 'resetOrder': {
+      await resetCardOrder(context);
+      pushViewModel(context);
+      vscode.window.showInformationMessage('Card order reset.');
+      break;
+    }
+    case 'setGroupMode': {
+      const prefs = loadPreferences(context);
+      prefs.groupMode = msg.groupMode as GroupMode;
+      await savePreferences(context, prefs);
+      pushViewModel(context);
+      break;
+    }
+    case 'updateSettings': {
+      try {
+        await updateSettings(msg.settings as SettingsPatch);
+        scheduleRefresh(context);
+        scheduleRotation();
+        applyStatusBarText();
+        pushViewModel(context);
+        vscode.window.showInformationMessage('Cockpit settings saved.');
+      } catch (err: any) {
+        vscode.window.showErrorMessage(err?.message ?? String(err));
+        postError(err?.message ?? String(err));
+      }
+      break;
+    }
+    case 'renameModel': {
+      const prefs = loadPreferences(context);
+      if (msg.alias) prefs.modelAliases[msg.modelId] = msg.alias;
+      else delete prefs.modelAliases[msg.modelId];
+      await savePreferences(context, prefs);
+      pushViewModel(context);
+      applyStatusBarText();
+      break;
+    }
+    case 'togglePin': {
+      const prefs = loadPreferences(context);
+      const idx = prefs.pinnedModelIds.indexOf(msg.modelId);
+      if (idx >= 0) prefs.pinnedModelIds.splice(idx, 1);
+      else prefs.pinnedModelIds = [msg.modelId, ...prefs.pinnedModelIds.filter((id) => id !== msg.modelId)];
+      await savePreferences(context, prefs);
+      pushViewModel(context);
+      applyStatusBarText();
+      break;
+    }
+    case 'exportCsv':
+      await exportUsage('csv');
+      break;
+    case 'exportJson':
+      await exportUsage('json');
+      break;
+    case 'exportMarkdown':
+      await exportUsage('markdown');
+      break;
+    case 'copyReport':
+      await copyUsageReport();
+      break;
+    case 'openIssues':
+      await vscode.env.openExternal(vscode.Uri.parse(ISSUES_URL));
+      break;
+  }
+};
 
-  renderDashboard(panel);
-}
-
-function renderDashboard(panel: vscode.WebviewPanel) {
-  if (!lastUsage) {
-    panel.webview.html = `<!DOCTYPE html><html><body style="font-family:var(--vscode-font-family);padding:24px;color:var(--vscode-foreground)">
-      <h2>No usage data yet</h2>
-      <p>Run <strong>Cursor Token Monitor: Refresh Usage</strong> or click Refresh in the toolbar after data loads.</p>
-      <p><a href="${ISSUES_URL}">Report an issue on GitHub</a></p>
-    </body></html>`;
+async function openUsageView(
+  context: vscode.ExtensionContext,
+  forceMode?: 'dashboard' | 'quickpick'
+) {
+  if (!(await ensureUsage(context))) {
+    showDashboardPanel(context, handleWebviewMessage);
+    postError('No usage data yet. Click Refresh after signing into Cursor.');
     return;
   }
 
-  const ctx = extensionContext;
-  const history = ctx ? loadHistory(ctx) : [];
-  const projects =
-    lastProjects.length > 0 ? lastProjects : ctx ? loadProjectRecords(ctx) : [];
-  const dailySpend = computeDailySpend(lastUsage);
+  const settings = loadSettings();
+  const mode = forceMode ?? settings.displayMode;
+  const vm = pushViewModel(context) ?? lastVm!;
 
-  const nonce = String(Date.now()) + Math.random().toString(36).slice(2);
-  panel.webview.html = buildDashboardHtml(
-    {
-      auth: lastAuth,
-      usage: lastUsage,
-      projects,
-      dailySpend,
-      history,
-      sessions: longestSessions(lastUsage, 5),
-      spendSummary: summarizeSpend(dailySpend),
-      session: getSessionStats(lastUsage),
-      updated: lastUpdated,
-    },
-    nonce,
-    panel.webview.cspSource
-  );
+  if (mode === 'quickpick') {
+    showUsageQuickPick(vm, {
+      onRefresh: () => refresh(context),
+      onOpenDashboard: async () => {
+        await updateSettings({ displayMode: 'dashboard' });
+        showDashboardPanel(context, handleWebviewMessage, pushViewModel(context));
+      },
+    });
+    return;
+  }
+
+  showDashboardPanel(context, handleWebviewMessage, vm);
 }
 
 export function deactivate() {

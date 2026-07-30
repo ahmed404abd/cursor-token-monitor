@@ -3,6 +3,7 @@
 node_modules/**
 src/**
 out/**/*.map
+out/__tests__/**
 tsconfig.json
 .gitignore
 **/*.vsix
