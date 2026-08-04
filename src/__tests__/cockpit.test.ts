@@ -211,8 +211,8 @@ describe('view model', () => {
       issuesUrl: 'https://example.com',
     });
 
-    assert.equal(vm.percentUsed, 100);
-    assert.equal(vm.bindingQuotaLabel, 'Other Models');
+    assert.equal(vm.percentUsed, 30);
+    assert.equal(vm.bindingQuotaLabel, 'total usage');
     assert.equal(vm.quotaBuckets.length, 2);
     assert.equal(vm.quotaBuckets[0].percentLabel, '20%');
     assert.equal(vm.quotaBuckets[1].percentLabel, '100%');

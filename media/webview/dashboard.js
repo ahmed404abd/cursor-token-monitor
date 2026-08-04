@@ -96,16 +96,15 @@
     els.quotaBars.innerHTML = buckets
       .map((bucket) => {
         const width = Math.max(0, Math.min(100, bucket.percentUsed || 0));
+        const pctText = `${Number(bucket.percentUsed || 0).toFixed(bucket.percentUsed < 10 ? 1 : 0)}% used`;
         return `<div class="quota-bar" data-id="${esc(bucket.id)}">
           <div class="quota-bar__head">
-            <div>
+            <div class="quota-bar__copy">
               <div class="quota-bar__label">${esc(bucket.label)}</div>
               <div class="quota-bar__detail">${esc(bucket.detail)}</div>
+              ${bucket.spendLabel ? `<div class="quota-bar__spend">${esc(bucket.spendLabel)} included API</div>` : ''}
             </div>
-            <div class="quota-bar__meta">
-              <strong class="${esc(bucket.health)}">${esc(bucket.percentLabel)}</strong>
-              ${bucket.spendLabel ? `<span>${esc(bucket.spendLabel)}</span>` : ''}
-            </div>
+            <div class="quota-bar__pct ${esc(bucket.health)}">${esc(pctText)}</div>
           </div>
           <div class="quota-bar__track"><span class="${esc(bucket.health)}" style="width:${width.toFixed(1)}%"></span></div>
         </div>`;

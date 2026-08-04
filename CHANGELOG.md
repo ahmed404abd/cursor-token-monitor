@@ -1,3 +1,10 @@
+## [1.4.3] - 2026-08-04
+
+### Changed
+- Dual Pro quota bars now show large **X% used** labels like Cursor's dashboard
+- Plan ring uses Cursor's blended total usage percent when available
+- Plan summary text highlights Cursor Models % and Other Models % explicitly
+
 ## [1.4.2] - 2026-08-04
 
 ### Fixed

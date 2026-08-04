@@ -3,7 +3,7 @@
   "displayName": "Cursor Token Monitor",
   "description": "Private Cursor AI usage cockpit with dual Pro quotas (Cursor Models vs Other Models), model analytics, a 90-day heatmap, alerts, and local exports.",
   "publisher": "ahmed404abd",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {

@@ -445,7 +445,11 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
   } =
     input;
   const plan = usage.planUsage;
-  const pct = usedPercent(usage) ?? 0;
+  const bindingPct = usedPercent(usage) ?? 0;
+  const ringPct =
+    plan?.totalPercentUsed !== undefined && Number.isFinite(plan.totalPercentUsed)
+      ? plan.totalPercentUsed
+      : bindingPct;
   const healthMap = usageHealth(usage, settings.warningThreshold, settings.criticalThreshold);
   const planHealth: CardHealth =
     healthMap === 'critical' ? 'critical' : healthMap === 'warning' ? 'warning' : 'healthy';
@@ -482,7 +486,7 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
       ? (() => {
           const cursor = quotaBuckets.find((b) => b.id === 'cursorModels');
           const other = quotaBuckets.find((b) => b.id === 'otherModels');
-          return `Cursor Models ${cursor?.percentLabel ?? '—'} · Other Models ${other?.percentLabel ?? '—'} (API ${other?.spendLabel ?? '—'}).`;
+          return `Included in Pro — Cursor Models ${cursor?.percentLabel ?? '—'} used · Other Models ${other?.percentLabel ?? '—'} used.`;
         })()
       : undefined;
 
@@ -498,9 +502,9 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
     usedLabel: plan ? centsToDollars(plan.includedSpend) : '—',
     limitLabel: plan ? centsToDollars(plan.limit) : '—',
     remainingLabel: plan ? centsToDollars(plan.remaining) : '—',
-    percentUsed: pct,
+    percentUsed: ringPct,
     planHealth,
-    bindingQuotaLabel: bindingQuotaLabel(usage),
+    bindingQuotaLabel: plan?.totalPercentUsed !== undefined ? 'total usage' : bindingQuotaLabel(usage),
     quotaBuckets,
     resetInLabel: reset.resetInLabel,
     resetTimeLabel: reset.resetTimeLabel,
