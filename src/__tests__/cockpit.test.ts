@@ -18,7 +18,27 @@ function sampleUsage(overrides: Partial<UsageSnapshot> = {}): UsageSnapshot {
       includedSpend: 400,
       remaining: 1600,
       limit: 2000,
+      autoPercentUsed: 20,
+      apiPercentUsed: 20,
+      totalPercentUsed: 20,
     },
+    quotaBuckets: [
+      {
+        id: 'cursorModels',
+        label: 'Cursor Models',
+        detail: 'Includes Composer and Grok',
+        percentUsed: 20,
+      },
+      {
+        id: 'otherModels',
+        label: 'Other Models',
+        detail: 'API allowance',
+        percentUsed: 20,
+        usedCents: 400,
+        limitCents: 2000,
+        remainingCents: 1600,
+      },
+    ],
     totalEventsThisPeriod: 12,
     totalInputTokens: 1000,
     totalOutputTokens: 500,
@@ -139,6 +159,65 @@ describe('view model', () => {
     assert.equal(vm.cards[0].title, 'My GPT');
     assert.equal(vm.cards[0].isPinned, true);
     assert.equal(vm.percentUsed, 20);
+  });
+
+  it('shows Cursor Models and Other Models dual quotas separately', () => {
+    const vm = buildCockpitViewModel({
+      usage: sampleUsage({
+        planUsage: {
+          totalSpend: 2000,
+          includedSpend: 2000,
+          remaining: 0,
+          limit: 2000,
+          autoPercentUsed: 20,
+          apiPercentUsed: 100,
+          totalPercentUsed: 30,
+        },
+        quotaBuckets: [
+          {
+            id: 'cursorModels',
+            label: 'Cursor Models',
+            detail: 'Includes Composer and Grok',
+            percentUsed: 20,
+          },
+          {
+            id: 'otherModels',
+            label: 'Other Models',
+            detail: 'API allowance',
+            percentUsed: 100,
+            usedCents: 2000,
+            limitCents: 2000,
+            remainingCents: 0,
+          },
+        ],
+      }),
+      projects: [],
+      dailySpend: [],
+      sessions: [],
+      spendSummary: {
+        todayCents: 10,
+        yesterdayCents: 5,
+        sevenDayAvgCents: 7,
+        sevenDayTotalCents: 49,
+      },
+      prefs: {
+        groupMode: 'model',
+        cardOrderModel: [],
+        cardOrderWorkspace: [],
+        modelAliases: {},
+        pinnedModelIds: [],
+      },
+      settings: baseSettings,
+      issuesUrl: 'https://example.com',
+    });
+
+    assert.equal(vm.percentUsed, 100);
+    assert.equal(vm.bindingQuotaLabel, 'Other Models');
+    assert.equal(vm.quotaBuckets.length, 2);
+    assert.equal(vm.quotaBuckets[0].percentLabel, '20%');
+    assert.equal(vm.quotaBuckets[1].percentLabel, '100%');
+    assert.match(vm.displayMessage, /Cursor Models 20%/);
+    assert.match(vm.displayMessage, /Other Models 100%/);
   });
 
   it('builds a 90-day model heatmap with availability and threshold signals', () => {

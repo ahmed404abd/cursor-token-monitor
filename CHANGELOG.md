@@ -1,3 +1,15 @@
+## [1.4.2] - 2026-08-04
+
+### Fixed
+- Pro plan display now mirrors Cursor's dual quotas: **Cursor Models** vs **Other Models**
+- Plan ring and alerts use the binding pool (max of both) instead of treating the $20 API dollar bar as the whole plan
+- Status bar `full` format shows both pool percentages when available
+- KPI labels clarify that Used/Limit dollars are the Other Models / API allowance
+
+### Added
+- Dual quota progress bars in the plan details card
+- Quota-aware usage intelligence copy when one pool is exhausted and the other is not
+
 ## [1.4.1] - 2026-07-31
 
 ### Added

@@ -7,9 +7,25 @@ export interface PlanUsage {
   bonusSpend?: number;
   remaining: number;
   limit: number;
+  /** Cursor Models pool (Composer / Grok / Auto bucket), percent 0–100+ */
   autoPercentUsed?: number;
+  /** Other Models / included API dollar pool, percent 0–100+ */
   apiPercentUsed?: number;
+  /** Blended overall percent Cursor reports for "total usage" */
   totalPercentUsed?: number;
+  bonusTooltip?: string;
+  remainingBonus?: boolean;
+}
+
+export interface QuotaBucket {
+  id: 'cursorModels' | 'otherModels';
+  label: string;
+  detail: string;
+  percentUsed: number;
+  /** Dollar figures only apply to the Other Models / API pool */
+  usedCents?: number;
+  limitCents?: number;
+  remainingCents?: number;
 }
 
 export interface UsageEvent {
@@ -73,7 +89,13 @@ export interface UsageSnapshot {
   billingCycleStartMs?: number;
   billingCycleEndMs?: number;
   displayMessage?: string;
+  /** Cursor Models pool message (when Auto/Composer/Grok selected) */
+  autoModelSelectedDisplayMessage?: string;
+  /** Other Models / named API models message */
+  namedModelSelectedDisplayMessage?: string;
   planUsage?: PlanUsage;
+  /** Dual Pro quotas matching Cursor's dashboard */
+  quotaBuckets: QuotaBucket[];
   totalEventsThisPeriod?: number;
   totalInputTokens?: number;
   totalOutputTokens?: number;
@@ -375,18 +397,44 @@ async function fetchModernUsage(token: string): Promise<UsageSnapshot> {
     : [];
 
   const planUsageRaw = period?.planUsage;
+  const includedSpend = toNumber(planUsageRaw?.includedSpend);
+  const limit = toNumber(planUsageRaw?.limit);
+  const remainingRaw = planUsageRaw?.remaining;
+  const remaining =
+    remainingRaw === undefined || remainingRaw === null
+      ? Math.max(0, limit - includedSpend)
+      : toNumber(remainingRaw);
+  const autoPercentUsed =
+    planUsageRaw?.autoPercentUsed === undefined || planUsageRaw?.autoPercentUsed === null
+      ? undefined
+      : toNumber(planUsageRaw.autoPercentUsed);
+  const apiPercentUsed =
+    planUsageRaw?.apiPercentUsed === undefined || planUsageRaw?.apiPercentUsed === null
+      ? undefined
+      : toNumber(planUsageRaw.apiPercentUsed);
+  const totalPercentUsed =
+    planUsageRaw?.totalPercentUsed === undefined || planUsageRaw?.totalPercentUsed === null
+      ? undefined
+      : toNumber(planUsageRaw.totalPercentUsed);
+
   const planUsage: PlanUsage | undefined = planUsageRaw
     ? {
         totalSpend: toNumber(planUsageRaw.totalSpend),
-        includedSpend: toNumber(planUsageRaw.includedSpend),
+        includedSpend,
         bonusSpend: toNumber(planUsageRaw.bonusSpend),
-        remaining: toNumber(planUsageRaw.remaining),
-        limit: toNumber(planUsageRaw.limit),
-        autoPercentUsed: toNumber(planUsageRaw.autoPercentUsed),
-        apiPercentUsed: toNumber(planUsageRaw.apiPercentUsed),
-        totalPercentUsed: toNumber(planUsageRaw.totalPercentUsed),
+        remaining,
+        limit,
+        autoPercentUsed,
+        apiPercentUsed,
+        totalPercentUsed,
+        bonusTooltip: planUsageRaw.bonusTooltip
+          ? String(planUsageRaw.bonusTooltip)
+          : undefined,
+        remainingBonus: Boolean(planUsageRaw.remainingBonus),
       }
     : undefined;
+
+  const quotaBuckets = buildQuotaBuckets(planUsage, autoBucketModels);
 
   return {
     source: 'modern',
@@ -396,7 +444,14 @@ async function fetchModernUsage(token: string): Promise<UsageSnapshot> {
     billingCycleStartMs: toNumber(start),
     billingCycleEndMs: toNumber(end),
     displayMessage: period?.displayMessage,
+    autoModelSelectedDisplayMessage: period?.autoModelSelectedDisplayMessage
+      ? String(period.autoModelSelectedDisplayMessage)
+      : undefined,
+    namedModelSelectedDisplayMessage: period?.namedModelSelectedDisplayMessage
+      ? String(period.namedModelSelectedDisplayMessage)
+      : undefined,
     planUsage,
+    quotaBuckets,
     totalEventsThisPeriod: eventResult.total || recentEvents.length,
     totalInputTokens: toNumber(aggregated?.totalInputTokens),
     totalOutputTokens: toNumber(aggregated?.totalOutputTokens),
@@ -411,6 +466,47 @@ async function fetchModernUsage(token: string): Promise<UsageSnapshot> {
   };
 }
 
+export function buildQuotaBuckets(
+  planUsage?: PlanUsage,
+  autoBucketModels: string[] = []
+): QuotaBucket[] {
+  if (!planUsage) return [];
+
+  const cursorExamples = autoBucketModels
+    .map((id) => displayModelName(id))
+    .filter((label, index, all) => all.indexOf(label) === index)
+    .filter((label) => /composer|grok|vega/i.test(label))
+    .slice(0, 2);
+  const cursorDetail = cursorExamples.length
+    ? `Includes ${cursorExamples.join(' and ')}`
+    : 'Includes Cursor Grok, Composer, and Auto-routed models';
+
+  const buckets: QuotaBucket[] = [];
+  if (planUsage.autoPercentUsed !== undefined) {
+    buckets.push({
+      id: 'cursorModels',
+      label: 'Cursor Models',
+      detail: `${cursorDetail}. Extra usage can consume Other Models quota or on-demand spend.`,
+      percentUsed: planUsage.autoPercentUsed,
+    });
+  }
+  if (planUsage.apiPercentUsed !== undefined || planUsage.limit > 0) {
+    buckets.push({
+      id: 'otherModels',
+      label: 'Other Models',
+      detail:
+        'Additional usage beyond this limit consumes on-demand spend. Your plan includes at least this API allowance.',
+      percentUsed:
+        planUsage.apiPercentUsed ??
+        (planUsage.limit > 0 ? (planUsage.includedSpend / planUsage.limit) * 100 : 0),
+      usedCents: planUsage.includedSpend,
+      limitCents: planUsage.limit,
+      remainingCents: planUsage.remaining,
+    });
+  }
+  return buckets;
+}
+
 async function fetchLegacyUsage(token: string): Promise<UsageSnapshot> {
   const legacy = await httpsJson('GET', 'https://api2.cursor.sh/auth/usage', {
     Authorization: `Bearer ${token}`,
@@ -423,6 +519,7 @@ async function fetchLegacyUsage(token: string): Promise<UsageSnapshot> {
     modelUsage: [],
     recentEvents: [],
     chats: [],
+    quotaBuckets: [],
     raw: { legacy },
   };
 }

@@ -17,10 +17,29 @@ export interface UsageInsight {
 
 export function usedPercent(usage: UsageSnapshot): number | undefined {
   const plan = usage.planUsage;
-  if (plan && plan.limit > 0) {
-    return (plan.includedSpend / plan.limit) * 100;
-  }
-  return undefined;
+  if (!plan) return undefined;
+
+  const candidates = [
+    plan.autoPercentUsed,
+    plan.apiPercentUsed,
+    plan.limit > 0 ? (plan.includedSpend / plan.limit) * 100 : undefined,
+  ].filter((value): value is number => value !== undefined && Number.isFinite(value));
+
+  if (!candidates.length) return undefined;
+  // Binding constraint = whichever Pro pool is closer to exhausted
+  return Math.max(...candidates);
+}
+
+export function bindingQuotaLabel(usage: UsageSnapshot): string | undefined {
+  const plan = usage.planUsage;
+  if (!plan) return undefined;
+  const auto = plan.autoPercentUsed ?? -1;
+  const api =
+    plan.apiPercentUsed ??
+    (plan.limit > 0 ? (plan.includedSpend / plan.limit) * 100 : -1);
+  if (auto < 0 && api < 0) return undefined;
+  if (api >= auto) return 'Other Models';
+  return 'Cursor Models';
 }
 
 export function usageHealth(
@@ -119,39 +138,72 @@ export function buildUsageInsights(
   criticalThreshold = 90
 ): UsageInsight[] {
   const insights: UsageInsight[] = [];
-  const pct = usedPercent(usage);
   const plan = usage.planUsage;
+  const buckets = usage.quotaBuckets ?? [];
 
-  if (pct !== undefined && plan) {
-    if (pct >= criticalThreshold) {
+  for (const bucket of buckets) {
+    if (bucket.percentUsed >= criticalThreshold) {
       insights.push({
         level: 'alert',
-        title: 'Near included limit',
-        detail: `You've used ${formatPercent(pct)} of your ${centsToDollars(plan.limit)} allowance.`,
+        title: `${bucket.label} exhausted`,
+        detail:
+          bucket.id === 'otherModels'
+            ? `You've used ${formatPercent(bucket.percentUsed)} of your included API allowance (${centsToDollars(bucket.usedCents ?? plan?.includedSpend ?? 0)} / ${centsToDollars(bucket.limitCents ?? plan?.limit ?? 0)}). Cursor Models may still have room.`
+            : `You've used ${formatPercent(bucket.percentUsed)} of the Cursor Models pool. Extra Cursor-model usage may pull from Other Models or on-demand.`,
       });
-    } else if (pct >= warningThreshold) {
+    } else if (bucket.percentUsed >= warningThreshold) {
       insights.push({
         level: 'warn',
-        title: 'Usage trending high',
-        detail: `${formatPercent(pct)} used — ${centsToDollars(plan.remaining)} remaining this cycle.`,
-      });
-    } else {
-      insights.push({
-        level: 'info',
-        title: 'On track',
-        detail: `${formatPercent(pct)} used — ${centsToDollars(plan.remaining)} remaining.`,
+        title: `${bucket.label} trending high`,
+        detail: `${formatPercent(bucket.percentUsed)} used this billing cycle.`,
       });
     }
+  }
 
+  if (!buckets.length && plan) {
+    const pct = usedPercent(usage);
+    if (pct !== undefined) {
+      if (pct >= criticalThreshold) {
+        insights.push({
+          level: 'alert',
+          title: 'Near included limit',
+          detail: `You've used ${formatPercent(pct)} of your ${centsToDollars(plan.limit)} allowance.`,
+        });
+      } else if (pct >= warningThreshold) {
+        insights.push({
+          level: 'warn',
+          title: 'Usage trending high',
+          detail: `${formatPercent(pct)} used — ${centsToDollars(plan.remaining)} remaining this cycle.`,
+        });
+      } else {
+        insights.push({
+          level: 'info',
+          title: 'On track',
+          detail: `${formatPercent(pct)} used — ${centsToDollars(plan.remaining)} remaining.`,
+        });
+      }
+    }
+  } else if (buckets.length && buckets.every((b) => b.percentUsed < warningThreshold)) {
+    const cursor = buckets.find((b) => b.id === 'cursorModels');
+    const other = buckets.find((b) => b.id === 'otherModels');
+    insights.push({
+      level: 'info',
+      title: 'Both Pro pools on track',
+      detail: `Cursor Models ${formatPercent(cursor?.percentUsed)} · Other Models ${formatPercent(other?.percentUsed)} (${centsToDollars(plan?.remaining ?? 0)} API remaining).`,
+    });
+  }
+
+  if (plan) {
+    const pct = plan.apiPercentUsed ?? usedPercent(usage);
     const daysLeft = daysUntil(usage.billingCycleEndMs);
-    if (daysLeft !== undefined && daysLeft > 0 && pct > 0) {
+    if (daysLeft !== undefined && daysLeft > 0 && pct !== undefined && pct > 0 && plan.limit > 0) {
       const dailyBurn = plan.includedSpend / Math.max(1, cycleDaysElapsed(usage));
       const projected = dailyBurn * (cycleDaysElapsed(usage) + daysLeft);
       if (projected > plan.limit * 1.05) {
         insights.push({
           level: 'warn',
-          title: 'Projected overage risk',
-          detail: `At current pace you may exceed your allowance before cycle end (~${daysLeft}d left).`,
+          title: 'Projected Other Models overage',
+          detail: `At current API spend pace you may exceed the ${centsToDollars(plan.limit)} included allowance before cycle end (~${daysLeft}d left).`,
         });
       }
     }

@@ -68,10 +68,20 @@ export function formatStatusBar(
     case 'namePercent':
       return `${icon} ${named?.label ?? 'Usage'} ${pctText}`;
     case 'full':
-    default:
+    default: {
+      const auto = plan.autoPercentUsed;
+      const api = plan.apiPercentUsed;
+      if (auto !== undefined && api !== undefined) {
+        const binding = api >= auto ? 'Other' : 'Cursor';
+        if (health === 'critical') {
+          return `${icon} ${binding} limit • Cursor ${formatPercent(auto)} · Other ${formatPercent(api)}`;
+        }
+        return `${icon} Cursor ${formatPercent(auto)} · Other ${formatPercent(api)} · ${used}/${limit}`;
+      }
       if (health === 'critical') return `${icon} Limit risk • ${used}/${limit}`;
       if (health === 'warning') return `${icon} ${pctText} used • ${used}/${limit}`;
       return `${icon} Safe • ${used}/${limit}`;
+    }
   }
 }
 

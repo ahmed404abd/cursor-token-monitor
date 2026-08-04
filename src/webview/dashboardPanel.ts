@@ -93,18 +93,19 @@ function htmlShell(
             stroke-dasharray="326.7256" stroke-dashoffset="326.7256"></circle>
         </svg>
         <div class="ring-center">
-          <div><strong id="planRingPct">0%</strong><span>used</span></div>
+          <div><strong id="planRingPct">0%</strong><span id="planRingCaption">used</span></div>
         </div>
       </div>
       <div class="plan-meta">
         <div class="eyebrow">Plan details</div>
         <h1><span id="accountEmail">—</span> <span class="plan-chip" id="planChip">—</span></h1>
         <p class="lede" id="planMessage">Loading usage…</p>
+        <div class="quota-bars" id="quotaBars"></div>
       </div>
       <div class="plan-kpis">
-        <div class="label">Used</div><div class="value" id="usedLabel">—</div>
-        <div class="label">Limit</div><div class="value" id="limitLabel">—</div>
-        <div class="label">Remaining</div><div class="value" id="remainingLabel">—</div>
+        <div class="label">Other Models used</div><div class="value" id="usedLabel">—</div>
+        <div class="label">Other Models limit</div><div class="value" id="limitLabel">—</div>
+        <div class="label">API remaining</div><div class="value" id="remainingLabel">—</div>
         <div class="label">Billing cycle</div><div class="value" id="billingCycle">—</div>
         <div class="label">Reset in</div><div class="value" id="resetIn">—</div>
         <div class="label">Reset time</div><div class="value" id="resetTime">—</div>

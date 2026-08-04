@@ -10,9 +10,11 @@
     stateBanner: document.getElementById('stateBanner'),
     planRingFg: document.getElementById('planRingFg'),
     planRingPct: document.getElementById('planRingPct'),
+    planRingCaption: document.getElementById('planRingCaption'),
     accountEmail: document.getElementById('accountEmail'),
     planChip: document.getElementById('planChip'),
     planMessage: document.getElementById('planMessage'),
+    quotaBars: document.getElementById('quotaBars'),
     usedLabel: document.getElementById('usedLabel'),
     limitLabel: document.getElementById('limitLabel'),
     remainingLabel: document.getElementById('remainingLabel'),
@@ -83,6 +85,32 @@
     if (health === 'warning') fgEl.classList.add('warning');
     if (health === 'critical') fgEl.classList.add('critical');
     pctEl.textContent = `${pct.toFixed(pct < 10 ? 1 : 0)}%`;
+  }
+
+  function renderQuotaBars(buckets) {
+    if (!els.quotaBars) return;
+    if (!buckets || !buckets.length) {
+      els.quotaBars.innerHTML = '';
+      return;
+    }
+    els.quotaBars.innerHTML = buckets
+      .map((bucket) => {
+        const width = Math.max(0, Math.min(100, bucket.percentUsed || 0));
+        return `<div class="quota-bar" data-id="${esc(bucket.id)}">
+          <div class="quota-bar__head">
+            <div>
+              <div class="quota-bar__label">${esc(bucket.label)}</div>
+              <div class="quota-bar__detail">${esc(bucket.detail)}</div>
+            </div>
+            <div class="quota-bar__meta">
+              <strong class="${esc(bucket.health)}">${esc(bucket.percentLabel)}</strong>
+              ${bucket.spendLabel ? `<span>${esc(bucket.spendLabel)}</span>` : ''}
+            </div>
+          </div>
+          <div class="quota-bar__track"><span class="${esc(bucket.health)}" style="width:${width.toFixed(1)}%"></span></div>
+        </div>`;
+      })
+      .join('');
   }
 
   function miniRing(percent, health) {
@@ -347,9 +375,15 @@
     vscode.setState(state);
 
     setRing(els.planRingFg, els.planRingPct, vm.percentUsed, vm.planHealth);
+    if (els.planRingCaption) {
+      els.planRingCaption.textContent = vm.bindingQuotaLabel
+        ? `${vm.bindingQuotaLabel} binding`
+        : 'used';
+    }
     els.accountEmail.textContent = vm.accountEmail;
     els.planChip.textContent = vm.planPrice ? `${vm.planName} · ${vm.planPrice}` : vm.planName;
     els.planMessage.textContent = vm.displayMessage;
+    renderQuotaBars(vm.quotaBuckets);
     els.usedLabel.textContent = vm.usedLabel;
     els.limitLabel.textContent = vm.limitLabel;
     els.remainingLabel.textContent = vm.remainingLabel;

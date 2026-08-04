@@ -185,6 +185,58 @@ button:disabled { opacity: 0.5; cursor: default; }
   font-size: 12px;
 }
 
+.quota-bars {
+  display: grid;
+  gap: 10px;
+  margin-top: 14px;
+}
+.quota-bar__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 6px;
+}
+.quota-bar__label {
+  font-weight: 700;
+  font-size: 13px;
+}
+.quota-bar__detail {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  max-width: 42ch;
+}
+.quota-bar__meta {
+  display: grid;
+  gap: 2px;
+  text-align: right;
+  flex-shrink: 0;
+  font-size: 12px;
+}
+.quota-bar__meta strong.warning { color: var(--warn); }
+.quota-bar__meta strong.critical { color: var(--err); }
+.quota-bar__meta span { color: var(--muted); font-size: 11px; }
+.quota-bar__track {
+  height: 8px;
+  border-radius: 999px;
+  background: #21262d;
+  overflow: hidden;
+}
+.quota-bar__track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #79c0ff);
+}
+.quota-bar__track > span.warning {
+  background: linear-gradient(90deg, #9e6a03, var(--warn));
+}
+.quota-bar__track > span.critical {
+  background: linear-gradient(90deg, #da3633, var(--err));
+}
+
 .plan-kpis {
   display: grid;
   gap: 8px 16px;

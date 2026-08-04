@@ -37,6 +37,10 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 ![Model quota cards with spend and token details](media/screenshots/model-cards.png)
 
 - **Plan details** card with SVG circular allowance ring, billing cycle, reset countdown, and collapsible today/yesterday/7-day spend
+- **Dual Pro quotas** matching Cursor's dashboard:
+  - **Cursor Models** (Composer / Grok / Auto pool) percent used
+  - **Other Models** (included API dollar allowance) percent + $ used / $ limit
+  - Ring + alerts follow the binding pool (whichever is closer to exhausted)
 - **Quota cards** for models (or workspaces) with:
   - Circular % ring (spend share)
   - Health status (Healthy / Warning / Critical)

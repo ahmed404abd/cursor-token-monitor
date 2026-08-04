@@ -19,6 +19,7 @@ import {
   formatPercent,
   usedPercent,
   usageHealth,
+  bindingQuotaLabel,
 } from '../usageIntelligence';
 import {
   CockpitPreferences,
@@ -100,6 +101,17 @@ export interface CockpitViewModel {
   remainingLabel: string;
   percentUsed: number;
   planHealth: CardHealth;
+  /** Which Pro pool is binding the ring (Cursor Models vs Other Models) */
+  bindingQuotaLabel?: string;
+  quotaBuckets: {
+    id: string;
+    label: string;
+    detail: string;
+    percentUsed: number;
+    percentLabel: string;
+    health: CardHealth;
+    spendLabel?: string;
+  }[];
   resetInLabel: string;
   resetTimeLabel: string;
   updatedLabel: string;
@@ -440,23 +452,56 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
   const reset = resetCountdown(usage.billingCycleEndMs);
   const insights = buildUsageInsights(usage, settings.warningThreshold, settings.criticalThreshold);
   const autoEstimate = estimateAutoModels(usage);
+  const quotaBuckets = (usage.quotaBuckets ?? []).map((bucket) => {
+    const health = toCardHealth(
+      bucket.percentUsed,
+      settings.warningThreshold,
+      settings.criticalThreshold
+    );
+    return {
+      id: bucket.id,
+      label: bucket.label,
+      detail: bucket.detail,
+      percentUsed: bucket.percentUsed,
+      percentLabel: formatPercent(bucket.percentUsed),
+      health,
+      spendLabel:
+        bucket.usedCents !== undefined && bucket.limitCents !== undefined
+          ? `${centsToDollars(bucket.usedCents)} / ${centsToDollars(bucket.limitCents)}`
+          : undefined,
+    };
+  });
 
   const cards =
     prefs.groupMode === 'workspace'
       ? buildWorkspaceCards(projects, prefs, settings, reset)
       : buildModelCards(usage, prefs, settings, reset);
 
+  const clarifyingMessage =
+    quotaBuckets.length >= 2
+      ? (() => {
+          const cursor = quotaBuckets.find((b) => b.id === 'cursorModels');
+          const other = quotaBuckets.find((b) => b.id === 'otherModels');
+          return `Cursor Models ${cursor?.percentLabel ?? '—'} · Other Models ${other?.percentLabel ?? '—'} (API ${other?.spendLabel ?? '—'}).`;
+        })()
+      : undefined;
+
   return {
     accountEmail: auth?.email ?? 'Signed-in account',
     planName: usage.planName ?? auth?.membershipType ?? 'Cursor',
     planPrice: usage.planPrice ?? '',
     billingCycleLabel: formatCycleRange(usage.billingCycleStartMs, usage.billingCycleEndMs),
-    displayMessage: usage.displayMessage || 'Usage is billed against your included monthly allowance.',
+    displayMessage:
+      clarifyingMessage ||
+      usage.displayMessage ||
+      'Usage is billed against your included monthly allowance.',
     usedLabel: plan ? centsToDollars(plan.includedSpend) : '—',
     limitLabel: plan ? centsToDollars(plan.limit) : '—',
     remainingLabel: plan ? centsToDollars(plan.remaining) : '—',
     percentUsed: pct,
     planHealth,
+    bindingQuotaLabel: bindingQuotaLabel(usage),
+    quotaBuckets,
     resetInLabel: reset.resetInLabel,
     resetTimeLabel: reset.resetTimeLabel,
     updatedLabel: updated ? updated.toLocaleTimeString() : '—',
