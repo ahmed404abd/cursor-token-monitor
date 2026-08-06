@@ -251,17 +251,17 @@ async function refresh(context: vscode.ExtensionContext) {
     const message = err?.message ?? String(err);
     const issue = classifySetupError(message);
     statusBarItem.text =
-      issue === 'python'
-        ? '$(warning) Setup Python'
-        : issue === 'auth'
-          ? '$(warning) Sign in to Cursor'
+      issue === 'auth'
+        ? '$(warning) Sign in to Cursor'
+        : issue === 'database'
+          ? '$(warning) Cursor DB missing'
           : '$(warning) Cursor usage';
     statusBarItem.tooltip = `Failed to fetch Cursor usage:\n${message}\n\nClick for setup help, or run "Cursor Token Monitor: Check Connection".`;
     statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
     statusBarItem.command = 'cursorTokenMonitor.checkConnection';
     postError(message);
 
-    if (issue === 'python' || issue === 'auth' || issue === 'database') {
+    if (issue === 'auth' || issue === 'database' || issue === 'sqlite') {
       void showSetupGuide(issue, message);
     }
   }

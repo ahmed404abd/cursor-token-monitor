@@ -15,7 +15,15 @@ function defaultDbPath(): string {
     return path.join(appData, 'Cursor', 'User', 'globalStorage', 'state.vscdb');
   }
   if (process.platform === 'darwin') {
-    return path.join(home, 'Library', 'Application Support', 'Cursor', 'User', 'globalStorage', 'state.vscdb');
+    return path.join(
+      home,
+      'Library',
+      'Application Support',
+      'Cursor',
+      'User',
+      'globalStorage',
+      'state.vscdb'
+    );
   }
   return path.join(home, '.config', 'Cursor', 'User', 'globalStorage', 'state.vscdb');
 }
@@ -24,13 +32,14 @@ export async function runPrivacyAudit(context: vscode.ExtensionContext): Promise
   const config = vscode.workspace.getConfiguration('cursorTokenMonitor');
   const customDb = config.get<string>('customDatabasePath');
   const dbPath = customDb?.trim() || defaultDbPath();
-  const scriptPath = path.join(context.extensionPath, 'scripts', 'read_cursor_auth.py');
+  const sqliteDir = path.join(context.extensionPath, 'media', 'vendor', 'sqlite');
 
   const checks = [
     {
       name: 'Local-only auth read',
       ok: true,
-      detail: 'Reads cursorAuth/accessToken from your local state.vscdb via read-only SQLite access.',
+      detail:
+        'Reads cursorAuth/accessToken from your local state.vscdb via read-only SQLite (Node built-in or bundled CLI). No Python.',
     },
     {
       name: 'Cursor API only',
@@ -48,9 +57,11 @@ export async function runPrivacyAudit(context: vscode.ExtensionContext): Promise
       detail: fs.existsSync(dbPath) ? `Found: ${dbPath}` : `Missing: ${dbPath}`,
     },
     {
-      name: 'Auth script present',
-      ok: fs.existsSync(scriptPath),
-      detail: fs.existsSync(scriptPath) ? 'read_cursor_auth.py bundled with extension.' : 'Missing auth helper script.',
+      name: 'SQLite reader bundled',
+      ok: fs.existsSync(sqliteDir),
+      detail: fs.existsSync(sqliteDir)
+        ? 'Bundled sqlite3 CLI available as fallback for large Cursor databases.'
+        : 'Missing media/vendor/sqlite helpers.',
     },
     {
       name: 'Project cache (local)',
@@ -67,11 +78,18 @@ export async function showPrivacyAudit(context: vscode.ExtensionContext): Promis
   const result = await runPrivacyAudit(context);
   const lines = result.checks.map((c) => `${c.ok ? '✓' : '✗'} ${c.name}\n   ${c.detail}`);
   const doc = await vscode.workspace.openTextDocument({
-    content: ['Cursor Token Monitor — Privacy Audit', `Status: ${result.passed ? 'PASS' : 'NEEDS ATTENTION'}`, '', ...lines].join('\n'),
+    content: [
+      'Cursor Token Monitor — Privacy Audit',
+      `Status: ${result.passed ? 'PASS' : 'NEEDS ATTENTION'}`,
+      '',
+      ...lines,
+    ].join('\n'),
     language: 'markdown',
   });
   await vscode.window.showTextDocument(doc, { preview: false });
   vscode.window.showInformationMessage(
-    result.passed ? 'Privacy audit passed — local read + Cursor API only.' : 'Privacy audit found issues — see report.'
+    result.passed
+      ? 'Privacy audit passed — local read + Cursor API only.'
+      : 'Privacy audit found issues — see report.'
   );
 }

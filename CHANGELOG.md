@@ -1,3 +1,16 @@
+## [1.5.0] - 2026-08-07
+
+### Added
+- **No Python required** — reads Cursor auth via Node built-in SQLite or a bundled `sqlite3` CLI (safe for multi-GB `state.vscdb` files)
+- **Burn-rate forecast** section: projected % by cycle end and “hits 100% in ~Xd” for Cursor Models and Other Models pools
+
+### Removed
+- Python 3 dependency and `cursorTokenMonitor.pythonPath` setting
+- `scripts/read_cursor_auth.py` helper
+
+### Changed
+- Onboarding / privacy audit / troubleshooting copy no longer mention Python
+
 ## [1.4.3] - 2026-08-04
 
 ### Changed

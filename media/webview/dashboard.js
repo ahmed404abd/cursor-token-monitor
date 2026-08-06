@@ -32,6 +32,10 @@
     sessionTokens: document.getElementById('sessionTokens'),
     sessionSpend: document.getElementById('sessionSpend'),
     insightGrid: document.getElementById('insightGrid'),
+    forecastPanel: document.getElementById('forecastPanel'),
+    forecastHeadline: document.getElementById('forecastHeadline'),
+    forecastDetail: document.getElementById('forecastDetail'),
+    forecastGrid: document.getElementById('forecastGrid'),
     cardGrid: document.getElementById('cardGrid'),
     groupLabel: document.getElementById('groupLabel'),
     spendChart: document.getElementById('spendChart'),
@@ -414,6 +418,25 @@
         </article>`
       )
       .join('') || '<div class="empty">No insights yet.</div>';
+
+    if (vm.forecast) {
+      els.forecastPanel.style.display = '';
+      els.forecastHeadline.textContent = vm.forecast.headline;
+      els.forecastDetail.textContent = vm.forecast.detail;
+      els.forecastGrid.innerHTML = (vm.forecast.quotas || [])
+        .map(
+          (q) => `<article class="forecast-card ${esc(q.level)}">
+            <div class="forecast-card__label">${esc(q.label)}</div>
+            <div class="forecast-card__now">${esc(q.percentLabel)} used</div>
+            <div class="forecast-card__row"><span>Projected by cycle end</span><strong>${esc(q.projectedLabel)}</strong></div>
+            <div class="forecast-card__row"><span>Hits 100% in</span><strong>${esc(q.daysUntilLabel)}</strong></div>
+            <p>${esc(q.summary)}</p>
+          </article>`
+        )
+        .join('');
+    } else if (els.forecastPanel) {
+      els.forecastPanel.style.display = 'none';
+    }
 
     const viewMode = vm.settings.viewMode || 'card';
     els.cardGrid.classList.toggle('list', viewMode === 'list');

@@ -21,6 +21,7 @@ import {
   usageHealth,
   bindingQuotaLabel,
 } from '../usageIntelligence';
+import { buildBurnForecast } from '../forecast';
 import {
   CockpitPreferences,
   CockpitSettings,
@@ -123,6 +124,20 @@ export interface CockpitViewModel {
     spendLabel: string;
   };
   insights: { level: string; title: string; detail: string }[];
+  forecast?: {
+    headline: string;
+    detail: string;
+    quotas: {
+      id: string;
+      label: string;
+      percentUsed: number;
+      percentLabel: string;
+      projectedLabel: string;
+      daysUntilLabel: string;
+      summary: string;
+      level: string;
+    }[];
+  };
   autoEstimate: {
     autoEventCount: number;
     confidence: string;
@@ -455,6 +470,7 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
     healthMap === 'critical' ? 'critical' : healthMap === 'warning' ? 'warning' : 'healthy';
   const reset = resetCountdown(usage.billingCycleEndMs);
   const insights = buildUsageInsights(usage, settings.warningThreshold, settings.criticalThreshold);
+  const burn = buildBurnForecast(usage, dailySpend);
   const autoEstimate = estimateAutoModels(usage);
   const quotaBuckets = (usage.quotaBuckets ?? []).map((bucket) => {
     const health = toCardHealth(
@@ -522,6 +538,29 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
         }
       : undefined,
     insights: insights.map((i) => ({ level: i.level, title: i.title, detail: i.detail })),
+    forecast: burn
+      ? {
+          headline: burn.headline,
+          detail: burn.detail,
+          quotas: burn.quotas.map((q) => ({
+            id: q.id,
+            label: q.label,
+            percentUsed: q.percentUsed,
+            percentLabel: formatPercent(q.percentUsed),
+            projectedLabel: formatPercent(q.projectedPercentAtCycleEnd),
+            daysUntilLabel:
+              q.daysUntilExhausted === null
+                ? 'Not before cycle end'
+                : q.daysUntilExhausted <= 0
+                  ? 'Already exhausted'
+                  : q.daysUntilExhausted < 1
+                    ? '< 1 day'
+                    : `~${Math.ceil(q.daysUntilExhausted)}d`,
+            summary: q.summary,
+            level: q.level,
+          })),
+        }
+      : undefined,
     autoEstimate: {
       autoEventCount: autoEstimate.autoEventCount,
       confidence: autoEstimate.confidence,

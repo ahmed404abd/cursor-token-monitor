@@ -2,13 +2,14 @@
 
 **Know where your Cursor allowance goes — not just how much is left.**
 
-Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, model comparisons, recent trends, a 90-day activity heatmap, and configurable alerts without sending usage to a third-party service.
+Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, dual Pro quotas, burn-rate forecasts, model comparisons, trends, a 90-day heatmap, and alerts — without sending usage to a third-party service.
 
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
 ### Built for questions Cursor's basic usage page cannot answer
 
 - Which model is consuming the most of my allowance?
+- At this burn rate, when will Cursor Models / Other Models hit 100%?
 - Was today's activity normal, unusually high, or already beyond my warning threshold?
 - Which days and models drove a spike?
 - How much did this editor session use?
@@ -19,9 +20,7 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 ## Requirements
 
 1. **Cursor** desktop app (signed in)
-2. **Python 3** on PATH (`python --version` or `py --version`)
-   - Used only to read one auth key from Cursor’s local SQLite DB (`state.vscdb`)
-   - Or set `cursorTokenMonitor.pythonPath`
+2. That’s it — **no Python** and no extra runtimes
 
 ## Getting started
 
@@ -41,6 +40,7 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
   - **Cursor Models** (Composer / Grok / Auto pool) percent used
   - **Other Models** (included API dollar allowance) percent + $ used / $ limit
   - Ring + alerts follow the binding pool (whichever is closer to exhausted)
+- **Burn-rate forecast**: projected included-pool % by cycle end and countdown to 100%
 - **Quota cards** for models (or workspaces) with:
   - Circular % ring (spend share)
   - Health status (Healthy / Warning / Critical)
@@ -95,7 +95,6 @@ Configurable warning/critical thresholds (defaults 75% / 90%). Can be disabled w
 | Setting | Default | Purpose |
 |--------|---------|---------|
 | `refreshIntervalSeconds` | `60` | Poll interval |
-| `pythonPath` | _(empty)_ | Python executable |
 | `customDatabasePath` | _(empty)_ | Override `state.vscdb` |
 | `statusBarMode` | `spend` | `spend` or `rotate` |
 | `statusBarFormat` | `full` | One of the six formats above |
@@ -120,7 +119,7 @@ You can also change these from the cockpit **⚙ Settings** modal.
 
 ## Privacy & security
 
-- Reads `cursorAuth/accessToken` from your **local** Cursor database (read-only)
+- Reads `cursorAuth/accessToken` from your **local** Cursor database (read-only SQLite; no Python)
 - Uses that token only to call `api2.cursor.sh`
 - Does **not** upload your code, chats, or token elsewhere
 - Does **not** modify `state.vscdb`
@@ -130,7 +129,7 @@ You can also change these from the cockpit **⚙ Settings** modal.
 
 | Problem | Fix |
 |--------|-----|
-| “Could not read Cursor auth data” | Install Python 3, or set `pythonPath` |
+| “Could not read Cursor auth data” | Sign into Cursor; if using a custom install, set `customDatabasePath` |
 | “No cursorAuth/accessToken found” | Sign into Cursor |
 | Status bar warning | Click the item / Check Connection |
 | Cards won’t drag | Ensure `media/vendor/Sortable.min.js` is packaged (reinstall VSIX) |

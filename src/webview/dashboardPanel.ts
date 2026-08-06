@@ -134,6 +134,15 @@ function htmlShell(
   </section>
 
   <section class="section">
+    <div class="section__head"><div><h2>Burn-rate forecast</h2><p>Projected included-pool usage for this billing cycle</p></div></div>
+    <div class="panel forecast-panel" id="forecastPanel">
+      <div class="forecast-headline" id="forecastHeadline">—</div>
+      <div class="forecast-detail" id="forecastDetail">—</div>
+      <div class="forecast-grid" id="forecastGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
     <div class="section__head"><div><h2>Usage intelligence</h2><p>Risk signals for this billing cycle</p></div></div>
     <div class="insight-grid" id="insightGrid"></div>
   </section>

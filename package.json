@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit with dual Pro quotas (Cursor Models vs Other Models), model analytics, a 90-day heatmap, alerts, and local exports.",
+  "description": "Private Cursor AI usage cockpit — dual Pro quotas, burn-rate forecasts, heatmap, alerts. No Python required.",
   "publisher": "ahmed404abd",
-  "version": "1.4.3",
+  "version": "1.5.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -16,7 +16,10 @@
   "engines": {
     "vscode": "^1.85.0"
   },
-  "categories": ["Visualization", "Other"],
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
   "keywords": [
     "cursor",
     "usage",
@@ -29,13 +32,16 @@
     "export",
     "dashboard",
     "cockpit",
+    "forecast",
     "heatmap"
   ],
   "galleryBanner": {
     "color": "#0d1117",
     "theme": "dark"
   },
-  "activationEvents": ["onStartupFinished"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./out/extension.js",
   "icon": "media/icon.png",
   "contributes": {
@@ -104,14 +110,12 @@
           "default": "",
           "description": "Override path to Cursor's state.vscdb file. Leave empty to auto-detect."
         },
-        "cursorTokenMonitor.pythonPath": {
-          "type": "string",
-          "default": "",
-          "description": "Path to a Python 3 executable. Leave empty to auto-detect (py / python / python3)."
-        },
         "cursorTokenMonitor.statusBarMode": {
           "type": "string",
-          "enum": ["spend", "rotate"],
+          "enum": [
+            "spend",
+            "rotate"
+          ],
           "default": "spend",
           "enumDescriptions": [
             "Keep a single status-bar format.",
@@ -121,7 +125,14 @@
         },
         "cursorTokenMonitor.statusBarFormat": {
           "type": "string",
-          "enum": ["icon", "dot", "percent", "dotPercent", "namePercent", "full"],
+          "enum": [
+            "icon",
+            "dot",
+            "percent",
+            "dotPercent",
+            "namePercent",
+            "full"
+          ],
           "default": "full",
           "enumDescriptions": [
             "Icon only",
@@ -154,13 +165,19 @@
         },
         "cursorTokenMonitor.viewMode": {
           "type": "string",
-          "enum": ["card", "list"],
+          "enum": [
+            "card",
+            "list"
+          ],
           "default": "card",
           "description": "Cockpit card layout: grid of cards or denser list rows."
         },
         "cursorTokenMonitor.displayMode": {
           "type": "string",
-          "enum": ["dashboard", "quickpick"],
+          "enum": [
+            "dashboard",
+            "quickpick"
+          ],
           "default": "dashboard",
           "description": "Open the webview cockpit or a keyboard-friendly QuickPick list."
         }

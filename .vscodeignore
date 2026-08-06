@@ -9,6 +9,7 @@ tsconfig.json
 **/*.vsix
 **/.DS_Store
 scripts/_probe_*.py
+scripts/_probe_*.js
 **/*.tsbuildinfo
 media/cover-source.png
 media/screenshots/*.svg

@@ -634,6 +634,58 @@ button.heatmap-cell:focus-visible {
 .insight__title { font-weight: 700; }
 .insight__detail { margin-top: 4px; font-size: 12.5px; color: var(--muted); }
 
+.forecast-panel { padding: 16px; }
+.forecast-headline {
+  font-size: 16px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.forecast-detail {
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.forecast-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+.forecast-card {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--bg) 55%, transparent);
+}
+.forecast-card.warn { border-color: color-mix(in srgb, var(--warn) 45%, var(--border)); }
+.forecast-card.alert { border-color: color-mix(in srgb, var(--err) 45%, var(--border)); }
+.forecast-card__label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+}
+.forecast-card__now {
+  margin-top: 4px;
+  font-size: 22px;
+  font-weight: 750;
+  letter-spacing: -0.03em;
+}
+.forecast-card__row {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 6px;
+  font-size: 12px;
+}
+.forecast-card__row span { color: var(--muted); }
+.forecast-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
 .table-wrap {
   border: 1px solid var(--border);
   border-radius: var(--radius);
