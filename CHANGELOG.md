@@ -1,3 +1,15 @@
+## [1.7.0] - 2026-08-10
+
+### Added
+- **Sankey usage flow**: animated Total → Models → Chats/Workspaces ribbons with hover highlight
+- Click a model to focus its chat sessions; click a workspace to reveal account-level model mix (with estimate note)
+- Observability-style **Usage over time** chart: grid, anomaly band, “View anomaly” CTA, confidence meter
+- Models **Graph** view KPIs + gradient share bars (Graph remains the default vs Cards)
+
+### Changed
+- Deduplicated cockpit CSS for flow/trend sections
+- Usage flow copy clarifies interactive Sankey behaviour
+
 ## [1.6.0] - 2026-08-10
 
 ### Added

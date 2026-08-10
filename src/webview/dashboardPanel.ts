@@ -153,7 +153,7 @@ function htmlShell(
     <div class="section__head heatmap-head">
       <div>
         <h2>Usage flow</h2>
-        <p>Plan allowance → models → chats · workspace shares are estimated</p>
+        <p>Interactive Sankey · Plan → Models → Chats / Workspaces</p>
       </div>
       <div class="flow-controls">
         <div class="seg" id="flowWindow" role="group" aria-label="Time window">
@@ -176,7 +176,7 @@ function htmlShell(
     <div class="section__head heatmap-head">
       <div>
         <h2>Models</h2>
-        <p id="modelsSub">Interactive graphs · switch to cards to pin and reorder</p>
+        <p id="modelsSub">Observability graphs · switch to Cards to pin and reorder</p>
       </div>
       <div class="seg" id="quotaLayout" role="group" aria-label="Models layout">
         <button type="button" data-layout="graph" class="active">Graph</button>
@@ -188,7 +188,7 @@ function htmlShell(
   </section>
 
   <section class="section">
-    <div class="section__head"><div><h2>Spend over time</h2><p>Actual vs recent average · spikes flagged as anomalies</p></div></div>
+    <div class="section__head"><div><h2>Usage over time</h2><p>Actual vs expected · anomaly callouts like an observability tool</p></div></div>
     <div class="panel trend-panel" id="trendPanel"></div>
   </section>
 

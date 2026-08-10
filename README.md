@@ -6,7 +6,7 @@ Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turn
 
 The dashboard uses a dark glass cockpit aesthetic (teal / cyan accents, allowance glow rings, dual quota bars, and KPI tiles) so plan risk is readable at a glance.
 
-**New in 1.6:** interactive **Usage flow** (models → chats), **Models Graph/Cards** toggle (graphs by default), and an observability-style **Spend over time** chart with expected baseline + anomaly callouts.
+**New in 1.7:** interactive **Sankey usage flow** (Total → Models → Chats/Workspaces), **Models Graph/Cards** toggle (graphs by default), and an observability-style **Usage over time** chart with expected baseline + anomaly callouts.
 
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
@@ -39,9 +39,9 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 
 ![Model quota cards with spend and token details](media/screenshots/model-cards.png)
 
-- **Usage flow**: Plan → models → chats with Today / 7D / 30D / Cycle and Spend / Tokens / Requests toggles (workspaces shown as estimates)
-- **Models Graph / Cards** toggle (default Graph): multi-series trends + share bars; Cards keep pin/reorder
-- **Spend over time** with expected baseline and anomaly callouts
+- **Sankey usage flow**: Total → Models → Chats/Workspaces with hover highlight, Today / 7D / 30D / Cycle, and Spend / Tokens / Requests toggles (workspace shares remain estimated)
+- **Models Graph / Cards** toggle (default Graph): KPI stats, multi-series trends, gradient share bars; Cards keep pin/reorder
+- **Usage over time** with expected baseline, anomaly band, and confidence callout
 - **Plan details** card with SVG circular allowance ring, billing cycle, reset countdown, and collapsible today/yesterday/7-day spend
 - **Dual Pro quotas** matching Cursor's dashboard:
   - **Cursor Models** (Composer / Grok / Auto pool) percent used

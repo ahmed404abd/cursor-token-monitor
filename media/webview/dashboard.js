@@ -192,6 +192,121 @@
     });
   }
 
+  function layoutNodes(items, x, top, usableH, minH = 18) {
+    const total = items.reduce((sum, item) => sum + Math.max(item.percent || item.value || 0, 0.01), 0) || 1;
+    let y = top;
+    return items.map((item) => {
+      const share = Math.max(item.percent || item.value || 0, 0.01) / total;
+      const h = Math.max(minH, share * usableH);
+      const node = {
+        ...item,
+        x,
+        y,
+        h,
+        cy: y + h / 2,
+      };
+      y += h + 8;
+      return node;
+    });
+  }
+
+  function sankeyPath(x0, y0, x1, y1, thickness) {
+    const mid = (x0 + x1) / 2;
+    const t = Math.max(2, thickness);
+    return `M${x0},${y0 - t / 2}
+      C${mid},${y0 - t / 2} ${mid},${y1 - t / 2} ${x1},${y1 - t / 2}
+      L${x1},${y1 + t / 2}
+      C${mid},${y1 + t / 2} ${mid},${y0 + t / 2} ${x0},${y0 + t / 2} Z`;
+  }
+
+  function renderSankeySvg(flow, selectedModelId, hoverId) {
+    const models = (flow.models || []).slice(0, 8);
+    if (!models.length) {
+      return '<div class="empty">No model activity in this window.</div>';
+    }
+    const active = models.find((m) => m.id === selectedModelId) || null;
+    const rightNodes = active
+      ? (active.sessions || []).slice(0, 8)
+      : (flow.workspaces || []).slice(0, 8);
+    const width = 760;
+    const height = Math.max(240, 48 + models.length * 36);
+    const leftX = 18;
+    const midX = 280;
+    const rightX = 560;
+    const barW = 14;
+    const top = 28;
+    const usable = height - top - 20;
+    const midNodes = layoutNodes(models, midX, top, usable);
+    const leafNodes = layoutNodes(
+      rightNodes.length ? rightNodes : [{ id: 'empty', label: 'No downstream', percent: 100, value: 0, color: '#445' }],
+      rightX,
+      top,
+      usable,
+      16
+    );
+    const sourceH = Math.min(usable * 0.72, Math.max(64, models.reduce((s, m) => s + m.percent, 0)));
+    const sourceY = top + (usable - sourceH) / 2;
+    const sourceCy = sourceY + sourceH / 2;
+    const hotId = hoverId || selectedModelId || '';
+
+    const linksLeft = midNodes
+      .map((node) => {
+        const thickness = Math.max(4, (node.percent / 100) * 42);
+        const hot = !hotId || hotId === node.id;
+        const cls = hotId ? (hot ? 'is-hot' : 'is-dim') : '';
+        return `<path class="flow-link ${cls}" data-model-id="${esc(node.id)}" d="${sankeyPath(leftX + barW, sourceCy, midX, node.cy, thickness)}" fill="${esc(node.color || '#3ecfbf')}" opacity="0.35"></path>`;
+      })
+      .join('');
+
+    const linksRight = active
+      ? leafNodes
+          .map((leaf) => {
+            const thickness = Math.max(3, ((leaf.percent || 0) / 100) * 28);
+            return `<path class="flow-link is-hot" d="${sankeyPath(midX + barW, activeNodeCy(midNodes, active.id), rightX, leaf.cy, thickness)}" fill="${esc(active.color || '#3ecfbf')}"></path>`;
+          })
+          .join('')
+      : '';
+
+    function activeNodeCy(nodes, id) {
+      return nodes.find((n) => n.id === id)?.cy ?? sourceCy;
+    }
+
+    const midBars = midNodes
+      .map((node) => {
+        const hot = !hotId || hotId === node.id;
+        const cls = hotId ? (hot ? 'is-hot' : 'is-dim') : '';
+        return `<g class="flow-node" data-model-id="${esc(node.id)}">
+          <rect class="flow-node-bar ${cls}" x="${midX}" y="${node.y}" width="${barW}" height="${node.h}" fill="${esc(node.color || '#3ecfbf')}"></rect>
+          <text class="flow-node-label" x="${midX + barW + 10}" y="${node.cy - 4}">${esc(node.label)}</text>
+          <text class="flow-node-sub" x="${midX + barW + 10}" y="${node.cy + 10}">${node.percent.toFixed(0)}% · ${esc(formatFlowValue(node.value, flow.metric))}</text>
+        </g>`;
+      })
+      .join('');
+
+    const rightBars = leafNodes
+      .map((node) => {
+        const color = node.color || active?.color || '#5b9dff';
+        return `<g>
+          <rect class="flow-node-bar" x="${rightX}" y="${node.y}" width="${barW}" height="${node.h}" fill="${esc(color)}"></rect>
+          <text class="flow-node-label" x="${rightX + barW + 10}" y="${node.cy - 4}">${esc(node.label)}</text>
+          <text class="flow-node-sub" x="${rightX + barW + 10}" y="${node.cy + 10}">${(node.percent || 0).toFixed(0)}%</text>
+        </g>`;
+      })
+      .join('');
+
+    const rightTitle = active ? 'Chats / sessions' : 'Workspaces (est.)';
+    return `<svg viewBox="0 0 ${width} ${height}" class="flow-sankey" role="img" aria-label="Usage flow sankey">
+      <text class="flow-node-sub" x="${leftX}" y="16">Total</text>
+      <text class="flow-node-sub" x="${midX}" y="16">Models</text>
+      <text class="flow-node-sub" x="${rightX}" y="16">${esc(rightTitle)}</text>
+      ${linksLeft}${linksRight}
+      <rect class="flow-node-bar is-hot" x="${leftX}" y="${sourceY}" width="${barW}" height="${sourceH}" fill="#3ecfbf"></rect>
+      <text class="flow-node-label" x="${leftX + barW + 10}" y="${sourceCy - 6}">Total usage</text>
+      <text class="flow-node-sub" x="${leftX + barW + 10}" y="${sourceCy + 10}">${esc(flow.totalLabel)} · ${(flow.window || 'cycle').toUpperCase()}</text>
+      ${midBars}${rightBars}
+    </svg>`;
+  }
+
   function renderUsageFlow(flow) {
     if (!els.flowPanel) return;
     if (!flow) {
@@ -201,6 +316,7 @@
     syncSeg(els.flowWindow, 'data-window', flow.window || 'cycle');
     syncSeg(els.flowMetric, 'data-metric', flow.metric || 'spend');
     const selected = state.flowModelId || '';
+    const workspaceId = state.flowWorkspaceId || '';
     const models = flow.models || [];
     const active = models.find((m) => m.id === selected) || null;
     const maxModel = Math.max(...models.map((m) => m.percent), 1);
@@ -219,8 +335,14 @@
       })
       .join('');
 
-    const downstream = active
-      ? (active.sessions || [])
+    let downstream;
+    let title;
+    let note;
+    if (active) {
+      title = `${active.label} chats`;
+      note = 'Click the model again to clear · hover the Sankey to highlight downstream paths.';
+      downstream =
+        (active.sessions || [])
           .map(
             (s) => `<div class="flow-leaf">
               <strong>${esc(s.label)}</strong>
@@ -228,33 +350,46 @@
               <em>${s.percent.toFixed(0)}%</em>
             </div>`
           )
-          .join('') || '<div class="empty">No chats for this model in the window.</div>'
-      : (flow.workspaces || [])
+          .join('') || '<div class="empty">No chats for this model in the window.</div>';
+    } else if (workspaceId) {
+      const ws = (flow.workspaces || []).find((w) => w.id === workspaceId);
+      title = ws ? `${ws.label} · models (account)` : 'Workspace models';
+      note =
+        'Cursor does not expose per-project billing IDs — model mix below is account-level for this window, not true workspace attribution.';
+      downstream =
+        models
           .map(
-            (w) => `<div class="flow-leaf">
+            (m) => `<div class="flow-leaf">
+              <strong>${esc(m.label)}</strong>
+              <span>${esc(formatFlowValue(m.value, flow.metric))}</span>
+              <em>${m.percent.toFixed(0)}%</em>
+            </div>`
+          )
+          .join('') || '<div class="empty">No model activity.</div>';
+    } else {
+      title = 'Workspaces (estimated)';
+      note = flow.workspaceNote || '';
+      downstream =
+        (flow.workspaces || [])
+          .map(
+            (w) => `<button type="button" class="flow-leaf" data-workspace-id="${esc(w.id)}">
               <strong>${esc(w.label)}</strong>
               <span>${esc(formatFlowValue(w.value, flow.metric))}</span>
               <em>${w.percent.toFixed(0)}%</em>
-            </div>`
+            </button>`
           )
           .join('') || '<div class="empty">Open folders while using Cursor to seed workspace estimates.</div>';
+    }
 
-    const title = active ? `${active.label} chats` : 'Workspaces (estimated)';
-    const note = active
-      ? 'Click the model again to clear · hover highlights downstream chats.'
-      : flow.workspaceNote || '';
-
-    els.flowPanel.innerHTML = `<div class="flow-layout">
-      <div class="flow-source">
-        <div class="eyebrow">Total usage</div>
-        <div class="flow-source__value">${esc(flow.totalLabel)}</div>
-        <div class="flow-source__sub">${esc((flow.window || 'cycle').toUpperCase())} · ${esc(flow.metric)}</div>
-      </div>
-      <div class="flow-models">${modelRows || '<div class="empty">No model activity in this window.</div>'}</div>
-      <div class="flow-downstream">
-        <div class="eyebrow">${esc(title)}</div>
-        <div class="flow-leaves">${downstream}</div>
-        <p class="flow-note">${esc(note)}</p>
+    els.flowPanel.innerHTML = `<div class="flow-shell">
+      <div class="flow-sankey-wrap" id="flowSankey">${renderSankeySvg(flow, selected, state.flowHoverId || '')}</div>
+      <div class="flow-layout">
+        <div class="flow-models">${modelRows || '<div class="empty">No model activity in this window.</div>'}</div>
+        <div class="flow-downstream">
+          <div class="eyebrow">${esc(title)}</div>
+          <div class="flow-leaves">${downstream}</div>
+          <p class="flow-note">${esc(note)}</p>
+        </div>
       </div>
     </div>`;
   }
@@ -275,14 +410,21 @@
     );
     const xAt = (i) => pad.l + (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
     const yAt = (v) => pad.t + innerH - (v / max) * innerH;
+    const grid = [0.25, 0.5, 0.75, 1]
+      .map((f) => {
+        const y = pad.t + innerH * (1 - f);
+        return `<line class="trend-grid" x1="${pad.l}" x2="${width - pad.r}" y1="${y}" y2="${y}"></line>`;
+      })
+      .join('');
     const paths = series
-      .map((s) => {
+      .map((s, idx) => {
         const line = s.points
           .map((p, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)} ${yAt(p.value).toFixed(1)}`)
           .join(' ');
         const area = `${line} L${xAt(points.length - 1).toFixed(1)} ${(pad.t + innerH).toFixed(1)} L${xAt(0).toFixed(1)} ${(pad.t + innerH).toFixed(1)} Z`;
-        return `<path class="series-area" d="${area}" fill="${esc(s.color)}" opacity="0.18"></path>
-          <path class="series-line" d="${line}" fill="none" stroke="${esc(s.color)}" stroke-width="2.5"></path>`;
+        const opacity = idx === 0 ? 0.22 : 0.1;
+        return `<path class="series-area" d="${area}" fill="${esc(s.color)}" opacity="${opacity}"></path>
+          <path class="series-line" d="${line}" fill="none" stroke="${esc(s.color)}" stroke-width="${idx === 0 ? 2.8 : 2}"></path>`;
       })
       .join('');
     const labelStep = Math.max(1, Math.ceil(points.length / 7));
@@ -300,7 +442,7 @@
       )
       .join('');
     return `<div class="chart-legend">${legend}</div>
-      <svg viewBox="0 0 ${width} ${height}" class="chart chart--area" role="img">${paths}${labels}</svg>`;
+      <svg viewBox="0 0 ${width} ${height}" class="chart chart--area" role="img">${grid}${paths}${labels}</svg>`;
   }
 
   function modelShareBars(models, metric) {
@@ -312,7 +454,7 @@
         const width = Math.max(4, (m.percent / max) * 100);
         return `<div class="share-bar">
           <div class="share-bar__label"><strong>${esc(m.label)}</strong><span>${m.percent.toFixed(0)}%</span></div>
-          <div class="share-bar__track"><span style="width:${width.toFixed(1)}%;background:${esc(m.color || 'var(--accent)')}"></span></div>
+          <div class="share-bar__track"><span style="width:${width.toFixed(1)}%"></span></div>
           <div class="share-bar__value">${esc(formatFlowValue(m.value, metric))}</div>
         </div>`;
       })
@@ -329,21 +471,37 @@
     syncSeg(els.quotaLayout, 'data-layout', showGraph ? 'graph' : 'cards');
     if (els.modelsSub) {
       els.modelsSub.textContent = showGraph
-        ? 'Multi-series model trends · switch to Cards to pin and reorder'
+        ? 'Multi-series trends + share bars · switch to Cards to pin and reorder'
         : 'Drag to reorder · pin models to the status bar';
     }
     if (!showGraph) return;
-    const kpis = (flow?.models || []).slice(0, 2);
+    const metric = flow?.metric || 'spend';
+    const totalLabel = flow?.totalLabel || '—';
+    const top = flow?.models?.[0];
+    const primaryStat =
+      metric === 'spend'
+        ? { label: 'Window spend', value: totalLabel }
+        : metric === 'tokens'
+          ? { label: 'Window tokens', value: totalLabel }
+          : { label: 'Window requests', value: totalLabel };
+    const secondaryStat = {
+      label: 'Top model share',
+      value: top ? `${top.percent.toFixed(0)}%` : '—',
+    };
     els.modelsGraph.innerHTML = `<div class="models-graph__grid">
       <div class="panel models-graph__main">
-        <div class="eyebrow">Token / spend mix over time</div>
+        <div class="models-graph__kpis">
+          <div class="models-stat"><span>${esc(primaryStat.label)}</span><strong>${esc(primaryStat.value)}</strong></div>
+          <div class="models-stat"><span>${esc(secondaryStat.label)}</span><strong>${esc(secondaryStat.value)}</strong></div>
+        </div>
+        <div class="eyebrow">Model mix over time</div>
         ${multiSeriesArea(flow?.series || [])}
       </div>
       <div class="panel models-graph__side">
-        <div class="eyebrow">Model share</div>
-        ${modelShareBars(flow?.models || [], flow?.metric || 'spend')}
+        <div class="eyebrow">Team-style share</div>
+        ${modelShareBars(flow?.models || [], metric)}
         <div class="models-kpis">
-          <div class="models-kpi"><span>Top model</span><strong>${esc(kpis[0]?.label || '—')}</strong></div>
+          <div class="models-kpi"><span>Top model</span><strong>${esc(top?.label || '—')}</strong></div>
           <div class="models-kpi"><span>Tracked models</span><strong>${(flow?.models || []).length}</strong></div>
         </div>
       </div>
@@ -358,8 +516,8 @@
       return;
     }
     const width = 720;
-    const height = 260;
-    const pad = { l: 44, r: 180, t: 24, b: 40 };
+    const height = 280;
+    const pad = { l: 48, r: 20, t: 28, b: 40 };
     const innerW = width - pad.l - pad.r;
     const innerH = height - pad.t - pad.b;
     const max = Math.max(...points.flatMap((p) => [p.actual, p.expected]), 0.01);
@@ -372,10 +530,23 @@
       .map((p, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)} ${yAt(p.expected).toFixed(1)}`)
       .join(' ');
     const area = `${actualPath} L${xAt(points.length - 1).toFixed(1)} ${(pad.t + innerH).toFixed(1)} L${xAt(0).toFixed(1)} ${(pad.t + innerH).toFixed(1)} Z`;
+    const anomalyIdx = points.findIndex((p) => p.isAnomaly && flow.trend?.anomaly?.date === p.date);
+    const band =
+      anomalyIdx >= 0
+        ? `<rect class="trend-band" x="${(xAt(anomalyIdx) - 10).toFixed(1)}" y="${pad.t}" width="20" height="${innerH}"></rect>`
+        : '';
+    const grid = [0, 0.25, 0.5, 0.75, 1]
+      .map((f) => {
+        const y = pad.t + innerH * (1 - f);
+        const label = formatFlowValue(max * f, flow.metric);
+        return `<line class="trend-grid" x1="${pad.l}" x2="${width - pad.r}" y1="${y}" y2="${y}"></line>
+          <text class="axis" x="${pad.l - 8}" y="${y + 3}" text-anchor="end">${esc(label)}</text>`;
+      })
+      .join('');
     const dots = points
       .map((p, i) => {
         const cls = p.isAnomaly ? 'trend-dot is-anomaly' : 'trend-dot';
-        return `<circle class="${cls}" cx="${xAt(i).toFixed(1)}" cy="${yAt(p.actual).toFixed(1)}" r="${p.isAnomaly ? 5.5 : 3.5}" data-idx="${i}"><title>${esc(p.label)}: ${formatFlowValue(p.actual, flow.metric)}</title></circle>`;
+        return `<circle class="${cls}" cx="${xAt(i).toFixed(1)}" cy="${yAt(p.actual).toFixed(1)}" r="${p.isAnomaly ? 6 : 3.5}" data-idx="${i}"><title>${esc(p.label)}: ${formatFlowValue(p.actual, flow.metric)}</title></circle>`;
       })
       .join('');
     const anomaly = flow.trend.anomaly;
@@ -384,8 +555,9 @@
           <div class="anomaly-card__head"><span class="dot"></span> Anomaly detected</div>
           <div class="anomaly-card__date">${esc(anomaly.label)}</div>
           <p>${esc(anomaly.summary)}</p>
+          <button type="button" class="anomaly-card__cta" id="btnAnomalyFocus">View anomaly</button>
           <div class="anomaly-card__conf">
-            <span>Signal confidence</span>
+            <span>AI confidence</span>
             <div class="anomaly-card__bar"><i style="width:${anomaly.confidence}%"></i></div>
             <strong>${anomaly.confidence}%</strong>
           </div>
@@ -410,6 +582,13 @@
           <span class="chart-legend__item"><i class="lg-expected"></i>Expected (7-day avg)</span>
         </div>
         <svg viewBox="0 0 ${width} ${height}" class="chart chart--trend" role="img">
+          <defs>
+            <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#ff8a3d" stop-opacity="0.35"></stop>
+              <stop offset="100%" stop-color="#ff8a3d" stop-opacity="0.02"></stop>
+            </linearGradient>
+          </defs>
+          ${grid}${band}
           <path d="${area}" class="trend-area"></path>
           <path d="${expectedPath}" class="trend-expected" fill="none"></path>
           <path d="${actualPath}" class="trend-actual" fill="none"></path>
@@ -418,7 +597,21 @@
       </div>
       ${anomalyCard}
     </div>`;
+    els.trendPanel.querySelector('#btnAnomalyFocus')?.addEventListener('click', () => {
+      const dot = els.trendPanel.querySelector('.trend-dot.is-anomaly');
+      if (dot) {
+        dot.animate(
+          [
+            { transform: 'scale(1)', transformBox: 'fill-box', transformOrigin: 'center' },
+            { transform: 'scale(1.8)' },
+            { transform: 'scale(1)' },
+          ],
+          { duration: 520, easing: 'ease-out' }
+        );
+      }
+    });
   }
+
   function heatmapValue(day, modelId) {
     if (!modelId) {
       return { spendCents: day.spendCents, events: day.events, tokens: 0, topModel: day.topModel };
@@ -812,12 +1005,43 @@
     });
   });
   els.flowPanel?.addEventListener('click', (e) => {
-    const btn = e.target.closest('button[data-model-id]');
-    if (!btn) return;
-    const id = btn.dataset.modelId;
-    state.flowModelId = state.flowModelId === id ? '' : id;
-    vscode.setState(state);
-    renderUsageFlow(state.vm?.usageFlow);
+    const modelBtn = e.target.closest('[data-model-id]');
+    const wsBtn = e.target.closest('[data-workspace-id]');
+    if (modelBtn) {
+      const id = modelBtn.dataset.modelId;
+      state.flowModelId = state.flowModelId === id ? '' : id;
+      state.flowWorkspaceId = '';
+      state.flowHoverId = '';
+      vscode.setState(state);
+      renderUsageFlow(state.vm?.usageFlow);
+      return;
+    }
+    if (wsBtn) {
+      const id = wsBtn.dataset.workspaceId;
+      state.flowWorkspaceId = state.flowWorkspaceId === id ? '' : id;
+      state.flowModelId = '';
+      vscode.setState(state);
+      renderUsageFlow(state.vm?.usageFlow);
+    }
+  });
+  els.flowPanel?.addEventListener('mouseover', (e) => {
+    const node = e.target.closest('[data-model-id]');
+    if (!node || !els.flowPanel.contains(node)) return;
+    const id = node.dataset.modelId;
+    if (state.flowHoverId === id) return;
+    state.flowHoverId = id;
+    const wrap = els.flowPanel.querySelector('#flowSankey');
+    if (wrap && state.vm?.usageFlow) {
+      wrap.innerHTML = renderSankeySvg(state.vm.usageFlow, state.flowModelId || '', id);
+    }
+  });
+  els.flowPanel?.addEventListener('mouseleave', () => {
+    if (!state.flowHoverId) return;
+    state.flowHoverId = '';
+    const wrap = els.flowPanel.querySelector('#flowSankey');
+    if (wrap && state.vm?.usageFlow) {
+      wrap.innerHTML = renderSankeySvg(state.vm.usageFlow, state.flowModelId || '', '');
+    }
   });
   els.quotaLayout?.addEventListener('click', (e) => {
     const btn = e.target.closest('button[data-layout]');
