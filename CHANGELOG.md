@@ -1,3 +1,14 @@
+## [1.6.0] - 2026-08-10
+
+### Added
+- **Usage flow** panel: Plan → Models → Chats with Today / 7D / 30D / Cycle and Spend / Tokens / Requests toggles
+- Interactive model selection highlights downstream chats; workspace shares remain clearly estimated
+- **Models Graph / Cards** toggle (default **Graph**): multi-series area chart + share bars
+- **Spend over time** line chart with expected 7-day average and anomaly callout (observability-style)
+
+### Changed
+- Trends section upgraded from dual bar charts to a primary spend trend + token bars
+
 ## [1.5.1] - 2026-08-10
 
 ### Changed

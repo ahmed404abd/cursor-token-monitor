@@ -12,6 +12,8 @@ export type WebviewToHostMessage =
   | { type: 'reorder'; order: string[]; groupMode: 'model' | 'workspace' }
   | { type: 'resetOrder' }
   | { type: 'setGroupMode'; groupMode: 'model' | 'workspace' }
+  | { type: 'setQuotaLayout'; quotaLayout: 'graph' | 'cards' }
+  | { type: 'setFlowFilters'; window: 'today' | '7d' | '30d' | 'cycle'; metric: 'spend' | 'tokens' | 'requests' }
   | { type: 'updateSettings'; settings: Record<string, unknown> }
   | { type: 'renameModel'; modelId: string; alias: string }
   | { type: 'togglePin'; modelId: string }
@@ -148,16 +150,51 @@ function htmlShell(
   </section>
 
   <section class="section">
-    <div class="section__head"><div><h2>Quota cards</h2><p>Drag to reorder · pin models to the status bar</p></div></div>
-    <div class="card-grid" id="cardGrid"></div>
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>Usage flow</h2>
+        <p>Plan allowance → models → chats · workspace shares are estimated</p>
+      </div>
+      <div class="flow-controls">
+        <div class="seg" id="flowWindow" role="group" aria-label="Time window">
+          <button type="button" data-window="today">Today</button>
+          <button type="button" data-window="7d">7D</button>
+          <button type="button" data-window="30d">30D</button>
+          <button type="button" data-window="cycle" class="active">Cycle</button>
+        </div>
+        <div class="seg" id="flowMetric" role="group" aria-label="Metric">
+          <button type="button" data-metric="spend" class="active">Spend</button>
+          <button type="button" data-metric="tokens">Tokens</button>
+          <button type="button" data-metric="requests">Requests</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel flow-panel" id="flowPanel"></div>
   </section>
 
   <section class="section">
-    <div class="section__head"><div><h2>Trends</h2><p>Daily spend and tokens</p></div></div>
-    <div class="grid-2">
-      <div class="panel"><div class="eyebrow" style="margin-bottom:8px">Daily spend</div><div id="spendChart"></div></div>
-      <div class="panel"><div class="eyebrow" style="margin-bottom:8px">Daily tokens</div><div id="tokenChart"></div></div>
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>Models</h2>
+        <p id="modelsSub">Interactive graphs · switch to cards to pin and reorder</p>
+      </div>
+      <div class="seg" id="quotaLayout" role="group" aria-label="Models layout">
+        <button type="button" data-layout="graph" class="active">Graph</button>
+        <button type="button" data-layout="cards">Cards</button>
+      </div>
     </div>
+    <div id="modelsGraph" class="models-graph"></div>
+    <div class="card-grid" id="cardGrid" hidden></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Spend over time</h2><p>Actual vs recent average · spikes flagged as anomalies</p></div></div>
+    <div class="panel trend-panel" id="trendPanel"></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Token trends</h2><p>Daily token volume</p></div></div>
+    <div class="panel"><div id="tokenChart"></div></div>
   </section>
 
   <section class="section">

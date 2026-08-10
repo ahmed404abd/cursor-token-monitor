@@ -35,6 +35,7 @@ import {
   CockpitPreferences,
   CockpitSettings,
   GroupMode,
+  QuotaLayout,
   SettingsPatch,
   loadPreferences,
   loadSettings,
@@ -43,6 +44,7 @@ import {
   updateSettings,
 } from './webview/preferences';
 import { buildCockpitViewModel, CockpitViewModel } from './webview/dashboardViewModel';
+import { FlowMetric, FlowWindow } from './usageFlow';
 import {
   MessageHandler,
   postError,
@@ -64,6 +66,8 @@ let lastProjects: ProjectUsageRecord[] = [];
 let lastDailyHistory: ReturnType<typeof loadHistory> = [];
 let lastModelHistory: ReturnType<typeof loadDailyModelHistory> = [];
 let lastVm: CockpitViewModel | undefined;
+let flowWindow: FlowWindow = 'cycle';
+let flowMetric: FlowMetric = 'spend';
 let extensionContext: vscode.ExtensionContext | undefined;
 
 export function activate(context: vscode.ExtensionContext) {
@@ -158,6 +162,8 @@ function buildVm(context: vscode.ExtensionContext, usage: UsageSnapshot): Cockpi
     prefs,
     settings,
     issuesUrl: ISSUES_URL,
+    flowWindow,
+    flowMetric,
   });
 }
 
@@ -370,6 +376,19 @@ const handleWebviewMessage: MessageHandler = async (msg) => {
       const prefs = loadPreferences(context);
       prefs.groupMode = msg.groupMode as GroupMode;
       await savePreferences(context, prefs);
+      pushViewModel(context);
+      break;
+    }
+    case 'setQuotaLayout': {
+      const prefs = loadPreferences(context);
+      prefs.quotaLayout = msg.quotaLayout as QuotaLayout;
+      await savePreferences(context, prefs);
+      pushViewModel(context);
+      break;
+    }
+    case 'setFlowFilters': {
+      flowWindow = msg.window;
+      flowMetric = msg.metric;
       pushViewModel(context);
       break;
     }

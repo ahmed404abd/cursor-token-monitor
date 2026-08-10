@@ -6,6 +6,7 @@ export { applyOrder, validateThresholds };
 export type GroupMode = 'model' | 'workspace';
 export type ViewMode = 'card' | 'list';
 export type DisplayMode = 'dashboard' | 'quickpick';
+export type QuotaLayout = 'graph' | 'cards';
 export type StatusBarFormat =
   | 'icon'
   | 'dot'
@@ -16,6 +17,7 @@ export type StatusBarFormat =
 
 export interface CockpitPreferences {
   groupMode: GroupMode;
+  quotaLayout: QuotaLayout;
   cardOrderModel: string[];
   cardOrderWorkspace: string[];
   modelAliases: Record<string, string>;
@@ -37,6 +39,7 @@ const PREFS_KEY = 'cursorTokenMonitor.cockpitPrefs';
 
 const DEFAULT_PREFS: CockpitPreferences = {
   groupMode: 'model',
+  quotaLayout: 'graph',
   cardOrderModel: [],
   cardOrderWorkspace: [],
   modelAliases: {},

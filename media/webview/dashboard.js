@@ -37,6 +37,13 @@
     forecastDetail: document.getElementById('forecastDetail'),
     forecastGrid: document.getElementById('forecastGrid'),
     cardGrid: document.getElementById('cardGrid'),
+    modelsGraph: document.getElementById('modelsGraph'),
+    modelsSub: document.getElementById('modelsSub'),
+    quotaLayout: document.getElementById('quotaLayout'),
+    flowPanel: document.getElementById('flowPanel'),
+    flowWindow: document.getElementById('flowWindow'),
+    flowMetric: document.getElementById('flowMetric'),
+    trendPanel: document.getElementById('trendPanel'),
     groupLabel: document.getElementById('groupLabel'),
     spendChart: document.getElementById('spendChart'),
     tokenChart: document.getElementById('tokenChart'),
@@ -169,6 +176,249 @@
     return `<svg viewBox="0 0 ${width} ${height}" class="chart" role="img">${bars}${labels}</svg>`;
   }
 
+  function formatFlowValue(value, metric) {
+    if (metric === 'spend') return money(value);
+    if (metric === 'requests') return Number(value || 0).toLocaleString();
+    const n = Number(value || 0);
+    if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1)}M`;
+    if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1)}k`;
+    return n.toLocaleString();
+  }
+
+  function syncSeg(root, attr, value) {
+    if (!root) return;
+    root.querySelectorAll('button').forEach((btn) => {
+      btn.classList.toggle('active', btn.getAttribute(attr) === value);
+    });
+  }
+
+  function renderUsageFlow(flow) {
+    if (!els.flowPanel) return;
+    if (!flow) {
+      els.flowPanel.innerHTML = '<div class="empty">No usage events in this window yet.</div>';
+      return;
+    }
+    syncSeg(els.flowWindow, 'data-window', flow.window || 'cycle');
+    syncSeg(els.flowMetric, 'data-metric', flow.metric || 'spend');
+    const selected = state.flowModelId || '';
+    const models = flow.models || [];
+    const active = models.find((m) => m.id === selected) || null;
+    const maxModel = Math.max(...models.map((m) => m.percent), 1);
+    const modelRows = models
+      .map((m) => {
+        const width = Math.max(8, (m.percent / maxModel) * 100);
+        const on = selected === m.id ? 'is-active' : selected ? 'is-dim' : '';
+        return `<button type="button" class="flow-model ${on}" data-model-id="${esc(m.id)}" style="--flow-color:${esc(m.color || '#3ecfbf')}">
+          <span class="flow-model__swatch"></span>
+          <span class="flow-model__meta">
+            <strong>${esc(m.label)}</strong>
+            <span>${esc(formatFlowValue(m.value, flow.metric))} · ${m.percent.toFixed(0)}%</span>
+          </span>
+          <span class="flow-model__track"><i style="width:${width.toFixed(1)}%"></i></span>
+        </button>`;
+      })
+      .join('');
+
+    const downstream = active
+      ? (active.sessions || [])
+          .map(
+            (s) => `<div class="flow-leaf">
+              <strong>${esc(s.label)}</strong>
+              <span>${esc(formatFlowValue(s.value, flow.metric))}</span>
+              <em>${s.percent.toFixed(0)}%</em>
+            </div>`
+          )
+          .join('') || '<div class="empty">No chats for this model in the window.</div>'
+      : (flow.workspaces || [])
+          .map(
+            (w) => `<div class="flow-leaf">
+              <strong>${esc(w.label)}</strong>
+              <span>${esc(formatFlowValue(w.value, flow.metric))}</span>
+              <em>${w.percent.toFixed(0)}%</em>
+            </div>`
+          )
+          .join('') || '<div class="empty">Open folders while using Cursor to seed workspace estimates.</div>';
+
+    const title = active ? `${active.label} chats` : 'Workspaces (estimated)';
+    const note = active
+      ? 'Click the model again to clear · hover highlights downstream chats.'
+      : flow.workspaceNote || '';
+
+    els.flowPanel.innerHTML = `<div class="flow-layout">
+      <div class="flow-source">
+        <div class="eyebrow">Total usage</div>
+        <div class="flow-source__value">${esc(flow.totalLabel)}</div>
+        <div class="flow-source__sub">${esc((flow.window || 'cycle').toUpperCase())} · ${esc(flow.metric)}</div>
+      </div>
+      <div class="flow-models">${modelRows || '<div class="empty">No model activity in this window.</div>'}</div>
+      <div class="flow-downstream">
+        <div class="eyebrow">${esc(title)}</div>
+        <div class="flow-leaves">${downstream}</div>
+        <p class="flow-note">${esc(note)}</p>
+      </div>
+    </div>`;
+  }
+
+  function multiSeriesArea(series) {
+    if (!series || !series.length || !series[0].points?.length) {
+      return '<div class="empty">Model history builds as the extension observes usage.</div>';
+    }
+    const width = 640;
+    const height = 220;
+    const pad = { l: 40, r: 16, t: 18, b: 36 };
+    const innerW = width - pad.l - pad.r;
+    const innerH = height - pad.t - pad.b;
+    const points = series[0].points;
+    const max = Math.max(
+      ...series.flatMap((s) => s.points.map((p) => p.value)),
+      0.01
+    );
+    const xAt = (i) => pad.l + (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
+    const yAt = (v) => pad.t + innerH - (v / max) * innerH;
+    const paths = series
+      .map((s) => {
+        const line = s.points
+          .map((p, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)} ${yAt(p.value).toFixed(1)}`)
+          .join(' ');
+        const area = `${line} L${xAt(points.length - 1).toFixed(1)} ${(pad.t + innerH).toFixed(1)} L${xAt(0).toFixed(1)} ${(pad.t + innerH).toFixed(1)} Z`;
+        return `<path class="series-area" d="${area}" fill="${esc(s.color)}" opacity="0.18"></path>
+          <path class="series-line" d="${line}" fill="none" stroke="${esc(s.color)}" stroke-width="2.5"></path>`;
+      })
+      .join('');
+    const labelStep = Math.max(1, Math.ceil(points.length / 7));
+    const labels = points
+      .map((p, i) =>
+        i % labelStep === 0 || i === points.length - 1
+          ? `<text class="axis" x="${xAt(i).toFixed(1)}" y="${height - 10}" text-anchor="middle">${esc(p.label)}</text>`
+          : ''
+      )
+      .join('');
+    const legend = series
+      .map(
+        (s) =>
+          `<span class="chart-legend__item"><i style="background:${esc(s.color)}"></i>${esc(s.label)}</span>`
+      )
+      .join('');
+    return `<div class="chart-legend">${legend}</div>
+      <svg viewBox="0 0 ${width} ${height}" class="chart chart--area" role="img">${paths}${labels}</svg>`;
+  }
+
+  function modelShareBars(models, metric) {
+    if (!models?.length) return '<div class="empty">No model share yet.</div>';
+    const max = Math.max(...models.map((m) => m.percent), 1);
+    return `<div class="share-bars">${models
+      .slice(0, 6)
+      .map((m) => {
+        const width = Math.max(4, (m.percent / max) * 100);
+        return `<div class="share-bar">
+          <div class="share-bar__label"><strong>${esc(m.label)}</strong><span>${m.percent.toFixed(0)}%</span></div>
+          <div class="share-bar__track"><span style="width:${width.toFixed(1)}%;background:${esc(m.color || 'var(--accent)')}"></span></div>
+          <div class="share-bar__value">${esc(formatFlowValue(m.value, metric))}</div>
+        </div>`;
+      })
+      .join('')}</div>`;
+  }
+
+  function renderModelsGraph(vm) {
+    if (!els.modelsGraph) return;
+    const flow = vm.usageFlow;
+    const layout = vm.prefs?.quotaLayout || 'graph';
+    const showGraph = layout !== 'cards';
+    els.modelsGraph.hidden = !showGraph;
+    els.cardGrid.hidden = showGraph;
+    syncSeg(els.quotaLayout, 'data-layout', showGraph ? 'graph' : 'cards');
+    if (els.modelsSub) {
+      els.modelsSub.textContent = showGraph
+        ? 'Multi-series model trends · switch to Cards to pin and reorder'
+        : 'Drag to reorder · pin models to the status bar';
+    }
+    if (!showGraph) return;
+    const kpis = (flow?.models || []).slice(0, 2);
+    els.modelsGraph.innerHTML = `<div class="models-graph__grid">
+      <div class="panel models-graph__main">
+        <div class="eyebrow">Token / spend mix over time</div>
+        ${multiSeriesArea(flow?.series || [])}
+      </div>
+      <div class="panel models-graph__side">
+        <div class="eyebrow">Model share</div>
+        ${modelShareBars(flow?.models || [], flow?.metric || 'spend')}
+        <div class="models-kpis">
+          <div class="models-kpi"><span>Top model</span><strong>${esc(kpis[0]?.label || '—')}</strong></div>
+          <div class="models-kpi"><span>Tracked models</span><strong>${(flow?.models || []).length}</strong></div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  function renderTrendPanel(flow) {
+    if (!els.trendPanel) return;
+    const points = flow?.trend?.points || [];
+    if (!points.length) {
+      els.trendPanel.innerHTML = '<div class="empty">Not enough daily points yet for a trend line.</div>';
+      return;
+    }
+    const width = 720;
+    const height = 260;
+    const pad = { l: 44, r: 180, t: 24, b: 40 };
+    const innerW = width - pad.l - pad.r;
+    const innerH = height - pad.t - pad.b;
+    const max = Math.max(...points.flatMap((p) => [p.actual, p.expected]), 0.01);
+    const xAt = (i) => pad.l + (points.length <= 1 ? innerW / 2 : (i / (points.length - 1)) * innerW);
+    const yAt = (v) => pad.t + innerH - (v / max) * innerH;
+    const actualPath = points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)} ${yAt(p.actual).toFixed(1)}`)
+      .join(' ');
+    const expectedPath = points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'}${xAt(i).toFixed(1)} ${yAt(p.expected).toFixed(1)}`)
+      .join(' ');
+    const area = `${actualPath} L${xAt(points.length - 1).toFixed(1)} ${(pad.t + innerH).toFixed(1)} L${xAt(0).toFixed(1)} ${(pad.t + innerH).toFixed(1)} Z`;
+    const dots = points
+      .map((p, i) => {
+        const cls = p.isAnomaly ? 'trend-dot is-anomaly' : 'trend-dot';
+        return `<circle class="${cls}" cx="${xAt(i).toFixed(1)}" cy="${yAt(p.actual).toFixed(1)}" r="${p.isAnomaly ? 5.5 : 3.5}" data-idx="${i}"><title>${esc(p.label)}: ${formatFlowValue(p.actual, flow.metric)}</title></circle>`;
+      })
+      .join('');
+    const anomaly = flow.trend.anomaly;
+    const anomalyCard = anomaly
+      ? `<aside class="anomaly-card">
+          <div class="anomaly-card__head"><span class="dot"></span> Anomaly detected</div>
+          <div class="anomaly-card__date">${esc(anomaly.label)}</div>
+          <p>${esc(anomaly.summary)}</p>
+          <div class="anomaly-card__conf">
+            <span>Signal confidence</span>
+            <div class="anomaly-card__bar"><i style="width:${anomaly.confidence}%"></i></div>
+            <strong>${anomaly.confidence}%</strong>
+          </div>
+        </aside>`
+      : `<aside class="anomaly-card is-quiet">
+          <div class="anomaly-card__head">No spike flagged</div>
+          <p>Usage is within ~45% of your recent average for this window.</p>
+        </aside>`;
+    const labelStep = Math.max(1, Math.ceil(points.length / 8));
+    const labels = points
+      .map((p, i) =>
+        i % labelStep === 0 || i === points.length - 1
+          ? `<text class="axis" x="${xAt(i).toFixed(1)}" y="${height - 12}" text-anchor="middle">${esc(p.label)}</text>`
+          : ''
+      )
+      .join('');
+
+    els.trendPanel.innerHTML = `<div class="trend-layout">
+      <div class="trend-chart-wrap">
+        <div class="chart-legend">
+          <span class="chart-legend__item"><i class="lg-actual"></i>Actual</span>
+          <span class="chart-legend__item"><i class="lg-expected"></i>Expected (7-day avg)</span>
+        </div>
+        <svg viewBox="0 0 ${width} ${height}" class="chart chart--trend" role="img">
+          <path d="${area}" class="trend-area"></path>
+          <path d="${expectedPath}" class="trend-expected" fill="none"></path>
+          <path d="${actualPath}" class="trend-actual" fill="none"></path>
+          ${dots}${labels}
+        </svg>
+      </div>
+      ${anomalyCard}
+    </div>`;
+  }
   function heatmapValue(day, modelId) {
     if (!modelId) {
       return { spendCents: day.spendCents, events: day.events, tokens: 0, topModel: day.topModel };
@@ -446,11 +696,17 @@
       vm.prefs.groupMode === 'workspace' ? 'Group: Workspace' : 'Group: Model';
     els.btnGroup.classList.toggle('active', true);
 
+    renderUsageFlow(vm.usageFlow);
+    renderModelsGraph(vm);
     els.cardGrid.innerHTML = (vm.cards || []).map((c) => renderCard(c, viewMode)).join('') ||
       '<div class="empty">No cards yet.</div>';
-    bindSortable(vm);
+    if ((vm.prefs?.quotaLayout || 'graph') === 'cards') bindSortable(vm);
+    else if (sortable) {
+      sortable.destroy();
+      sortable = null;
+    }
 
-    els.spendChart.innerHTML = barChart(vm.charts.spend, 'spend');
+    renderTrendPanel(vm.usageFlow);
     els.tokenChart.innerHTML = barChart(vm.charts.tokens, 'tokens');
     renderHeatmap(vm.heatmap);
 
@@ -536,6 +792,37 @@
   els.btnGroup?.addEventListener('click', () => {
     const next = state.vm?.prefs?.groupMode === 'workspace' ? 'model' : 'workspace';
     vscode.postMessage({ type: 'setGroupMode', groupMode: next });
+  });
+  els.flowWindow?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-window]');
+    if (!btn) return;
+    vscode.postMessage({
+      type: 'setFlowFilters',
+      window: btn.dataset.window,
+      metric: state.vm?.usageFlow?.metric || 'spend',
+    });
+  });
+  els.flowMetric?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-metric]');
+    if (!btn) return;
+    vscode.postMessage({
+      type: 'setFlowFilters',
+      window: state.vm?.usageFlow?.window || 'cycle',
+      metric: btn.dataset.metric,
+    });
+  });
+  els.flowPanel?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-model-id]');
+    if (!btn) return;
+    const id = btn.dataset.modelId;
+    state.flowModelId = state.flowModelId === id ? '' : id;
+    vscode.setState(state);
+    renderUsageFlow(state.vm?.usageFlow);
+  });
+  els.quotaLayout?.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-layout]');
+    if (!btn) return;
+    vscode.postMessage({ type: 'setQuotaLayout', quotaLayout: btn.dataset.layout });
   });
   els.btnSettings?.addEventListener('click', openSettings);
   els.btnCloseSettings?.addEventListener('click', closeSettings);

@@ -146,6 +146,7 @@ describe('view model', () => {
       },
       prefs: {
         groupMode: 'model',
+        quotaLayout: 'graph',
         cardOrderModel: ['gpt-5', 'default'],
         cardOrderWorkspace: [],
         modelAliases: { 'gpt-5': 'My GPT' },
@@ -202,6 +203,7 @@ describe('view model', () => {
       },
       prefs: {
         groupMode: 'model',
+        quotaLayout: 'graph',
         cardOrderModel: [],
         cardOrderWorkspace: [],
         modelAliases: {},
@@ -260,6 +262,7 @@ describe('view model', () => {
       },
       prefs: {
         groupMode: 'model',
+        quotaLayout: 'graph',
         cardOrderModel: [],
         cardOrderWorkspace: [],
         modelAliases: {},

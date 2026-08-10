@@ -22,6 +22,7 @@ import {
   bindingQuotaLabel,
 } from '../usageIntelligence';
 import { buildBurnForecast } from '../forecast';
+import { buildUsageFlow, FlowMetric, FlowWindow, UsageFlowView } from '../usageFlow';
 import {
   CockpitPreferences,
   CockpitSettings,
@@ -145,6 +146,7 @@ export interface CockpitViewModel {
     note: string;
   };
   cards: CockpitCard[];
+  usageFlow: UsageFlowView;
   charts: {
     spend: ChartPoint[];
     tokens: ChartPoint[];
@@ -352,6 +354,8 @@ export interface BuildViewModelInput {
   prefs: CockpitPreferences;
   settings: CockpitSettings;
   issuesUrl: string;
+  flowWindow?: FlowWindow;
+  flowMetric?: FlowMetric;
 }
 
 function buildHeatmap(
@@ -457,6 +461,8 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
     prefs,
     settings,
     issuesUrl,
+    flowWindow = 'cycle',
+    flowMetric = 'spend',
   } =
     input;
   const plan = usage.planUsage;
@@ -568,6 +574,13 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
       note: autoEstimate.note,
     },
     cards,
+    usageFlow: buildUsageFlow({
+      usage,
+      projects,
+      modelHistory,
+      window: flowWindow,
+      metric: flowMetric,
+    }),
     charts: {
       spend: dailySpend.map((d) => ({
         date: d.date,
