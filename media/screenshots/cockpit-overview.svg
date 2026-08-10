@@ -1,73 +1,140 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#101722"/>
-      <stop offset="1" stop-color="#0d1117"/>
+      <stop stop-color="#0a101a"/>
+      <stop offset="1" stop-color="#070b12"/>
     </linearGradient>
+    <radialGradient id="glowL" cx="0.1" cy="0" r="0.55">
+      <stop stop-color="#3ecfbf" stop-opacity=".22"/>
+      <stop offset="1" stop-color="#070b12" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowR" cx="0.95" cy="0.05" r="0.5">
+      <stop stop-color="#5b9dff" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#070b12" stop-opacity="0"/>
+    </radialGradient>
     <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#58a6ff"/>
-      <stop offset="1" stop-color="#3fb950"/>
+      <stop stop-color="#3ecfbf"/>
+      <stop offset=".55" stop-color="#5b9dff"/>
+      <stop offset="1" stop-color="#3dd68c"/>
     </linearGradient>
-    <filter id="shadow"><feDropShadow dx="0" dy="8" stdDeviation="12" flood-opacity=".35"/></filter>
+    <linearGradient id="barOk" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#79d8ff"/>
+    </linearGradient>
+    <linearGradient id="barCrit" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#c43c3c"/><stop offset="1" stop-color="#ffb4b4"/>
+    </linearGradient>
+    <linearGradient id="btn" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#22c3b0"/><stop offset="1" stop-color="#1a8fd6"/>
+    </linearGradient>
+    <filter id="shadow"><feDropShadow dx="0" dy="12" stdDeviation="16" flood-opacity=".45"/></filter>
     <style>
-      text{font-family:Segoe UI,Arial,sans-serif;fill:#e6edf3}.muted{fill:#8b949e}.tiny{font-size:12px}.small{font-size:14px}.label{font-size:11px;letter-spacing:1.5px}.title{font-size:22px;font-weight:700}.strong{font-weight:700}.card{fill:#161b22;stroke:#30363d}.line{stroke:#30363d}.blue{fill:#58a6ff}.green{fill:#3fb950}.orange{fill:#d29922}.red{fill:#f85149}
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
+      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.label{font-size:10px;letter-spacing:1.6px}
+      .title{font-size:22px;font-weight:700}.h2{font-size:15px;font-weight:700}.strong{font-weight:700}
+      .card{fill:#101826;stroke:#2a3a52}.teal{fill:#3ecfbf}.blue{fill:#5b9dff}.green{fill:#3dd68c}.orange{fill:#f0b429}.red{fill:#ff6b6b}
     </style>
   </defs>
-  <rect width="1200" height="720" rx="18" fill="url(#bg)"/>
-  <rect x="20" y="18" width="1160" height="58" rx="12" class="card" filter="url(#shadow)"/>
-  <rect x="34" y="31" width="32" height="32" rx="9" fill="url(#brand)"/>
-  <text x="50" y="52" text-anchor="middle" class="strong">CT</text>
-  <text x="78" y="44" class="small strong">Cursor Token Cockpit</text>
-  <text x="78" y="61" class="tiny muted">Private usage intelligence for your signed-in account</text>
-  <g transform="translate(690 30)">
-    <rect width="78" height="34" rx="17" fill="#1f6feb"/><text x="39" y="22" text-anchor="middle" class="tiny strong">Refresh</text>
-    <rect x="88" width="116" height="34" rx="17" fill="#162a42" stroke="#28517c"/><text x="146" y="22" text-anchor="middle" class="tiny blue">Group: Model</text>
-    <rect x="214" width="96" height="34" rx="17" fill="#21262d" stroke="#30363d"/><text x="262" y="22" text-anchor="middle" class="tiny">Reset order</text>
-    <rect x="320" width="48" height="34" rx="17" fill="#21262d" stroke="#30363d"/><text x="344" y="22" text-anchor="middle" class="tiny">CSV</text>
-    <rect x="378" width="54" height="34" rx="17" fill="#21262d" stroke="#30363d"/><text x="405" y="22" text-anchor="middle" class="tiny">JSON</text>
-    <rect x="442" width="48" height="34" rx="17" fill="#21262d" stroke="#30363d"/><text x="466" y="22" text-anchor="middle" class="tiny">MD</text>
+  <rect width="1200" height="760" rx="20" fill="url(#bg)"/>
+  <rect width="1200" height="760" rx="20" fill="url(#glowL)"/>
+  <rect width="1200" height="760" rx="20" fill="url(#glowR)"/>
+
+  <rect x="22" y="20" width="1156" height="62" rx="16" class="card" filter="url(#shadow)" opacity=".95"/>
+  <rect x="36" y="33" width="36" height="36" rx="11" fill="url(#brand)"/>
+  <text x="54" y="56" text-anchor="middle" class="strong" style="fill:#041018;font-size:12px">CT</text>
+  <text x="84" y="46" class="small strong">Cursor Token Cockpit</text>
+  <text x="84" y="64" class="tiny muted">Grouped by model</text>
+  <g transform="translate(560 32)">
+    <rect width="78" height="34" rx="17" fill="url(#btn)"/>
+    <text x="39" y="22" text-anchor="middle" class="tiny strong" style="fill:#041018">Refresh</text>
+    <rect x="88" width="112" height="34" rx="17" fill="#12263a" stroke="#2f5f78"/>
+    <text x="144" y="22" text-anchor="middle" class="tiny teal">Group: Model</text>
+    <rect x="210" width="96" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <text x="258" y="22" text-anchor="middle" class="tiny">Reset Order</text>
+    <rect x="316" width="48" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <text x="340" y="22" text-anchor="middle" class="tiny">CSV</text>
+    <rect x="374" width="54" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <text x="401" y="22" text-anchor="middle" class="tiny">JSON</text>
+    <rect x="438" width="48" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <text x="462" y="22" text-anchor="middle" class="tiny">MD</text>
+    <rect x="496" width="78" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <text x="535" y="22" text-anchor="middle" class="tiny">Settings</text>
   </g>
-  <rect x="20" y="92" width="1160" height="226" rx="12" class="card" filter="url(#shadow)"/>
-  <circle cx="105" cy="188" r="48" fill="none" stroke="#21262d" stroke-width="11"/>
-  <circle cx="105" cy="188" r="48" fill="none" stroke="#d29922" stroke-width="11" stroke-linecap="round" stroke-dasharray="211 302" transform="rotate(-90 105 188)"/>
-  <text x="105" y="188" text-anchor="middle" dominant-baseline="middle" class="title">70%</text>
-  <text x="105" y="211" text-anchor="middle" class="tiny muted">used</text>
-  <text x="180" y="146" class="label muted">PLAN DETAILS</text>
-  <text x="180" y="179" class="title">Signed-in Cursor account</text>
-  <rect x="456" y="156" width="90" height="27" rx="14" fill="#162a42"/><text x="501" y="174" text-anchor="middle" class="tiny blue strong">Pro   $20/mo</text>
-  <text x="180" y="205" class="small muted">Your allowance is healthy, with 12 days left in this billing cycle.</text>
-  <g transform="translate(820 128)">
-    <text y="0" class="small muted">Used</text><text x="300" y="0" text-anchor="end" class="small strong">$14.08</text>
-    <text y="28" class="small muted">Limit</text><text x="300" y="28" text-anchor="end" class="small strong">$20.00</text>
-    <text y="56" class="small muted">Remaining</text><text x="300" y="56" text-anchor="end" class="small strong">$5.92</text>
-    <text y="84" class="small muted">Billing cycle</text><text x="300" y="84" text-anchor="end" class="small strong">Jul 22   Aug 22</text>
-    <text y="112" class="small muted">Reset in</text><text x="300" y="112" text-anchor="end" class="small strong">12d 7h</text>
+
+  <rect x="22" y="98" width="1156" height="268" rx="16" class="card" filter="url(#shadow)"/>
+  <rect x="22" y="98" width="1156" height="3" rx="1.5" fill="url(#brand)" opacity=".85"/>
+
+  <circle cx="112" cy="210" r="54" fill="none" stroke="#1a2433" stroke-width="12"/>
+  <circle cx="112" cy="210" r="54" fill="none" stroke="#ff6b6b" stroke-width="12" stroke-linecap="round" stroke-dasharray="339 339" transform="rotate(-90 112 210)"/>
+  <text x="112" y="206" text-anchor="middle" class="title">100%</text>
+  <text x="112" y="228" text-anchor="middle" class="tiny muted">Other Models</text>
+
+  <text x="200" y="148" class="label teal">PLAN DETAILS</text>
+  <text x="200" y="180" class="title">Signed-in Cursor account</text>
+  <rect x="478" y="158" width="98" height="28" rx="14" fill="#12363a" stroke="#2f7a72"/>
+  <text x="527" y="176" text-anchor="middle" class="tiny teal strong">Pro - $20/mo</text>
+  <text x="200" y="208" class="small muted">Cursor Models 32%  ·  Other Models 100% (API $20.00 / $20.00)</text>
+
+  <text x="200" y="242" class="small strong">Cursor Models</text>
+  <text x="700" y="242" text-anchor="end" class="title" style="font-size:20px">32%</text>
+  <text x="200" y="258" class="tiny muted">Composer / Grok / Auto pool</text>
+  <rect x="200" y="268" width="500" height="12" rx="6" fill="#1a2433"/>
+  <rect x="200" y="268" width="160" height="12" rx="6" fill="url(#barOk)"/>
+
+  <text x="200" y="308" class="small strong">Other Models</text>
+  <text x="700" y="308" text-anchor="end" class="title red" style="font-size:20px">100%</text>
+  <text x="200" y="324" class="tiny muted">Included API dollar allowance  ·  $20.00 / $20.00</text>
+  <rect x="200" y="334" width="500" height="12" rx="6" fill="#1a2433"/>
+  <rect x="200" y="334" width="500" height="12" rx="6" fill="url(#barCrit)"/>
+
+  <g transform="translate(760 140)">
+    <rect width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="14" y="25" class="tiny muted">Other Models used</text>
+    <text x="372" y="25" text-anchor="end" class="small strong">$20.00</text>
+    <rect y="48" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="14" y="73" class="tiny muted">Other Models limit</text>
+    <text x="372" y="73" text-anchor="end" class="small strong">$20.00</text>
+    <rect y="96" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="14" y="121" class="tiny muted">API remaining</text>
+    <text x="372" y="121" text-anchor="end" class="small strong red">$0.00</text>
+    <rect y="144" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="14" y="169" class="tiny muted">Reset in</text>
+    <text x="372" y="169" text-anchor="end" class="small strong">9d 14h</text>
   </g>
-  <line x1="42" y1="268" x2="1158" y2="268" class="line"/>
-  <text x="42" y="296" class="small blue strong">Show daily details</text>
-  <text x="20" y="350" class="small strong">This session</text>
-  <text x="20" y="368" class="tiny muted">Usage since this editor window opened</text>
-  <g transform="translate(20 382)">
-    <g><rect width="278" height="82" rx="10" class="card"/><text x="16" y="25" class="label muted">STARTED</text><text x="16" y="57" class="title">8:42 PM</text></g>
-    <g transform="translate(294)"><rect width="278" height="82" rx="10" class="card"/><text x="16" y="25" class="label muted">REQUESTS</text><text x="16" y="57" class="title">32</text></g>
-    <g transform="translate(588)"><rect width="278" height="82" rx="10" class="card"/><text x="16" y="25" class="label muted">TOKENS</text><text x="16" y="57" class="title">842k</text></g>
-    <g transform="translate(882)"><rect width="278" height="82" rx="10" class="card"/><text x="16" y="25" class="label muted">SPEND</text><text x="16" y="57" class="title">$3.16</text></g>
+
+  <text x="22" y="402" class="h2">Burn-rate forecast</text>
+  <text x="22" y="420" class="tiny muted">Projected included-pool usage for this billing cycle</text>
+  <rect x="22" y="434" width="1156" height="128" rx="14" class="card" filter="url(#shadow)"/>
+  <text x="42" y="468" class="small strong">Other Models hits 100% before cycle end at current burn</text>
+  <text x="42" y="490" class="tiny muted">Cursor Models pace stays under the included pool if usage holds steady.</text>
+  <g transform="translate(42 510)">
+    <rect width="360" height="36" rx="10" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="14" y="23" class="tiny muted">Cursor Models now</text>
+    <text x="340" y="23" text-anchor="end" class="small strong teal">32%</text>
+    <rect x="380" width="360" height="36" rx="10" fill="#0c1522" stroke="#5a3a3a"/>
+    <text x="394" y="23" class="tiny muted">Other Models now</text>
+    <text x="720" y="23" text-anchor="end" class="small strong red">100%</text>
+    <rect x="760" width="380" height="36" rx="10" fill="#0c1522" stroke="#2a3a52"/>
+    <text x="774" y="23" class="tiny muted">Projected Cursor Models</text>
+    <text x="1120" y="23" text-anchor="end" class="small strong">48%</text>
   </g>
-  <text x="20" y="505" class="small strong">Usage intelligence</text>
-  <text x="20" y="523" class="tiny muted">Signals derived from recent usage and your configured thresholds</text>
-  <g transform="translate(20 540)">
-    <rect width="370" height="128" rx="10" class="card" stroke="#28517c"/>
-    <circle cx="24" cy="26" r="5" class="green"/><text x="38" y="31" class="small strong">Allowance on track</text>
-    <text x="18" y="58" class="small muted">You have used 70% of the included allowance.</text>
-    <text x="18" y="84" class="tiny muted">Current pace stays within the cycle limit.</text>
-    <rect x="405" width="370" height="128" rx="10" class="card" stroke="#604f1d"/>
-    <circle cx="429" cy="26" r="5" class="orange"/><text x="443" y="31" class="small strong">High activity today</text>
-    <text x="423" y="58" class="small muted">32 requests across 4 models.</text>
-    <text x="423" y="84" class="tiny muted">Today's spend is 1.4  the 7-day average.</text>
-    <rect x="790" width="370" height="128" rx="10" class="card" stroke="#28517c"/>
-    <circle cx="814" cy="26" r="5" class="blue"/><text x="828" y="31" class="small strong">Top model: Composer</text>
-    <text x="808" y="58" class="small muted">42% of this cycle's model spend.</text>
-    <text x="808" y="84" class="tiny muted">Pin any model for status-bar tracking.</text>
+
+  <text x="22" y="600" class="h2">Usage intelligence</text>
+  <g transform="translate(22 616)">
+    <rect width="372" height="108" rx="14" class="card" stroke="#2f5f78"/>
+    <circle cx="24" cy="28" r="5" class="green"/>
+    <text x="40" y="33" class="small strong">Cursor Models healthy</text>
+    <text x="18" y="60" class="small muted">32% of the Composer / Auto pool used.</text>
+    <text x="18" y="84" class="tiny muted">Ring follows the binding (Other Models) pool.</text>
+    <rect x="392" width="372" height="108" rx="14" class="card" stroke="#6a3a3a"/>
+    <circle cx="416" cy="28" r="5" class="red"/>
+    <text x="432" y="33" class="small strong">Other Models exhausted</text>
+    <text x="410" y="60" class="small muted">Included API allowance is fully used.</text>
+    <text x="410" y="84" class="tiny muted">Further API spend may bill on-demand.</text>
+    <rect x="784" width="372" height="108" rx="14" class="card" stroke="#3a5a78"/>
+    <circle cx="808" cy="28" r="5" class="blue"/>
+    <text x="824" y="33" class="small strong">Top model: Composer</text>
+    <text x="802" y="60" class="small muted">42% of attributed model spend.</text>
+    <text x="802" y="84" class="tiny muted">Pin any model to the status bar.</text>
   </g>
-  <text x="1160" y="702" text-anchor="end" class="tiny muted">Sample data   no account details shown</text>
+  <text x="1178" y="746" text-anchor="end" class="tiny muted">Sample data - no account details shown</text>
 </svg>

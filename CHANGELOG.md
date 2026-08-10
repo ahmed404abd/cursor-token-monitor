@@ -1,3 +1,9 @@
+## [1.5.1] - 2026-08-10
+
+### Changed
+- Cockpit visual refresh: teal/cyan glass theme, glow rings, KPI tiles, richer depth and typography
+- Marketplace gallery banner and sanitized README screenshots updated to match the new look
+
 ## [1.5.0] - 2026-08-07
 
 ### Added

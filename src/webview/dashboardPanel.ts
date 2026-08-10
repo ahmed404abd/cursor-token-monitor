@@ -66,7 +66,7 @@ function htmlShell(
 
   <div class="topbar">
     <div class="brand">
-      <div class="brand__icon">⚡</div>
+      <div class="brand__icon" aria-hidden="true">CT</div>
       <div>
         <div class="brand__title">Cursor Token Cockpit</div>
         <div class="brand__sub" id="groupLabel">Grouped by model</div>
@@ -80,7 +80,7 @@ function htmlShell(
       <button type="button" id="btnExportJson">JSON</button>
       <button type="button" id="btnExportMd">MD</button>
       <button type="button" id="btnCopy">Copy</button>
-      <button type="button" id="btnSettings" title="Settings">⚙</button>
+      <button type="button" id="btnSettings" title="Settings">Settings</button>
     </div>
   </div>
 
@@ -103,13 +103,13 @@ function htmlShell(
         <div class="quota-bars" id="quotaBars"></div>
       </div>
       <div class="plan-kpis">
-        <div class="label">Other Models used</div><div class="value" id="usedLabel">—</div>
-        <div class="label">Other Models limit</div><div class="value" id="limitLabel">—</div>
-        <div class="label">API remaining</div><div class="value" id="remainingLabel">—</div>
-        <div class="label">Billing cycle</div><div class="value" id="billingCycle">—</div>
-        <div class="label">Reset in</div><div class="value" id="resetIn">—</div>
-        <div class="label">Reset time</div><div class="value" id="resetTime">—</div>
-        <div class="label">Updated</div><div class="value" id="updatedLabel">—</div>
+        <div class="kpi"><div class="label">Other Models used</div><div class="value" id="usedLabel">—</div></div>
+        <div class="kpi"><div class="label">Other Models limit</div><div class="value" id="limitLabel">—</div></div>
+        <div class="kpi"><div class="label">API remaining</div><div class="value" id="remainingLabel">—</div></div>
+        <div class="kpi"><div class="label">Billing cycle</div><div class="value" id="billingCycle">—</div></div>
+        <div class="kpi"><div class="label">Reset in</div><div class="value" id="resetIn">—</div></div>
+        <div class="kpi"><div class="label">Reset time</div><div class="value" id="resetTime">—</div></div>
+        <div class="kpi"><div class="label">Updated</div><div class="value" id="updatedLabel">—</div></div>
       </div>
     </div>
     <details class="plan-more">

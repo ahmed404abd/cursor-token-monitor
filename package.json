@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit — dual Pro quotas, burn-rate forecasts, heatmap, alerts. No Python required.",
+  "description": "Private Cursor AI usage cockpit — dual Pro quotas, burn-rate forecasts, heatmap, alerts. Polished dark glass UI. No Python.",
   "publisher": "ahmed404abd",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -36,7 +36,7 @@
     "heatmap"
   ],
   "galleryBanner": {
-    "color": "#0d1117",
+    "color": "#070b12",
     "theme": "dark"
   },
   "activationEvents": [

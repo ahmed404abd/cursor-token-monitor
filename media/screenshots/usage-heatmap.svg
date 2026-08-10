@@ -1,60 +1,177 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="430" viewBox="0 0 1200 430">
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#101722"/><stop offset="1" stop-color="#0d1117"/></linearGradient>
-    <pattern id="cells" width="31" height="31" patternUnits="userSpaceOnUse"><rect width="24" height="24" rx="4" fill="#21262d" stroke="#30363d"/></pattern>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0a101a"/><stop offset="1" stop-color="#070b12"/>
+    </linearGradient>
+    <radialGradient id="glow" cx=".85" cy="0" r=".55">
+      <stop stop-color="#5b9dff" stop-opacity=".16"/><stop offset="1" stop-opacity="0"/>
+    </radialGradient>
     <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-opacity=".4"/></filter>
     <style>
-      text{font-family:Segoe UI,Arial,sans-serif;fill:#e6edf3}.muted{fill:#8b949e}.tiny{font-size:12px}.small{font-size:14px}.title{font-size:21px;font-weight:700}.strong{font-weight:700}.card{fill:#161b22;stroke:#30363d}.green1{fill:#173d2a}.green2{fill:#226c39}.green3{fill:#2f9848}.green4{fill:#3fb950}.warn{fill:#d29922}.critical{fill:#f85149}.cell{width:24px;height:24px;rx:4}
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
+      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:18px;font-weight:700}
+      .strong{font-weight:700}.card{fill:#101826;stroke:#2a3a52}.teal{fill:#3ecfbf}
     </style>
   </defs>
-  <rect width="1200" height="430" rx="18" fill="url(#bg)"/>
-  <text x="28" y="42" class="title">90-day usage heatmap</text>
-  <text x="28" y="65" class="small muted">GitHub-style contribution view, enhanced with model filters and allowance-risk overlays</text>
-  <rect x="925" y="25" width="245" height="44" rx="9" class="card"/>
-  <text x="942" y="43" class="tiny muted">MODEL</text>
-  <text x="942" y="60" class="small strong">All models</text><text x="1148" y="53" text-anchor="middle" class="muted"> </text>
-  <rect x="28" y="88" width="1142" height="296" rx="12" class="card" filter="url(#shadow)"/>
-  <g transform="translate(72 137)">
-    <text x="0" y="20" class="tiny muted">Mon</text><text x="0" y="82" class="tiny muted">Wed</text><text x="0" y="144" class="tiny muted">Fri</text><text x="0" y="206" class="tiny muted">Sun</text>
-    <text x="58" y="-12" class="tiny muted">May</text><text x="182" y="-12" class="tiny muted">Jun</text><text x="337" y="-12" class="tiny muted">Jul</text>
-    <rect x="58" y="0" width="403" height="217" fill="url(#cells)"/>
-    <g fill="none" stroke="#30363d" stroke-dasharray="3 2" opacity=".75">
-      <rect x="58" y="0" class="cell"/><rect x="58" y="31" class="cell"/><rect x="58" y="62" class="cell"/><rect x="58" y="93" class="cell"/><rect x="58" y="124" class="cell"/><rect x="58" y="155" class="cell"/><rect x="58" y="186" class="cell"/>
-      <rect x="89" y="0" class="cell"/><rect x="89" y="31" class="cell"/><rect x="89" y="62" class="cell"/>
+  <rect width="1200" height="460" rx="20" fill="url(#bg)"/>
+  <rect width="1200" height="460" rx="20" fill="url(#glow)"/>
+  <text x="28" y="40" class="title">90-day usage heatmap</text>
+  <text x="28" y="60" class="tiny muted">Recent activity with allowance warning and critical overlays</text>
+  <rect x="900" y="28" width="270" height="34" rx="10" class="card"/>
+  <text x="914" y="49" class="tiny muted">Model</text>
+  <text x="1040" y="49" class="tiny teal strong">All models</text>
+
+  <rect x="28" y="84" width="1144" height="320" rx="16" class="card" filter="url(#shadow)"/>
+  <g transform="translate(56 118)" font-size="10" fill="#8fa0b8">
+    <text y="12">Mon</text><text y="44">Wed</text><text y="76">Fri</text><text y="108">Sun</text>
+  </g>
+  <g transform="translate(100 108)">
+    <!-- 13 weeks x 7 days sample grid -->
+    <g id="week0">
+      <rect width="16" height="16" rx="3" fill="transparent" stroke="#2a3a52" stroke-dasharray="2 2" opacity=".6"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
     </g>
-    <g>
-      <rect x="89" y="93" class="cell green1"/><rect x="89" y="155" class="cell green2"/>
-      <rect x="120" y="31" class="cell green2"/><rect x="120" y="62" class="cell green1"/><rect x="120" y="124" class="cell green3"/>
-      <rect x="151" y="0" class="cell green1"/><rect x="151" y="93" class="cell green2"/><rect x="151" y="186" class="cell green1"/>
-      <rect x="182" y="31" class="cell green3"/><rect x="182" y="62" class="cell green1"/><rect x="182" y="155" class="cell green2"/>
-      <rect x="213" y="0" class="cell green2"/><rect x="213" y="93" class="cell green4"/><rect x="213" y="124" class="cell green1"/>
-      <rect x="244" y="31" class="cell green1"/><rect x="244" y="62" class="cell green2"/><rect x="244" y="155" class="cell green3"/>
-      <rect x="275" y="0" class="cell green3"/><rect x="275" y="93" class="cell green1"/><rect x="275" y="124" class="cell green2"/><rect x="275" y="186" class="cell green1"/>
-      <rect x="306" y="31" class="cell green2"/><rect x="306" y="62" class="cell green4"/><rect x="306" y="155" class="cell green2"/>
-      <rect x="337" y="0" class="cell green1"/><rect x="337" y="93" class="cell green3"/><rect x="337" y="124" class="cell warn"/>
-      <rect x="368" y="31" class="cell green2"/><rect x="368" y="62" class="cell green1"/><rect x="368" y="155" class="cell green4"/><rect x="368" y="186" class="cell warn"/>
-      <rect x="399" y="0" class="cell green3"/><rect x="399" y="93" class="cell critical"/><rect x="399" y="124" class="cell green2"/>
-      <rect x="430" y="31" class="cell green4"/><rect x="430" y="62" class="cell critical"/><rect x="430" y="155" class="cell green2"/>
+    <g transform="translate(22)">
+      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#1a2433"/>
     </g>
-    <rect x="430" y="62" width="24" height="24" rx="4" fill="none" stroke="#e6edf3" stroke-width="2"/>
+    <g transform="translate(44)">
+      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+    </g>
+    <g transform="translate(66)">
+      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+    </g>
+    <g transform="translate(88)">
+      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#1a2433"/>
+    </g>
+    <g transform="translate(110)">
+      <rect width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+    </g>
+    <g transform="translate(132)">
+      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
+    </g>
+    <g transform="translate(154)">
+      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+    </g>
+    <g transform="translate(176)">
+      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
+    </g>
+    <g transform="translate(198)">
+      <rect width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+    </g>
+    <g transform="translate(220)">
+      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+    </g>
+    <g transform="translate(242)">
+      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#f0b429"/>
+    </g>
+    <g transform="translate(264)">
+      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+    </g>
   </g>
-  <g transform="translate(590 127)">
-    <rect width="322" height="188" rx="10" fill="#0d1117" stroke="#28517c" filter="url(#shadow)"/>
-    <text x="18" y="29" class="small strong">Wed, Jul 29, 2026</text>
-    <line x1="18" y1="42" x2="304" y2="42" stroke="#30363d"/>
-    <text x="18" y="67" class="tiny muted">Total spend</text><text x="304" y="67" text-anchor="end" class="small strong">$3.84</text>
-    <text x="18" y="91" class="tiny muted">Requests</text><text x="304" y="91" text-anchor="end" class="small strong">27</text>
-    <text x="18" y="115" class="tiny muted">Top model</text><text x="304" y="115" text-anchor="end" class="small strong">Composer 2.5 Fast</text>
-    <text x="18" y="139" class="tiny muted">Allowance signal</text><text x="304" y="139" text-anchor="end" class="small strong critical">critical</text>
-    <text x="18" y="169" class="tiny">Composer 2.5 Fast</text><text x="304" y="169" text-anchor="end" class="tiny strong">$2.46</text>
+
+  <rect x="820" y="130" width="300" height="170" rx="12" fill="#080c14" stroke="#3ecfbf" stroke-opacity=".4"/>
+  <text x="838" y="158" class="small strong">Aug 4, 2026</text>
+  <text x="838" y="184" class="tiny muted">Spend</text>
+  <text x="1090" y="184" text-anchor="end" class="small strong">$4.82</text>
+  <text x="838" y="208" class="tiny muted">Requests</text>
+  <text x="1090" y="208" text-anchor="end" class="small strong">27</text>
+  <text x="838" y="232" class="tiny muted">Top model</text>
+  <text x="1090" y="232" text-anchor="end" class="small strong teal">Composer</text>
+  <text x="838" y="256" class="tiny muted">Allowance</text>
+  <text x="1090" y="256" text-anchor="end" class="small strong" style="fill:#f0b429">Warning</text>
+  <text x="838" y="280" class="tiny muted">Composer 62% · Sonnet 24%</text>
+
+  <g transform="translate(56 360)" class="tiny muted">
+    <text y="14">No history</text>
+    <rect x="72" y="2" width="14" height="14" rx="3" fill="transparent" stroke="#2a3a52" stroke-dasharray="2 2"/>
+    <text x="100" y="14">$0</text>
+    <rect x="120" y="2" width="14" height="14" rx="3" fill="#1a2433"/>
+    <text x="148" y="14">Less</text>
+    <rect x="178" y="2" width="14" height="14" rx="3" fill="#1a4a36"/>
+    <rect x="198" y="2" width="14" height="14" rx="3" fill="#247a52"/>
+    <rect x="218" y="2" width="14" height="14" rx="3" fill="#3dd68c"/>
+    <text x="246" y="14">More</text>
+    <rect x="290" y="2" width="14" height="14" rx="3" fill="#f0b429"/>
+    <text x="312" y="14">Warning</text>
+    <rect x="372" y="2" width="14" height="14" rx="3" fill="#ff6b6b"/>
+    <text x="394" y="14">Critical</text>
+    <text x="1088" y="14" text-anchor="end">90 days retained locally</text>
   </g>
-  <g transform="translate(74 355)">
-    <text class="tiny muted">No history</text><rect x="65" y="-12" width="14" height="14" rx="3" fill="none" stroke="#30363d" stroke-dasharray="2 2"/>
-    <text x="92" class="tiny muted">$0</text><rect x="112" y="-12" width="14" height="14" rx="3" fill="#21262d"/>
-    <text x="142" class="tiny muted">Less</text><rect x="172" y="-12" width="14" height="14" rx="3" class="green1"/><rect x="191" y="-12" width="14" height="14" rx="3" class="green2"/><rect x="210" y="-12" width="14" height="14" rx="3" class="green3"/><rect x="229" y="-12" width="14" height="14" rx="3" class="green4"/><text x="250" class="tiny muted">More</text>
-    <rect x="294" y="-12" width="14" height="14" rx="3" class="warn"/><text x="315" class="tiny muted">Warning</text>
-    <rect x="378" y="-12" width="14" height="14" rx="3" class="critical"/><text x="399" class="tiny muted">Critical</text>
-  </g>
-  <text x="1140" y="355" text-anchor="end" class="tiny muted">Model filter: All models   rolling 90 days</text>
-  <text x="1170" y="414" text-anchor="end" class="tiny muted">Sample data   interactive tooltip shown</text>
 </svg>

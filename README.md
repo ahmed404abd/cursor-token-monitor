@@ -4,6 +4,8 @@
 
 Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, dual Pro quotas, burn-rate forecasts, model comparisons, trends, a 90-day heatmap, and alerts — without sending usage to a third-party service.
 
+The dashboard uses a dark glass cockpit aesthetic (teal / cyan accents, allowance glow rings, dual quota bars, and KPI tiles) so plan risk is readable at a glance.
+
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
 ### Built for questions Cursor's basic usage page cannot answer
