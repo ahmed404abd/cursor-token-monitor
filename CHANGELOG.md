@@ -1,3 +1,13 @@
+## [1.7.1] - 2026-08-10
+
+### Fixed
+- Usage-flow Sankey now sizes to **all models** and scrolls inside the panel (no more clipped ribbons)
+- Model list and workspace/chat panes also scroll when long
+
+### Changed
+- Live activity, Top spending days, and Longest AI sessions are **collapsed by default**
+- README marketplace description includes Sankey, models graph, and usage-over-time screenshots
+
 ## [1.7.0] - 2026-08-10
 
 ### Added

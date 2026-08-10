@@ -858,6 +858,9 @@ details.fold {
   background: var(--card);
   overflow: hidden;
 }
+details.fold.section-fold {
+  margin-top: 22px;
+}
 details.fold > summary {
   cursor: pointer;
   list-style: none;
@@ -866,11 +869,25 @@ details.fold > summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
+}
+details.fold > summary h2 {
+  margin: 0;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+details.fold > summary p {
+  margin: 3px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 500;
 }
 details.fold > summary::-webkit-details-marker { display: none; }
-details.fold > summary::after { content: '▸'; color: var(--muted); }
+details.fold > summary::after { content: '▸'; color: var(--muted); flex-shrink: 0; }
 details.fold[open] > summary::after { transform: rotate(90deg); }
 details.fold .fold-body { padding: 0 12px 14px; border-top: 1px solid var(--border); }
+details.fold .fold-body .panel,
+details.fold .fold-body .table-wrap { margin-top: 12px; }
 
 .empty {
   padding: 16px;
@@ -998,7 +1015,7 @@ details.fold .fold-body { padding: 0 12px 14px; border-top: 1px solid var(--bord
   justify-content: flex-end;
 }
 
-.flow-panel { padding: 16px; overflow: hidden; }
+.flow-panel { padding: 16px; overflow: visible; }
 .flow-shell { display: grid; gap: 14px; }
 .flow-sankey-wrap {
   position: relative;
@@ -1007,14 +1024,32 @@ details.fold .fold-body { padding: 0 12px 14px; border-top: 1px solid var(--bord
   background:
     radial-gradient(600px 180px at 10% 0%, rgba(62, 207, 191, 0.08), transparent 60%),
     rgba(0, 0, 0, 0.18);
-  padding: 10px 8px 4px;
-  overflow: hidden;
+  padding: 10px 8px 8px;
+  max-height: min(520px, 62vh);
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 .flow-sankey {
-  width: 100%;
+  width: max(100%, 820px);
   height: auto;
   display: block;
   min-height: 220px;
+}
+.flow-models {
+  display: grid;
+  gap: 8px;
+  max-height: min(420px, 50vh);
+  overflow: auto;
+  padding-right: 4px;
+}
+.flow-downstream {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.18);
+  min-height: 180px;
+  max-height: min(420px, 50vh);
+  overflow: auto;
 }
 .flow-link {
   opacity: 0.38;
@@ -1057,7 +1092,6 @@ details.fold .fold-body { padding: 0 12px 14px; border-top: 1px solid var(--bord
 @media (max-width: 900px) {
   .flow-layout { grid-template-columns: 1fr; }
 }
-.flow-models { display: grid; gap: 8px; }
 .flow-model {
   display: grid;
   grid-template-columns: 10px 1fr;
@@ -1105,13 +1139,6 @@ details.fold .fold-body { padding: 0 12px 14px; border-top: 1px solid var(--bord
   transform: translateX(2px);
 }
 .flow-model.is-dim { opacity: 0.42; }
-.flow-downstream {
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: rgba(0, 0, 0, 0.18);
-  min-height: 180px;
-}
 .flow-leaves { display: grid; gap: 8px; margin-top: 10px; }
 .flow-leaf {
   display: grid;

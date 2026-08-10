@@ -234,20 +234,39 @@ function htmlShell(
     </div>
   </section>
 
-  <section class="section">
-    <div class="section__head"><div><h2>Live activity</h2><p>Latest billable requests</p></div></div>
-    <div class="panel feed" id="activityFeed"></div>
-  </section>
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Live activity</h2>
+        <p>Latest billable requests</p>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="panel feed" id="activityFeed"></div>
+    </div>
+  </details>
 
-  <section class="section">
-    <div class="section__head"><div><h2>Top spending days</h2></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Day</th><th class="num">Spend</th><th class="num">Events</th></tr></thead><tbody id="topDaysBody"></tbody></table></div>
-  </section>
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Top spending days</h2>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="table-wrap"><table><thead><tr><th>Day</th><th class="num">Spend</th><th class="num">Events</th></tr></thead><tbody id="topDaysBody"></tbody></table></div>
+    </div>
+  </details>
 
-  <section class="section">
-    <div class="section__head"><div><h2>Longest AI sessions</h2></div></div>
-    <div class="table-wrap"><table><thead><tr><th>Chat</th><th class="num">Duration</th><th class="num">Events</th><th class="num">Charged</th></tr></thead><tbody id="sessionsBody"></tbody></table></div>
-  </section>
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Longest AI sessions</h2>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="table-wrap"><table><thead><tr><th>Chat</th><th class="num">Duration</th><th class="num">Events</th><th class="num">Charged</th></tr></thead><tbody id="sessionsBody"></tbody></table></div>
+    </div>
+  </details>
 
   <section class="section">
     <div class="section__head"><div><h2>Auto estimate</h2><p>Heuristic only</p></div></div>

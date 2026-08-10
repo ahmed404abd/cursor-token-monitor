@@ -180,7 +180,7 @@ export function buildUsageFlow(input: {
           models: [...session.models].map(displayModelName),
         }))
         .sort((a, b) => b.value - a.value)
-        .slice(0, 8);
+        .slice(0, 20);
       return {
         id,
         label: row.label,
@@ -215,7 +215,7 @@ export function buildUsageFlow(input: {
       };
     })
     .sort((a, b) => b.value - a.value)
-    .slice(0, 8);
+    .slice(0, 16);
 
   const historyStart = dayKey(new Date(windowStartMs(window, input.usage.billingCycleStartMs)));
   const history = (input.modelHistory ?? []).filter((row) => row.date >= historyStart);

@@ -192,12 +192,10 @@
     });
   }
 
-  function layoutNodes(items, x, top, usableH, minH = 18) {
-    const total = items.reduce((sum, item) => sum + Math.max(item.percent || item.value || 0, 0.01), 0) || 1;
+  function layoutNodes(items, x, top, rowH = 34, gap = 10) {
     let y = top;
     return items.map((item) => {
-      const share = Math.max(item.percent || item.value || 0, 0.01) / total;
-      const h = Math.max(minH, share * usableH);
+      const h = rowH;
       const node = {
         ...item,
         x,
@@ -205,7 +203,7 @@
         h,
         cy: y + h / 2,
       };
-      y += h + 8;
+      y += h + gap;
       return node;
     });
   }
@@ -220,56 +218,56 @@
   }
 
   function renderSankeySvg(flow, selectedModelId, hoverId) {
-    const models = (flow.models || []).slice(0, 8);
+    const models = flow.models || [];
     if (!models.length) {
       return '<div class="empty">No model activity in this window.</div>';
     }
     const active = models.find((m) => m.id === selectedModelId) || null;
     const rightNodes = active
-      ? (active.sessions || []).slice(0, 8)
-      : (flow.workspaces || []).slice(0, 8);
-    const width = 760;
-    const height = Math.max(240, 48 + models.length * 36);
-    const leftX = 18;
-    const midX = 280;
-    const rightX = 560;
-    const barW = 14;
+      ? active.sessions || []
+      : flow.workspaces || [];
+    const rowH = 34;
+    const gap = 10;
     const top = 28;
-    const usable = height - top - 20;
-    const midNodes = layoutNodes(models, midX, top, usable);
-    const leafNodes = layoutNodes(
-      rightNodes.length ? rightNodes : [{ id: 'empty', label: 'No downstream', percent: 100, value: 0, color: '#445' }],
-      rightX,
-      top,
-      usable,
-      16
-    );
-    const sourceH = Math.min(usable * 0.72, Math.max(64, models.reduce((s, m) => s + m.percent, 0)));
-    const sourceY = top + (usable - sourceH) / 2;
+    const width = 820;
+    const stackCount = Math.max(models.length, rightNodes.length || 1, 1);
+    const height = Math.max(260, top + stackCount * (rowH + gap) + 24);
+    const leftX = 18;
+    const midX = 300;
+    const rightX = 600;
+    const barW = 14;
+    const midNodes = layoutNodes(models, midX, top, rowH, gap);
+    const leafSource = rightNodes.length
+      ? rightNodes
+      : [{ id: 'empty', label: 'No downstream', percent: 100, value: 0, color: '#445' }];
+    const leafNodes = layoutNodes(leafSource, rightX, top, rowH, gap);
+    const sourceH = Math.max(72, Math.min(height - top - 24, midNodes.length * (rowH + gap) - gap));
+    const sourceY = top + Math.max(0, (midNodes[midNodes.length - 1].y + midNodes[midNodes.length - 1].h - top - sourceH) / 2);
     const sourceCy = sourceY + sourceH / 2;
     const hotId = hoverId || selectedModelId || '';
+    const maxPct = Math.max(...models.map((m) => m.percent), 1);
+
+    function nodeCy(nodes, id) {
+      return nodes.find((n) => n.id === id)?.cy ?? sourceCy;
+    }
 
     const linksLeft = midNodes
       .map((node) => {
-        const thickness = Math.max(4, (node.percent / 100) * 42);
+        const thickness = Math.max(3, (node.percent / maxPct) * 28);
         const hot = !hotId || hotId === node.id;
         const cls = hotId ? (hot ? 'is-hot' : 'is-dim') : '';
-        return `<path class="flow-link ${cls}" data-model-id="${esc(node.id)}" d="${sankeyPath(leftX + barW, sourceCy, midX, node.cy, thickness)}" fill="${esc(node.color || '#3ecfbf')}" opacity="0.35"></path>`;
+        return `<path class="flow-link ${cls}" data-model-id="${esc(node.id)}" d="${sankeyPath(leftX + barW, sourceCy, midX, node.cy, thickness)}" fill="${esc(node.color || '#3ecfbf')}"></path>`;
       })
       .join('');
 
     const linksRight = active
       ? leafNodes
           .map((leaf) => {
-            const thickness = Math.max(3, ((leaf.percent || 0) / 100) * 28);
-            return `<path class="flow-link is-hot" d="${sankeyPath(midX + barW, activeNodeCy(midNodes, active.id), rightX, leaf.cy, thickness)}" fill="${esc(active.color || '#3ecfbf')}"></path>`;
+            const thickness = Math.max(3, ((leaf.percent || 0) / 100) * 22);
+            return `<path class="flow-link is-hot" d="${sankeyPath(midX + barW, nodeCy(midNodes, active.id), rightX, leaf.cy, thickness)}" fill="${esc(active.color || '#3ecfbf')}"></path>`;
           })
           .join('')
       : '';
-
-    function activeNodeCy(nodes, id) {
-      return nodes.find((n) => n.id === id)?.cy ?? sourceCy;
-    }
 
     const midBars = midNodes
       .map((node) => {
@@ -295,7 +293,7 @@
       .join('');
 
     const rightTitle = active ? 'Chats / sessions' : 'Workspaces (est.)';
-    return `<svg viewBox="0 0 ${width} ${height}" class="flow-sankey" role="img" aria-label="Usage flow sankey">
+    return `<svg viewBox="0 0 ${width} ${height}" width="${width}" height="${height}" class="flow-sankey" role="img" aria-label="Usage flow sankey">
       <text class="flow-node-sub" x="${leftX}" y="16">Total</text>
       <text class="flow-node-sub" x="${midX}" y="16">Models</text>
       <text class="flow-node-sub" x="${rightX}" y="16">${esc(rightTitle)}</text>

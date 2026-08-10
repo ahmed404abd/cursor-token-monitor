@@ -35,30 +35,40 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 
 ## What you’ll see
 
-### Model-aware cockpit
+### Interactive Sankey usage flow
+
+![Sankey usage flow from total spend into models and workspaces](media/screenshots/usage-flow-sankey.png)
+
+- **Total → Models → Chats / Workspaces** ribbons (scrollable when you have many models)
+- Hover a model to highlight its path; click to focus chats
+- Click a workspace to reveal account-level model mix (workspaces remain estimated — Cursor does not expose per-project billing IDs)
+- Time window: Today / 7D / 30D / Cycle
+- Metric toggle: Spend / Tokens / Requests
+
+### Models Graph (default) or Cards
+
+![Models graph with multi-series trends and gradient share bars](media/screenshots/models-graph.png)
+
+- Default **Graph** layout: window KPIs, multi-series model mix, gradient share bars
+- Switch to **Cards** anytime to pin models, rename, and drag-reorder
 
 ![Model quota cards with spend and token details](media/screenshots/model-cards.png)
 
-- **Sankey usage flow**: Total → Models → Chats/Workspaces with hover highlight, Today / 7D / 30D / Cycle, and Spend / Tokens / Requests toggles (workspace shares remain estimated)
-- **Models Graph / Cards** toggle (default Graph): KPI stats, multi-series trends, gradient share bars; Cards keep pin/reorder
-- **Usage over time** with expected baseline, anomaly band, and confidence callout
+### Usage over time (observability-style)
+
+![Usage over time with expected baseline and anomaly callout](media/screenshots/usage-over-time.png)
+
+- Actual vs 7-day expected baseline
+- Anomaly band + confidence callout when a day spikes
+
+### Plan health and forecasts
+
 - **Plan details** card with SVG circular allowance ring, billing cycle, reset countdown, and collapsible today/yesterday/7-day spend
 - **Dual Pro quotas** matching Cursor's dashboard:
   - **Cursor Models** (Composer / Grok / Auto pool) percent used
   - **Other Models** (included API dollar allowance) percent + $ used / $ limit
   - Ring + alerts follow the binding pool (whichever is closer to exhausted)
 - **Burn-rate forecast**: projected included-pool % by cycle end and countdown to 100%
-- **Quota cards** for models (or workspaces) with:
-  - Circular % ring (spend share)
-  - Health status (Healthy / Warning / Critical)
-  - Input vs output token bars
-  - Chat / request-type pills
-  - Rename + pin-to-status-bar (models)
-  - Drag-and-drop reorder (persisted)
-- **Group toggle**: model vs workspace
-- **Trends**: daily spend + daily tokens charts
-- Live activity feed, top spending days, longest sessions, Auto estimate
-- Toolbar: Refresh, Reset Order, CSV / JSON / MD export, Copy, Settings gear
 
 ### A GitHub-style heatmap, built for AI usage
 
@@ -73,6 +83,11 @@ The rolling 90-day heatmap adds signals that a plain contribution count cannot:
 - **Cockpit-native scale** — healthy activity uses the same green palette as model health instead of copying GitHub green blindly
 
 History is kept locally for 90 days. Earlier cells remain visibly unavailable until the extension has observed enough data.
+
+### More cockpit sections
+
+- **Live activity**, **Top spending days**, and **Longest AI sessions** — collapsed by default (expand when you need them)
+- Auto estimate, session stats, export toolbar (CSV / JSON / MD), Settings gear
 
 ### Status bar
 
