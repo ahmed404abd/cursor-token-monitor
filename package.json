@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit — Sankey usage flow, observability charts, dual Pro quotas, forecasts, heatmap.",
+  "description": "Private Cursor AI usage cockpit — info tips, health-colored binding ring, Sankey flow, observability charts.",
   "publisher": "ahmed404abd",
-  "version": "1.7.1",
+  "version": "1.8.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {

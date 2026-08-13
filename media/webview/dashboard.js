@@ -92,10 +92,86 @@
     const offset = CIRC - (CIRC * pct) / 100;
     fgEl.style.strokeDasharray = String(CIRC);
     fgEl.style.strokeDashoffset = String(offset);
-    fgEl.classList.remove('warning', 'critical');
-    if (health === 'warning') fgEl.classList.add('warning');
-    if (health === 'critical') fgEl.classList.add('critical');
+    fgEl.classList.remove('healthy', 'warning', 'critical');
+    const tone = health === 'critical' ? 'critical' : health === 'warning' ? 'warning' : 'healthy';
+    fgEl.classList.add(tone);
     pctEl.textContent = `${pct.toFixed(pct < 10 ? 1 : 0)}%`;
+    pctEl.classList.remove('healthy', 'warning', 'critical');
+    pctEl.classList.add(tone);
+    const wrap = fgEl.closest('.ring-wrap');
+    if (wrap) {
+      wrap.classList.remove('is-healthy', 'is-warning', 'is-critical');
+      wrap.classList.add(`is-${tone}`);
+    }
+  }
+
+  const INFO_TIPS = {
+    binding:
+      'The ring follows the binding pool — whichever included quota is closer to exhausted (Cursor Models % or Other Models %). Green = comfortable, amber = warning, red = critical.',
+    cursorModels:
+      'Cursor Models is the included Composer / Grok / Auto pool. This percentage is pool usage for the billing cycle, not a dollar invoice line.',
+    otherModels:
+      'Other Models is your included API dollar allowance (often $20/mo on Pro). Shows how much of that $ limit is used; overages may bill on-demand.',
+    windowSpend:
+      'Attributed spend from usage events in the selected time window (Today / 7D / 30D / Cycle). This can differ from Cursor’s included quota dollars.',
+    windowTokens:
+      'Total input + output tokens from usage events in the selected window.',
+    windowRequests:
+      'Number of billable usage events (requests) in the selected window.',
+    topModelShare:
+      'Share of the selected window’s usage that belongs to your highest model. Helps spot which model dominates the mix.',
+    flowTotal:
+      'Total attributed usage for the selected window and metric (Spend / Tokens / Requests), split across models in the Sankey.',
+    flowWorkspaces:
+      'Workspace shares are estimated from folders you opened while the extension was running. Cursor does not expose true per-project billing IDs.',
+  };
+
+  function infoBtn(key, label) {
+    return `<button type="button" class="info-btn" data-info-key="${esc(key)}" aria-label="About ${esc(label)}" title="About ${esc(label)}">i</button>`;
+  }
+
+  function ensureInfoPopover() {
+    let el = document.getElementById('infoPopover');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'infoPopover';
+    el.className = 'info-popover';
+    el.hidden = true;
+    el.innerHTML = '<strong class="info-popover__title"></strong><p class="info-popover__body"></p>';
+    document.body.appendChild(el);
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.info-btn') || e.target.closest('#infoPopover')) return;
+      el.hidden = true;
+    });
+    return el;
+  }
+
+  function showInfoTip(btn) {
+    const key = btn.dataset.infoKey;
+    const text = INFO_TIPS[key];
+    if (!text) return;
+    const pop = ensureInfoPopover();
+    pop.querySelector('.info-popover__title').textContent = btn.getAttribute('aria-label')?.replace(/^About\s+/i, '') || 'About';
+    pop.querySelector('.info-popover__body').textContent = text;
+    pop.hidden = false;
+    const rect = btn.getBoundingClientRect();
+    const pad = 8;
+    let left = rect.left;
+    let top = rect.bottom + pad;
+    pop.style.left = '0px';
+    pop.style.top = '0px';
+    const w = pop.offsetWidth || 280;
+    const h = pop.offsetHeight || 120;
+    if (left + w > window.innerWidth - 12) left = Math.max(12, window.innerWidth - w - 12);
+    if (top + h > window.innerHeight - 12) top = Math.max(12, rect.top - h - pad);
+    pop.style.left = `${left}px`;
+    pop.style.top = `${top}px`;
+  }
+
+  function healthColor(health) {
+    if (health === 'critical') return '#ff6b6b';
+    if (health === 'warning') return '#f0b429';
+    return '#3dd68c';
   }
 
   function renderQuotaBars(buckets) {
@@ -108,10 +184,11 @@
       .map((bucket) => {
         const width = Math.max(0, Math.min(100, bucket.percentUsed || 0));
         const pctText = `${Number(bucket.percentUsed || 0).toFixed(bucket.percentUsed < 10 ? 1 : 0)}% used`;
+        const tipKey = bucket.id === 'otherModels' ? 'otherModels' : 'cursorModels';
         return `<div class="quota-bar" data-id="${esc(bucket.id)}">
           <div class="quota-bar__head">
             <div class="quota-bar__copy">
-              <div class="quota-bar__label">${esc(bucket.label)}</div>
+              <div class="quota-bar__label">${esc(bucket.label)} ${infoBtn(tipKey, bucket.label)}</div>
               <div class="quota-bar__detail">${esc(bucket.detail)}</div>
               ${bucket.spendLabel ? `<div class="quota-bar__spend">${esc(bucket.spendLabel)} included API</div>` : ''}
             </div>
@@ -217,10 +294,10 @@
       C${mid},${y1 + t / 2} ${mid},${y0 + t / 2} ${x0},${y0 + t / 2} Z`;
   }
 
-  function renderSankeySvg(flow, selectedModelId, hoverId) {
+  function renderSankeySvg(flow, selectedModelId, hoverId, bindingHealth) {
     const models = flow.models || [];
     if (!models.length) {
-      return '<div class="empty">No model activity in this window.</div>';
+      return '<div class="empty">No model activity in this window yet.</div>';
     }
     const active = models.find((m) => m.id === selectedModelId) || null;
     const rightNodes = active
@@ -246,6 +323,7 @@
     const sourceCy = sourceY + sourceH / 2;
     const hotId = hoverId || selectedModelId || '';
     const maxPct = Math.max(...models.map((m) => m.percent), 1);
+    const totalColor = healthColor(bindingHealth || 'healthy');
 
     function nodeCy(nodes, id) {
       return nodes.find((n) => n.id === id)?.cy ?? sourceCy;
@@ -298,7 +376,7 @@
       <text class="flow-node-sub" x="${midX}" y="16">Models</text>
       <text class="flow-node-sub" x="${rightX}" y="16">${esc(rightTitle)}</text>
       ${linksLeft}${linksRight}
-      <rect class="flow-node-bar is-hot" x="${leftX}" y="${sourceY}" width="${barW}" height="${sourceH}" fill="#3ecfbf"></rect>
+      <rect class="flow-node-bar is-hot" x="${leftX}" y="${sourceY}" width="${barW}" height="${sourceH}" fill="${esc(totalColor)}"></rect>
       <text class="flow-node-label" x="${leftX + barW + 10}" y="${sourceCy - 6}">Total usage</text>
       <text class="flow-node-sub" x="${leftX + barW + 10}" y="${sourceCy + 10}">${esc(flow.totalLabel)} · ${(flow.window || 'cycle').toUpperCase()}</text>
       ${midBars}${rightBars}
@@ -379,12 +457,13 @@
           .join('') || '<div class="empty">Open folders while using Cursor to seed workspace estimates.</div>';
     }
 
+    const bindingHealth = state.vm?.planHealth || 'healthy';
     els.flowPanel.innerHTML = `<div class="flow-shell">
-      <div class="flow-sankey-wrap" id="flowSankey">${renderSankeySvg(flow, selected, state.flowHoverId || '')}</div>
+      <div class="flow-sankey-wrap" id="flowSankey">${renderSankeySvg(flow, selected, state.flowHoverId || '', bindingHealth)}</div>
       <div class="flow-layout">
         <div class="flow-models">${modelRows || '<div class="empty">No model activity in this window.</div>'}</div>
         <div class="flow-downstream">
-          <div class="eyebrow">${esc(title)}</div>
+          <div class="eyebrow">${esc(title)} ${!active && !workspaceId ? infoBtn('flowWorkspaces', 'Workspaces') : ''}</div>
           <div class="flow-leaves">${downstream}</div>
           <p class="flow-note">${esc(note)}</p>
         </div>
@@ -478,19 +557,20 @@
     const top = flow?.models?.[0];
     const primaryStat =
       metric === 'spend'
-        ? { label: 'Window spend', value: totalLabel }
+        ? { label: 'Window spend', value: totalLabel, tip: 'windowSpend' }
         : metric === 'tokens'
-          ? { label: 'Window tokens', value: totalLabel }
-          : { label: 'Window requests', value: totalLabel };
+          ? { label: 'Window tokens', value: totalLabel, tip: 'windowTokens' }
+          : { label: 'Window requests', value: totalLabel, tip: 'windowRequests' };
     const secondaryStat = {
       label: 'Top model share',
       value: top ? `${top.percent.toFixed(0)}%` : '—',
+      tip: 'topModelShare',
     };
     els.modelsGraph.innerHTML = `<div class="models-graph__grid">
       <div class="panel models-graph__main">
         <div class="models-graph__kpis">
-          <div class="models-stat"><span>${esc(primaryStat.label)}</span><strong>${esc(primaryStat.value)}</strong></div>
-          <div class="models-stat"><span>${esc(secondaryStat.label)}</span><strong>${esc(secondaryStat.value)}</strong></div>
+          <div class="models-stat"><span>${esc(primaryStat.label)} ${infoBtn(primaryStat.tip, primaryStat.label)}</span><strong>${esc(primaryStat.value)}</strong></div>
+          <div class="models-stat"><span>${esc(secondaryStat.label)} ${infoBtn(secondaryStat.tip, secondaryStat.label)}</span><strong>${esc(secondaryStat.value)}</strong></div>
         </div>
         <div class="eyebrow">Model mix over time</div>
         ${multiSeriesArea(flow?.series || [])}
@@ -824,6 +904,17 @@
         ? `${vm.bindingQuotaLabel} binding`
         : 'used';
     }
+    const planCard = document.querySelector('.plan-card');
+    if (planCard) {
+      planCard.classList.remove('is-healthy', 'is-warning', 'is-critical');
+      const tone =
+        vm.planHealth === 'critical'
+          ? 'critical'
+          : vm.planHealth === 'warning'
+            ? 'warning'
+            : 'healthy';
+      planCard.classList.add(`is-${tone}`);
+    }
     els.accountEmail.textContent = vm.accountEmail;
     els.planChip.textContent = vm.planPrice ? `${vm.planName} · ${vm.planPrice}` : vm.planName;
     els.planMessage.textContent = vm.displayMessage;
@@ -1030,7 +1121,12 @@
     state.flowHoverId = id;
     const wrap = els.flowPanel.querySelector('#flowSankey');
     if (wrap && state.vm?.usageFlow) {
-      wrap.innerHTML = renderSankeySvg(state.vm.usageFlow, state.flowModelId || '', id);
+      wrap.innerHTML = renderSankeySvg(
+        state.vm.usageFlow,
+        state.flowModelId || '',
+        id,
+        state.vm.planHealth || 'healthy'
+      );
     }
   });
   els.flowPanel?.addEventListener('mouseleave', () => {
@@ -1038,7 +1134,12 @@
     state.flowHoverId = '';
     const wrap = els.flowPanel.querySelector('#flowSankey');
     if (wrap && state.vm?.usageFlow) {
-      wrap.innerHTML = renderSankeySvg(state.vm.usageFlow, state.flowModelId || '', '');
+      wrap.innerHTML = renderSankeySvg(
+        state.vm.usageFlow,
+        state.flowModelId || '',
+        '',
+        state.vm.planHealth || 'healthy'
+      );
     }
   });
   els.quotaLayout?.addEventListener('click', (e) => {
@@ -1055,6 +1156,13 @@
   els.btnExportJson?.addEventListener('click', () => vscode.postMessage({ type: 'exportJson' }));
   els.btnExportMd?.addEventListener('click', () => vscode.postMessage({ type: 'exportMarkdown' }));
   els.btnCopy?.addEventListener('click', () => vscode.postMessage({ type: 'copyReport' }));
+  document.addEventListener('click', (e) => {
+    const tip = e.target.closest('.info-btn');
+    if (!tip) return;
+    e.preventDefault();
+    e.stopPropagation();
+    showInfoTip(tip);
+  });
   els.heatmapModel?.addEventListener('change', () => {
     state.heatmapModel = els.heatmapModel.value;
     vscode.setState(state);

@@ -6,7 +6,7 @@ Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turn
 
 The dashboard uses a dark glass cockpit aesthetic (teal / cyan accents, allowance glow rings, dual quota bars, and KPI tiles) so plan risk is readable at a glance.
 
-**New in 1.7:** interactive **Sankey usage flow** (Total → Models → Chats/Workspaces), **Models Graph/Cards** toggle (graphs by default), and an observability-style **Usage over time** chart with expected baseline + anomaly callouts.
+**New in 1.8:** clickable **(i)** tips on quota metrics, health-colored binding ring (green / amber / red), plus Sankey + observability charts.
 
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
@@ -47,9 +47,9 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 
 ### Models Graph (default) or Cards
 
-![Models graph with multi-series trends and gradient share bars](media/screenshots/models-graph.png)
+![Model mix over time chart](media/screenshots/models-graph.png)
 
-- Default **Graph** layout: window KPIs, multi-series model mix, gradient share bars
+- Default **Graph** layout: window KPIs with **(i)** tips, multi-series model mix, gradient share bars
 - Switch to **Cards** anytime to pin models, rename, and drag-reorder
 
 ![Model quota cards with spend and token details](media/screenshots/model-cards.png)

@@ -204,17 +204,24 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   stroke-width: 11;
   stroke-linecap: round;
   stroke: var(--ok);
-  transition: stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.25s ease;
-  filter: drop-shadow(0 0 6px var(--glow-ok));
+  transition: stroke-dashoffset 0.55s cubic-bezier(0.22, 1, 0.36, 1), stroke 0.25s ease, filter 0.25s ease;
+  filter: drop-shadow(0 0 10px var(--glow-ok));
+}
+.ring-fg.healthy {
+  stroke: var(--ok);
+  filter: drop-shadow(0 0 12px var(--glow-ok));
 }
 .ring-fg.warning {
   stroke: var(--warn);
-  filter: drop-shadow(0 0 8px var(--glow-warn));
+  filter: drop-shadow(0 0 12px var(--glow-warn));
 }
 .ring-fg.critical {
   stroke: var(--err);
-  filter: drop-shadow(0 0 10px var(--glow-err));
+  filter: drop-shadow(0 0 14px var(--glow-err));
 }
+.ring-wrap.is-healthy { filter: drop-shadow(0 0 18px rgba(61, 214, 140, 0.28)); }
+.ring-wrap.is-warning { filter: drop-shadow(0 0 18px rgba(240, 180, 41, 0.32)); }
+.ring-wrap.is-critical { filter: drop-shadow(0 0 20px rgba(255, 107, 107, 0.38)); }
 .ring-center {
   position: absolute;
   inset: 0;
@@ -227,6 +234,37 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   font-size: 26px;
   letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+.ring-center strong.healthy {
+  color: var(--ok);
+  text-shadow: 0 0 18px var(--glow-ok);
+}
+.ring-center strong.warning {
+  color: var(--warn);
+  text-shadow: 0 0 18px var(--glow-warn);
+}
+.ring-center strong.critical {
+  color: var(--err);
+  text-shadow: 0 0 18px var(--glow-err);
+}
+.plan-card.is-healthy::before {
+  background: linear-gradient(90deg, transparent, var(--ok), #79d8ff, transparent);
+}
+.plan-card.is-warning::before {
+  background: linear-gradient(90deg, transparent, var(--warn), #ffe08a, transparent);
+}
+.plan-card.is-critical::before {
+  background: linear-gradient(90deg, transparent, var(--err), #ffb4b4, transparent);
+}
+.plan-card.is-healthy::after {
+  background: radial-gradient(circle, rgba(61, 214, 140, 0.14), transparent 68%);
+}
+.plan-card.is-warning::after {
+  background: radial-gradient(circle, rgba(240, 180, 41, 0.14), transparent 68%);
+}
+.plan-card.is-critical::after {
+  background: radial-gradient(circle, rgba(255, 107, 107, 0.16), transparent 68%);
 }
 .ring-center span {
   display: block;
@@ -255,6 +293,9 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   color: color-mix(in srgb, var(--accent) 55%, var(--muted));
   margin-bottom: 6px;
   font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 .lede {
   margin: 0;
@@ -291,6 +332,56 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
 .quota-bar__label {
   font-weight: 700;
   font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.info-btn {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+  background: linear-gradient(145deg, rgba(62, 207, 191, 0.18), rgba(91, 157, 255, 0.12));
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: none;
+  transform: none;
+  flex-shrink: 0;
+}
+.info-btn:hover {
+  transform: none;
+  border-color: var(--accent);
+  color: #b8fff4;
+  filter: brightness(1.08);
+}
+.info-popover {
+  position: fixed;
+  z-index: 80;
+  width: min(320px, calc(100vw - 24px));
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: rgba(8, 12, 20, 0.96);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  color: var(--fg);
+}
+.info-popover__title {
+  display: block;
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+.info-popover__body {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.45;
 }
 .quota-bar__detail {
   margin-top: 3px;
@@ -423,6 +514,9 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   margin: 0;
   font-size: 16px;
   letter-spacing: -0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 .section__head p { margin: 3px 0 0; color: var(--muted); font-size: 12px; }
 
@@ -1191,7 +1285,9 @@ button.flow-leaf:hover,
   box-shadow: var(--shadow-soft);
 }
 .models-stat span {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   color: var(--muted);
   font-size: 11px;
   letter-spacing: 0.04em;

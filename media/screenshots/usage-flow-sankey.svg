@@ -71,10 +71,10 @@
   <path d="M334 140 C520 140 520 200 760 200" fill="none" stroke="#3ecfbf" stroke-width="18" opacity=".28"/>
   <path d="M334 140 C520 140 520 280 760 280" fill="none" stroke="#3ecfbf" stroke-width="18" opacity=".28"/>
   <rect x="760" y="184" width="14" height="32" rx="5" fill="#b86adf"/>
-  <text x="784" y="198" class="small strong">dairy-enteligen-ui</text>
+  <text x="784" y="198" class="small strong">frontend-app</text>
   <text x="784" y="214" class="tiny muted">50%</text>
   <rect x="760" y="264" width="14" height="32" rx="5" fill="#f0b429"/>
-  <text x="784" y="278" class="small strong">dairy-enteligen-api</text>
+  <text x="784" y="278" class="small strong">backend-api</text>
   <text x="784" y="294" class="tiny muted">50%</text>
 
   <text x="1100" y="480" text-anchor="end" class="tiny muted">Scroll to see every model</text>

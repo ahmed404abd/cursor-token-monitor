@@ -1,3 +1,12 @@
+## [1.8.0] - 2026-08-13
+
+### Added
+- Clickable **(i)** info tips on Plan binding, Cursor Models, Other Models, Window spend / tokens / requests, Top model share, and Usage flow
+- Binding / total-usage **health colors**: green (healthy), amber (warning), red (critical) on the plan ring, plan card glow, and Sankey total bar
+
+### Changed
+- README marketplace screenshots: sanitized Sankey workspace names; Models Graph image replaced with a real model-mix chart preview
+
 ## [1.7.1] - 2026-08-10
 
 ### Fixed

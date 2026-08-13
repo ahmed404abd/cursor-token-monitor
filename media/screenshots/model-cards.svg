@@ -1,124 +1,248 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="580" viewBox="0 0 1200 580">
-  <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#0a101a"/><stop offset="1" stop-color="#070b12"/>
-    </linearGradient>
-    <radialGradient id="glow" cx=".2" cy="0" r=".6">
-      <stop stop-color="#3ecfbf" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#3dd68c"/>
-    </linearGradient>
-    <linearGradient id="ringB" x1="0" y1="0" x2="1" y2="1">
-      <stop stop-color="#3ecfbf"/><stop offset="1" stop-color="#5b9dff"/>
-    </linearGradient>
-    <linearGradient id="tokIn" x1="0" y1="0" x2="1" y2="0">
-      <stop stop-color="#5b9dff"/><stop offset="1" stop-color="#79d8ff"/>
-    </linearGradient>
-    <linearGradient id="tokOut" x1="0" y1="0" x2="1" y2="0">
-      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#3dd68c"/>
-    </linearGradient>
-    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-opacity=".4"/></filter>
-    <style>
-      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
-      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:18px;font-weight:700}
-      .strong{font-weight:700}.card{fill:#101826;stroke:#2a3a52}
-      .green{fill:#3dd68c}.orange{fill:#f0b429}.teal{fill:#3ecfbf}
-    </style>
-  </defs>
-  <rect width="1200" height="580" rx="20" fill="url(#bg)"/>
-  <rect width="1200" height="580" rx="20" fill="url(#glow)"/>
-  <text x="28" y="42" class="title">Quota cards</text>
-  <text x="28" y="62" class="tiny muted">Drag to reorder    pin models to the status bar</text>
-
-  <g transform="translate(28 84)" filter="url(#shadow)">
-    <rect width="360" height="220" rx="16" class="card"/>
-    <circle cx="22" cy="28" r="5" class="green"/>
-    <text x="36" y="33" class="small strong">Composer</text>
-    <text x="36" y="50" class="tiny muted">Healthy    42% of spend</text>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="url(#ringG)" stroke-width="9" stroke-linecap="round" stroke-dasharray="168 251" transform="rotate(-90 72 128)"/>
-    <text x="72" y="133" text-anchor="middle" class="small strong">42%</text>
-    <text x="140" y="108" class="tiny muted">Spend</text>
-    <text x="330" y="108" text-anchor="end" class="small strong">$8.40</text>
-    <text x="140" y="130" class="tiny muted">Tokens</text>
-    <text x="330" y="130" text-anchor="end" class="small strong">412k</text>
-    <text x="140" y="158" class="tiny muted">Input</text>
-    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="164" width="120" height="6" rx="3" fill="url(#tokIn)"/>
-    <text x="140" y="190" class="tiny muted">Output</text>
-    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="196" width="72" height="6" rx="3" fill="url(#tokOut)"/>
-    <rect x="22" y="220" width="64" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
-    <text x="54" y="235" text-anchor="middle" class="tiny">Chat 18</text>
-    <rect x="94" y="220" width="78" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
-    <text x="133" y="235" text-anchor="middle" class="tiny">Agent 9</text>
-  </g>
-
-  <g transform="translate(420 84)" filter="url(#shadow)">
-    <rect width="360" height="220" rx="16" class="card"/>
-    <circle cx="22" cy="28" r="5" class="orange"/>
-    <text x="36" y="33" class="small strong">claude-4-sonnet</text>
-    <text x="36" y="50" class="tiny muted">Warning    28% of spend</text>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="#f0b429" stroke-width="9" stroke-linecap="round" stroke-dasharray="112 251" transform="rotate(-90 72 128)"/>
-    <text x="72" y="133" text-anchor="middle" class="small strong">28%</text>
-    <text x="140" y="108" class="tiny muted">Spend</text>
-    <text x="330" y="108" text-anchor="end" class="small strong">$5.60</text>
-    <text x="140" y="130" class="tiny muted">Tokens</text>
-    <text x="330" y="130" text-anchor="end" class="small strong">268k</text>
-    <text x="140" y="158" class="tiny muted">Input</text>
-    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="164" width="100" height="6" rx="3" fill="url(#tokIn)"/>
-    <text x="140" y="190" class="tiny muted">Output</text>
-    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="196" width="88" height="6" rx="3" fill="url(#tokOut)"/>
-    <rect x="22" y="220" width="70" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
-    <text x="57" y="235" text-anchor="middle" class="tiny">Chat 11</text>
-  </g>
-
-  <g transform="translate(812 84)" filter="url(#shadow)">
-    <rect width="360" height="220" rx="16" class="card"/>
-    <circle cx="22" cy="28" r="5" class="green"/>
-    <text x="36" y="33" class="small strong">gpt-5</text>
-    <text x="36" y="50" class="tiny muted">Healthy    18% of spend</text>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
-    <circle cx="72" cy="128" r="40" fill="none" stroke="url(#ringB)" stroke-width="9" stroke-linecap="round" stroke-dasharray="72 251" transform="rotate(-90 72 128)"/>
-    <text x="72" y="133" text-anchor="middle" class="small strong">18%</text>
-    <text x="140" y="108" class="tiny muted">Spend</text>
-    <text x="330" y="108" text-anchor="end" class="small strong">$3.60</text>
-    <text x="140" y="130" class="tiny muted">Tokens</text>
-    <text x="330" y="130" text-anchor="end" class="small strong">190k</text>
-    <text x="140" y="158" class="tiny muted">Input</text>
-    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="164" width="90" height="6" rx="3" fill="url(#tokIn)"/>
-    <text x="140" y="190" class="tiny muted">Output</text>
-    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
-    <rect x="140" y="196" width="60" height="6" rx="3" fill="url(#tokOut)"/>
-    <rect x="22" y="220" width="64" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
-    <text x="54" y="235" text-anchor="middle" class="tiny">Chat 7</text>
-  </g>
-
-  <g transform="translate(28 332)" filter="url(#shadow)">
-    <rect width="1144" height="210" rx="16" class="card"/>
-    <text x="22" y="34" class="small strong">Daily spend trend</text>
-    <text x="22" y="52" class="tiny muted">Last 14 days    sample attributed spend</text>
-    <g transform="translate(40 80)">
-      <rect y="90" width="48" height="40" rx="6" fill="#3ecfbf" opacity=".45"/>
-      <rect x="70" y="70" width="48" height="60" rx="6" fill="#3ecfbf" opacity=".55"/>
-      <rect x="140" y="40" width="48" height="90" rx="6" fill="#3ecfbf" opacity=".7"/>
-      <rect x="210" y="55" width="48" height="75" rx="6" fill="#5b9dff" opacity=".65"/>
-      <rect x="280" y="25" width="48" height="105" rx="6" fill="#3ecfbf" opacity=".85"/>
-      <rect x="350" y="48" width="48" height="82" rx="6" fill="#5b9dff" opacity=".7"/>
-      <rect x="420" y="35" width="48" height="95" rx="6" fill="#3ecfbf" opacity=".8"/>
-      <rect x="490" y="60" width="48" height="70" rx="6" fill="#5b9dff" opacity=".6"/>
-      <rect x="560" y="20" width="48" height="110" rx="6" fill="#f0b429" opacity=".85"/>
-      <rect x="630" y="45" width="48" height="85" rx="6" fill="#3ecfbf" opacity=".75"/>
-      <rect x="700" y="30" width="48" height="100" rx="6" fill="#5b9dff" opacity=".8"/>
-      <rect x="770" y="50" width="48" height="80" rx="6" fill="#3ecfbf" opacity=".7"/>
-      <rect x="840" y="15" width="48" height="115" rx="6" fill="#ff6b6b" opacity=".8"/>
-      <rect x="910" y="38" width="48" height="92" rx="6" fill="#3ecfbf" opacity=".75"/>
-    </g>
-    <text x="1100" y="190" text-anchor="end" class="tiny muted">Hover bars in the live cockpit for exact day totals</text>
-  </g>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="580" viewBox="0 0 1200 580">
+
+  <defs>
+
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+
+      <stop stop-color="#0a101a"/><stop offset="1" stop-color="#070b12"/>
+
+    </linearGradient>
+
+    <radialGradient id="glow" cx=".2" cy="0" r=".6">
+
+      <stop stop-color="#3ecfbf" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/>
+
+    </radialGradient>
+
+    <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1">
+
+      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#3dd68c"/>
+
+    </linearGradient>
+
+    <linearGradient id="ringB" x1="0" y1="0" x2="1" y2="1">
+
+      <stop stop-color="#3ecfbf"/><stop offset="1" stop-color="#5b9dff"/>
+
+    </linearGradient>
+
+    <linearGradient id="tokIn" x1="0" y1="0" x2="1" y2="0">
+
+      <stop stop-color="#5b9dff"/><stop offset="1" stop-color="#79d8ff"/>
+
+    </linearGradient>
+
+    <linearGradient id="tokOut" x1="0" y1="0" x2="1" y2="0">
+
+      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#3dd68c"/>
+
+    </linearGradient>
+
+    <filter id="shadow"><feDropShadow dx="0" dy="10" stdDeviation="14" flood-opacity=".4"/></filter>
+
+    <style>
+
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
+
+      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:18px;font-weight:700}
+
+      .strong{font-weight:700}.card{fill:#101826;stroke:#2a3a52}
+
+      .green{fill:#3dd68c}.orange{fill:#f0b429}.teal{fill:#3ecfbf}
+
+    </style>
+
+  </defs>
+
+  <rect width="1200" height="580" rx="20" fill="url(#bg)"/>
+
+  <rect width="1200" height="580" rx="20" fill="url(#glow)"/>
+
+  <text x="28" y="42" class="title">Quota cards</text>
+
+  <text x="28" y="62" class="tiny muted">Drag to reorder    pin models to the status bar</text>
+
+
+
+  <g transform="translate(28 84)" filter="url(#shadow)">
+
+    <rect width="360" height="220" rx="16" class="card"/>
+
+    <circle cx="22" cy="28" r="5" class="green"/>
+
+    <text x="36" y="33" class="small strong">Composer</text>
+
+    <text x="36" y="50" class="tiny muted">Healthy    42% of spend</text>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="url(#ringG)" stroke-width="9" stroke-linecap="round" stroke-dasharray="168 251" transform="rotate(-90 72 128)"/>
+
+    <text x="72" y="133" text-anchor="middle" class="small strong">42%</text>
+
+    <text x="140" y="108" class="tiny muted">Spend</text>
+
+    <text x="330" y="108" text-anchor="end" class="small strong">$8.40</text>
+
+    <text x="140" y="130" class="tiny muted">Tokens</text>
+
+    <text x="330" y="130" text-anchor="end" class="small strong">412k</text>
+
+    <text x="140" y="158" class="tiny muted">Input</text>
+
+    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="164" width="120" height="6" rx="3" fill="url(#tokIn)"/>
+
+    <text x="140" y="190" class="tiny muted">Output</text>
+
+    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="196" width="72" height="6" rx="3" fill="url(#tokOut)"/>
+
+    <rect x="22" y="220" width="64" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
+
+    <text x="54" y="235" text-anchor="middle" class="tiny">Chat 18</text>
+
+    <rect x="94" y="220" width="78" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
+
+    <text x="133" y="235" text-anchor="middle" class="tiny">Agent 9</text>
+
+  </g>
+
+
+
+  <g transform="translate(420 84)" filter="url(#shadow)">
+
+    <rect width="360" height="220" rx="16" class="card"/>
+
+    <circle cx="22" cy="28" r="5" class="orange"/>
+
+    <text x="36" y="33" class="small strong">claude-4-sonnet</text>
+
+    <text x="36" y="50" class="tiny muted">Warning    28% of spend</text>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="#f0b429" stroke-width="9" stroke-linecap="round" stroke-dasharray="112 251" transform="rotate(-90 72 128)"/>
+
+    <text x="72" y="133" text-anchor="middle" class="small strong">28%</text>
+
+    <text x="140" y="108" class="tiny muted">Spend</text>
+
+    <text x="330" y="108" text-anchor="end" class="small strong">$5.60</text>
+
+    <text x="140" y="130" class="tiny muted">Tokens</text>
+
+    <text x="330" y="130" text-anchor="end" class="small strong">268k</text>
+
+    <text x="140" y="158" class="tiny muted">Input</text>
+
+    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="164" width="100" height="6" rx="3" fill="url(#tokIn)"/>
+
+    <text x="140" y="190" class="tiny muted">Output</text>
+
+    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="196" width="88" height="6" rx="3" fill="url(#tokOut)"/>
+
+    <rect x="22" y="220" width="70" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
+
+    <text x="57" y="235" text-anchor="middle" class="tiny">Chat 11</text>
+
+  </g>
+
+
+
+  <g transform="translate(812 84)" filter="url(#shadow)">
+
+    <rect width="360" height="220" rx="16" class="card"/>
+
+    <circle cx="22" cy="28" r="5" class="green"/>
+
+    <text x="36" y="33" class="small strong">gpt-5</text>
+
+    <text x="36" y="50" class="tiny muted">Healthy    18% of spend</text>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="#1a2433" stroke-width="9"/>
+
+    <circle cx="72" cy="128" r="40" fill="none" stroke="url(#ringB)" stroke-width="9" stroke-linecap="round" stroke-dasharray="72 251" transform="rotate(-90 72 128)"/>
+
+    <text x="72" y="133" text-anchor="middle" class="small strong">18%</text>
+
+    <text x="140" y="108" class="tiny muted">Spend</text>
+
+    <text x="330" y="108" text-anchor="end" class="small strong">$3.60</text>
+
+    <text x="140" y="130" class="tiny muted">Tokens</text>
+
+    <text x="330" y="130" text-anchor="end" class="small strong">190k</text>
+
+    <text x="140" y="158" class="tiny muted">Input</text>
+
+    <rect x="140" y="164" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="164" width="90" height="6" rx="3" fill="url(#tokIn)"/>
+
+    <text x="140" y="190" class="tiny muted">Output</text>
+
+    <rect x="140" y="196" width="180" height="6" rx="3" fill="#1a2433"/>
+
+    <rect x="140" y="196" width="60" height="6" rx="3" fill="url(#tokOut)"/>
+
+    <rect x="22" y="220" width="64" height="22" rx="11" fill="#152033" stroke="#2a3a52"/>
+
+    <text x="54" y="235" text-anchor="middle" class="tiny">Chat 7</text>
+
+  </g>
+
+
+
+  <g transform="translate(28 332)" filter="url(#shadow)">
+
+    <rect width="1144" height="210" rx="16" class="card"/>
+
+    <text x="22" y="34" class="small strong">Daily spend trend</text>
+
+    <text x="22" y="52" class="tiny muted">Last 14 days    sample attributed spend</text>
+
+    <g transform="translate(40 80)">
+
+      <rect y="90" width="48" height="40" rx="6" fill="#3ecfbf" opacity=".45"/>
+
+      <rect x="70" y="70" width="48" height="60" rx="6" fill="#3ecfbf" opacity=".55"/>
+
+      <rect x="140" y="40" width="48" height="90" rx="6" fill="#3ecfbf" opacity=".7"/>
+
+      <rect x="210" y="55" width="48" height="75" rx="6" fill="#5b9dff" opacity=".65"/>
+
+      <rect x="280" y="25" width="48" height="105" rx="6" fill="#3ecfbf" opacity=".85"/>
+
+      <rect x="350" y="48" width="48" height="82" rx="6" fill="#5b9dff" opacity=".7"/>
+
+      <rect x="420" y="35" width="48" height="95" rx="6" fill="#3ecfbf" opacity=".8"/>
+
+      <rect x="490" y="60" width="48" height="70" rx="6" fill="#5b9dff" opacity=".6"/>
+
+      <rect x="560" y="20" width="48" height="110" rx="6" fill="#f0b429" opacity=".85"/>
+
+      <rect x="630" y="45" width="48" height="85" rx="6" fill="#3ecfbf" opacity=".75"/>
+
+      <rect x="700" y="30" width="48" height="100" rx="6" fill="#5b9dff" opacity=".8"/>
+
+      <rect x="770" y="50" width="48" height="80" rx="6" fill="#3ecfbf" opacity=".7"/>
+
+      <rect x="840" y="15" width="48" height="115" rx="6" fill="#ff6b6b" opacity=".8"/>
+
+      <rect x="910" y="38" width="48" height="92" rx="6" fill="#3ecfbf" opacity=".75"/>
+
+    </g>
+
+    <text x="1100" y="190" text-anchor="end" class="tiny muted">Hover bars in the live cockpit for exact day totals</text>
+
+  </g>
+
+</svg>
+

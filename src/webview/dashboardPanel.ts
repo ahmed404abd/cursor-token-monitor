@@ -99,7 +99,7 @@ function htmlShell(
         </div>
       </div>
       <div class="plan-meta">
-        <div class="eyebrow">Plan details</div>
+        <div class="eyebrow">Plan details <button type="button" class="info-btn" data-info-key="binding" aria-label="About binding usage" title="About binding usage">i</button></div>
         <h1><span id="accountEmail">—</span> <span class="plan-chip" id="planChip">—</span></h1>
         <p class="lede" id="planMessage">Loading usage…</p>
         <div class="quota-bars" id="quotaBars"></div>
@@ -152,7 +152,7 @@ function htmlShell(
   <section class="section">
     <div class="section__head heatmap-head">
       <div>
-        <h2>Usage flow</h2>
+        <h2>Usage flow <button type="button" class="info-btn" data-info-key="flowTotal" aria-label="About usage flow" title="About usage flow">i</button></h2>
         <p>Interactive Sankey · Plan → Models → Chats / Workspaces</p>
       </div>
       <div class="flow-controls">
