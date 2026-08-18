@@ -78,11 +78,11 @@ export async function resetCardOrder(
 
 export function loadSettings(): CockpitSettings {
   const cfg = vscode.workspace.getConfiguration('cursorTokenMonitor');
-  let warning = cfg.get<number>('warningThreshold', 75);
-  let critical = cfg.get<number>('criticalThreshold', 90);
+  let warning = cfg.get<number>('warningThreshold', 65);
+  let critical = cfg.get<number>('criticalThreshold', 85);
   if (!(warning < critical)) {
-    warning = 75;
-    critical = 90;
+    warning = 65;
+    critical = 85;
   }
   return {
     statusBarFormat: cfg.get<StatusBarFormat>('statusBarFormat', 'full'),

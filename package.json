@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit — info tips, health-colored binding ring, Sankey flow, observability charts.",
+  "description": "Private Cursor AI usage cockpit — synthwave theme, total-usage health colors, Sankey flow, observability charts.",
   "publisher": "ahmed404abd",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -38,7 +38,7 @@
     "observability"
   ],
   "galleryBanner": {
-    "color": "#070b12",
+    "color": "#3d264e",
     "theme": "dark"
   },
   "activationEvents": [
@@ -153,17 +153,17 @@
         },
         "cursorTokenMonitor.warningThreshold": {
           "type": "number",
-          "default": 75,
+          "default": 65,
           "minimum": 1,
           "maximum": 99,
-          "description": "Percent of included allowance that triggers warning styling/alerts. Must be lower than criticalThreshold."
+          "description": "Percent of total included usage that triggers warning styling/alerts. Must be lower than criticalThreshold."
         },
         "cursorTokenMonitor.criticalThreshold": {
           "type": "number",
-          "default": 90,
+          "default": 85,
           "minimum": 2,
           "maximum": 100,
-          "description": "Percent of included allowance that triggers critical styling/alerts."
+          "description": "Percent of total included usage that triggers critical (red) styling/alerts."
         },
         "cursorTokenMonitor.viewMode": {
           "type": "string",

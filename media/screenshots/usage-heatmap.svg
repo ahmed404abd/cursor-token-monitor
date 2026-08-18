@@ -4,13 +4,13 @@
 
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
 
-      <stop stop-color="#0a101a"/><stop offset="1" stop-color="#070b12"/>
+      <stop stop-color="#3d264e"/><stop offset="1" stop-color="#2a1838"/>
 
     </linearGradient>
 
     <radialGradient id="glow" cx=".85" cy="0" r=".55">
 
-      <stop stop-color="#5b9dff" stop-opacity=".16"/><stop offset="1" stop-opacity="0"/>
+      <stop stop-color="#687cc8" stop-opacity=".16"/><stop offset="1" stop-opacity="0"/>
 
     </radialGradient>
 
@@ -18,11 +18,11 @@
 
     <style>
 
-      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#ece8f4}
 
-      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:18px;font-weight:700}
+      .muted{fill:#a89bb8}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:18px;font-weight:700}
 
-      .strong{font-weight:700}.card{fill:#101826;stroke:#2a3a52}.teal{fill:#3ecfbf}
+      .strong{font-weight:700}.card{fill:#3d264e;stroke:#5a4070}.teal{fill:#90a4e8}
 
     </style>
 
@@ -46,7 +46,7 @@
 
   <rect x="28" y="84" width="1144" height="320" rx="16" class="card" filter="url(#shadow)"/>
 
-  <g transform="translate(56 118)" font-size="10" fill="#8fa0b8">
+  <g transform="translate(56 118)" font-size="10" fill="#a89bb8">
 
     <text y="12">Mon</text><text y="44">Wed</text><text y="76">Fri</text><text y="108">Sun</text>
 
@@ -58,19 +58,19 @@
 
     <g id="week0">
 
-      <rect width="16" height="16" rx="3" fill="transparent" stroke="#2a3a52" stroke-dasharray="2 2" opacity=".6"/>
+      <rect width="16" height="16" rx="3" fill="transparent" stroke="#5a4070" stroke-dasharray="2 2" opacity=".6"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#3d264e"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#90a4e8"/>
 
     </g>
 
@@ -80,31 +80,31 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#e89f47"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#1a4a36"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#3d264e"/>
 
     </g>
 
     <g transform="translate(44)">
 
-      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect width="16" height="16" rx="3" fill="#3d264e"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#ff5c8a"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -114,13 +114,13 @@
 
       <rect width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#e89f47"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -134,29 +134,29 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#3d264e"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#ff5c8a"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#3d264e"/>
 
     </g>
 
     <g transform="translate(110)">
 
-      <rect width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#e89f47"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#1a4a36"/>
 
@@ -166,19 +166,19 @@
 
     <g transform="translate(132)">
 
-      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#e89f47"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#90a4e8"/>
 
     </g>
 
@@ -186,13 +186,13 @@
 
       <rect width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#ff5c8a"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -206,31 +206,31 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#e89f47"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#90a4e8"/>
 
     </g>
 
     <g transform="translate(198)">
 
-      <rect width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#ff5c8a"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -238,17 +238,17 @@
 
     <g transform="translate(220)">
 
-      <rect width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#e89f47"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -258,17 +258,17 @@
 
       <rect width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#90a4e8"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#f0b429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#e89f47"/>
 
     </g>
 
@@ -278,11 +278,11 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#ff6b6b"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#ff5c8a"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#3dd68c"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#90a4e8"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#1a2433"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#3d264e"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
 
@@ -294,7 +294,7 @@
 
 
 
-  <rect x="820" y="130" width="300" height="170" rx="12" fill="#080c14" stroke="#3ecfbf" stroke-opacity=".4"/>
+  <rect x="820" y="130" width="300" height="170" rx="12" fill="#080c14" stroke="#90a4e8" stroke-opacity=".4"/>
 
   <text x="838" y="158" class="small strong">Aug 4, 2026</text>
 
@@ -312,7 +312,7 @@
 
   <text x="838" y="256" class="tiny muted">Allowance</text>
 
-  <text x="1090" y="256" text-anchor="end" class="small strong" style="fill:#f0b429">Warning</text>
+  <text x="1090" y="256" text-anchor="end" class="small strong" style="fill:#e89f47">Warning</text>
 
   <text x="838" y="280" class="tiny muted">Composer 62%    Sonnet 24%</text>
 
@@ -322,11 +322,11 @@
 
     <text y="14">No history</text>
 
-    <rect x="72" y="2" width="14" height="14" rx="3" fill="transparent" stroke="#2a3a52" stroke-dasharray="2 2"/>
+    <rect x="72" y="2" width="14" height="14" rx="3" fill="transparent" stroke="#5a4070" stroke-dasharray="2 2"/>
 
     <text x="100" y="14">$0</text>
 
-    <rect x="120" y="2" width="14" height="14" rx="3" fill="#1a2433"/>
+    <rect x="120" y="2" width="14" height="14" rx="3" fill="#3d264e"/>
 
     <text x="148" y="14">Less</text>
 
@@ -334,15 +334,15 @@
 
     <rect x="198" y="2" width="14" height="14" rx="3" fill="#247a52"/>
 
-    <rect x="218" y="2" width="14" height="14" rx="3" fill="#3dd68c"/>
+    <rect x="218" y="2" width="14" height="14" rx="3" fill="#90a4e8"/>
 
     <text x="246" y="14">More</text>
 
-    <rect x="290" y="2" width="14" height="14" rx="3" fill="#f0b429"/>
+    <rect x="290" y="2" width="14" height="14" rx="3" fill="#e89f47"/>
 
     <text x="312" y="14">Warning</text>
 
-    <rect x="372" y="2" width="14" height="14" rx="3" fill="#ff6b6b"/>
+    <rect x="372" y="2" width="14" height="14" rx="3" fill="#ff5c8a"/>
 
     <text x="394" y="14">Critical</text>
 

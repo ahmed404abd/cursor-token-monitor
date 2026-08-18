@@ -5,6 +5,7 @@ import {
   buildUsageInsights,
   centsToDollars,
   estimateAutoModels,
+  totalUsagePercent,
 } from './usageIntelligence';
 import {
   loadProjectRecords,
@@ -199,9 +200,7 @@ function scheduleRotation() {
 }
 
 function warningColor(usage: UsageSnapshot, settings: CockpitSettings): vscode.ThemeColor | undefined {
-  const pct = usage.planUsage && usage.planUsage.limit > 0
-    ? (usage.planUsage.includedSpend / usage.planUsage.limit) * 100
-    : undefined;
+  const pct = totalUsagePercent(usage);
   if (pct === undefined) return undefined;
   if (pct >= settings.criticalThreshold) {
     return new vscode.ThemeColor('statusBarItem.errorBackground');

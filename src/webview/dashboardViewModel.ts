@@ -18,6 +18,7 @@ import {
   estimateAutoModels,
   formatPercent,
   usedPercent,
+  totalUsagePercent,
   usageHealth,
   bindingQuotaLabel,
 } from '../usageIntelligence';
@@ -264,7 +265,7 @@ function buildModelCards(
 ): CockpitCard[] {
   const models = usage.modelUsage ?? [];
   const totalSpend = models.reduce((s, m) => s + m.chargedCents, 0) || 1;
-  const planPct = usedPercent(usage) ?? 0;
+  const planPct = totalUsagePercent(usage) ?? usedPercent(usage) ?? 0;
   const planHealth = toCardHealth(planPct, settings.warningThreshold, settings.criticalThreshold);
 
   const cards = models.map((m) => {
@@ -467,13 +468,8 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
     input;
   const plan = usage.planUsage;
   const bindingPct = usedPercent(usage) ?? 0;
-  const ringPct =
-    plan?.totalPercentUsed !== undefined && Number.isFinite(plan.totalPercentUsed)
-      ? plan.totalPercentUsed
-      : bindingPct;
-  const healthMap = usageHealth(usage, settings.warningThreshold, settings.criticalThreshold);
-  const planHealth: CardHealth =
-    healthMap === 'critical' ? 'critical' : healthMap === 'warning' ? 'warning' : 'healthy';
+  const ringPct = totalUsagePercent(usage) ?? bindingPct;
+  const planHealth = toCardHealth(ringPct, settings.warningThreshold, settings.criticalThreshold);
   const reset = resetCountdown(usage.billingCycleEndMs);
   const insights = buildUsageInsights(usage, settings.warningThreshold, settings.criticalThreshold);
   const burn = buildBurnForecast(usage, dailySpend);

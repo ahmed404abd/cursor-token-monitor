@@ -1,3 +1,10 @@
+## [1.9.0] - 2026-08-18
+
+### Changed
+- **Synthwave color theme** — plum / indigo / light-blue / amber / neon-pink palette across cockpit, status bar styling, and marketplace screenshots
+- **Total-usage health grading** — ring, status bar, and Sankey total bar now follow **total included usage**, not the max of individual pools (fixes always-red when one pool was high but total was low)
+- Default thresholds: **65%** warning, **85%** critical (red only above 85%)
+
 ## [1.8.0] - 2026-08-13
 
 ### Added

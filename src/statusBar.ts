@@ -1,5 +1,5 @@
 import { UsageSnapshot, displayModelName } from './cursorApi';
-import { centsToDollars, formatPercent, usedPercent, usageHealth } from './usageIntelligence';
+import { centsToDollars, formatPercent, totalUsagePercent, usageHealth } from './usageIntelligence';
 import { CockpitSettings, StatusBarFormat } from './webview/preferences';
 
 export type HealthTone = 'safe' | 'warning' | 'critical';
@@ -42,7 +42,7 @@ export function formatStatusBar(
   pinnedModelIds: string[] = []
 ): string {
   const plan = usage.planUsage;
-  const pct = usedPercent(usage);
+  const pct = totalUsagePercent(usage);
   const health = usageHealth(usage, settings.warningThreshold, settings.criticalThreshold);
   const icon = healthIcon(health);
   const named = resolveNamedModel(usage, pinnedModelIds);

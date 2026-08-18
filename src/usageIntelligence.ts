@@ -15,6 +15,19 @@ export interface UsageInsight {
   detail: string;
 }
 
+/** Combined included allowance % — used for ring color, status bar, and plan health. */
+export function totalUsagePercent(usage: UsageSnapshot): number | undefined {
+  const plan = usage.planUsage;
+  if (!plan) return undefined;
+  if (plan.totalPercentUsed !== undefined && Number.isFinite(plan.totalPercentUsed)) {
+    return plan.totalPercentUsed;
+  }
+  if (plan.limit > 0) {
+    return (plan.includedSpend / plan.limit) * 100;
+  }
+  return undefined;
+}
+
 export function usedPercent(usage: UsageSnapshot): number | undefined {
   const plan = usage.planUsage;
   if (!plan) return undefined;
@@ -28,6 +41,17 @@ export function usedPercent(usage: UsageSnapshot): number | undefined {
   if (!candidates.length) return undefined;
   // Binding constraint = whichever Pro pool is closer to exhausted
   return Math.max(...candidates);
+}
+
+export function healthFromPercent(
+  pct: number | undefined,
+  warningThreshold = 65,
+  criticalThreshold = 85
+): UsageHealth {
+  if (pct === undefined || Number.isNaN(pct)) return 'safe';
+  if (pct >= criticalThreshold) return 'critical';
+  if (pct >= warningThreshold) return 'warning';
+  return 'safe';
 }
 
 export function bindingQuotaLabel(usage: UsageSnapshot): string | undefined {
@@ -44,14 +68,10 @@ export function bindingQuotaLabel(usage: UsageSnapshot): string | undefined {
 
 export function usageHealth(
   usage: UsageSnapshot,
-  warningThreshold = 75,
-  criticalThreshold = 90
+  warningThreshold = 65,
+  criticalThreshold = 85
 ): UsageHealth {
-  const pct = usedPercent(usage);
-  if (pct === undefined) return 'safe';
-  if (pct >= criticalThreshold) return 'critical';
-  if (pct >= warningThreshold) return 'warning';
-  return 'safe';
+  return healthFromPercent(totalUsagePercent(usage), warningThreshold, criticalThreshold);
 }
 
 export function centsToDollars(cents: number): string {
@@ -69,7 +89,7 @@ export function formatStatusBarText(usage: UsageSnapshot): string {
   if (plan && plan.limit > 0) {
     const used = centsToDollars(plan.includedSpend);
     const limit = centsToDollars(plan.limit);
-    const pct = usedPercent(usage) ?? 0;
+    const pct = totalUsagePercent(usage) ?? 0;
     const health = usageHealth(usage);
 
     if (health === 'critical') {
@@ -134,8 +154,8 @@ export function estimateAutoModels(usage: UsageSnapshot): AutoModelEstimate {
 
 export function buildUsageInsights(
   usage: UsageSnapshot,
-  warningThreshold = 75,
-  criticalThreshold = 90
+  warningThreshold = 65,
+  criticalThreshold = 85
 ): UsageInsight[] {
   const insights: UsageInsight[] = [];
   const plan = usage.planUsage;
@@ -161,7 +181,7 @@ export function buildUsageInsights(
   }
 
   if (!buckets.length && plan) {
-    const pct = usedPercent(usage);
+    const pct = totalUsagePercent(usage);
     if (pct !== undefined) {
       if (pct >= criticalThreshold) {
         insights.push({

@@ -5,6 +5,7 @@ import { formatStatusBar } from '../statusBar';
 import { UsageSnapshot } from '../cursorApi';
 import { CockpitSettings } from '../webview/preferences';
 import { resetCountdown, buildCockpitViewModel } from '../webview/dashboardViewModel';
+import { usageHealth } from '../usageIntelligence';
 
 function sampleUsage(overrides: Partial<UsageSnapshot> = {}): UsageSnapshot {
   return {
@@ -92,8 +93,8 @@ const baseSettings: CockpitSettings = {
   statusBarFormat: 'full',
   statusBarMode: 'spend',
   notificationsEnabled: true,
-  warningThreshold: 75,
-  criticalThreshold: 90,
+  warningThreshold: 65,
+  criticalThreshold: 85,
   viewMode: 'card',
   displayMode: 'dashboard',
   refreshIntervalSeconds: 60,
@@ -105,7 +106,7 @@ describe('preferences helpers', () => {
   });
 
   it('validateThresholds requires warning < critical', () => {
-    assert.equal(validateThresholds(75, 90), true);
+    assert.equal(validateThresholds(65, 85), true);
     assert.equal(validateThresholds(90, 75), false);
     assert.equal(validateThresholds(80, 80), false);
   });
@@ -220,6 +221,47 @@ describe('view model', () => {
     assert.equal(vm.quotaBuckets[1].percentLabel, '100%');
     assert.match(vm.displayMessage, /Cursor Models 20%/);
     assert.match(vm.displayMessage, /Other Models 100%/);
+    assert.equal(vm.planHealth, 'healthy');
+  });
+
+  it('uses total usage percent for plan ring health when one pool is exhausted', () => {
+    const usage = sampleUsage({
+      planUsage: {
+        totalSpend: 600,
+        includedSpend: 600,
+        remaining: 1400,
+        limit: 2000,
+        autoPercentUsed: 20,
+        apiPercentUsed: 100,
+        totalPercentUsed: 30,
+      },
+    });
+    const vm = buildCockpitViewModel({
+      usage,
+      projects: [],
+      dailySpend: [],
+      sessions: [],
+      spendSummary: {
+        todayCents: 10,
+        yesterdayCents: 5,
+        sevenDayAvgCents: 7,
+        sevenDayTotalCents: 49,
+      },
+      prefs: {
+        groupMode: 'model',
+        quotaLayout: 'graph',
+        cardOrderModel: [],
+        cardOrderWorkspace: [],
+        modelAliases: {},
+        pinnedModelIds: [],
+      },
+      settings: baseSettings,
+      issuesUrl: 'https://example.com',
+    });
+
+    assert.equal(vm.percentUsed, 30);
+    assert.equal(vm.planHealth, 'healthy');
+    assert.equal(usageHealth(usage, 65, 85), 'safe');
   });
 
   it('builds a 90-day model heatmap with availability and threshold signals', () => {

@@ -107,7 +107,7 @@
 
   const INFO_TIPS = {
     binding:
-      'The ring follows the binding pool — whichever included quota is closer to exhausted (Cursor Models % or Other Models %). Green = comfortable, amber = warning, red = critical.',
+      'The ring follows total included usage for this billing cycle. Blue = comfortable, amber = elevated (65%+), neon pink = critical (85%+). Individual pool bars below still show Cursor Models vs Other Models.',
     cursorModels:
       'Cursor Models is the included Composer / Grok / Auto pool. This percentage is pool usage for the billing cycle, not a dollar invoice line.',
     otherModels:
@@ -169,9 +169,9 @@
   }
 
   function healthColor(health) {
-    if (health === 'critical') return '#ff6b6b';
-    if (health === 'warning') return '#f0b429';
-    return '#3dd68c';
+    if (health === 'critical') return '#ff5c8a';
+    if (health === 'warning') return '#e89f47';
+    return '#90a4e8';
   }
 
   function renderQuotaBars(buckets) {
