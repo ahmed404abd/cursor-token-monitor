@@ -4,9 +4,9 @@
 
 Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, dual Pro quotas, burn-rate forecasts, model comparisons, trends, a 90-day heatmap, and alerts — without sending usage to a third-party service.
 
-The dashboard uses a **synthwave-inspired** dark glass cockpit (plum base, indigo / light-blue accents, amber warnings, neon pink only above 85% total usage).
+The dashboard uses a dark glass cockpit aesthetic (teal / cyan accents, allowance glow rings, dual quota bars, and KPI tiles) so plan risk is readable at a glance.
 
-**New in 1.9:** synthwave palette, total-usage health colors (red only above 85%), refreshed marketplace screenshots.
+**New in 1.9.1:** restored dark-glass marketplace screenshots, status-bar health tint, total-usage colors (red only above 85%).
 
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
@@ -67,7 +67,7 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 - **Dual Pro quotas** matching Cursor's dashboard:
   - **Cursor Models** (Composer / Grok / Auto pool) percent used
   - **Other Models** (included API dollar allowance) percent + $ used / $ limit
-  - Ring + status bar colors follow **total included usage** (blue → amber → neon pink at 85%+)
+  - Ring + status bar colors follow **total included usage** (teal → amber → red at 85%+)
 - **Burn-rate forecast**: projected included-pool % by cycle end and countdown to 100%
 
 ### A GitHub-style heatmap, built for AI usage
@@ -78,9 +78,9 @@ The rolling 90-day heatmap adds signals that a plain contribution count cannot:
 
 - **Rich hover details** — date, spend, request count, top model, allowance signal, and a model breakdown
 - **Per-model filtering** — isolate activity for one model without losing account-level threshold context
-- **Threshold overlays** — amber and neon-pink days reuse the configured warning (65%) and critical (85%) thresholds
+- **Threshold overlays** — orange and red days reuse the configured warning (65%) and critical (85%) thresholds
 - **Meaningful empty states** — dashed cells mean no local history; dark cells mean history exists with $0 spend
-- **Cockpit-native scale** — healthy activity uses the synthwave light-blue palette
+- **Cockpit-native scale** — healthy activity uses the same teal/green palette as model health
 
 History is kept locally for 90 days. Earlier cells remain visibly unavailable until the extension has observed enough data.
 
@@ -110,7 +110,7 @@ Set `displayMode` to `quickpick` (or run **Open QuickPick**) for a keyboard-frie
 
 ### Alerts
 
-Configurable warning/critical thresholds (defaults 75% / 90%). Can be disabled with `notificationsEnabled`. Also notifies when today’s spend is unusually high vs your recent average.
+Configurable warning/critical thresholds (defaults 65% / 85%). Can be disabled with `notificationsEnabled`. Also notifies when today’s spend is unusually high vs your recent average.
 
 ## Settings
 

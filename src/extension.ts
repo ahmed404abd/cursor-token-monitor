@@ -5,7 +5,7 @@ import {
   buildUsageInsights,
   centsToDollars,
   estimateAutoModels,
-  totalUsagePercent,
+  usageHealth,
 } from './usageIntelligence';
 import {
   loadProjectRecords,
@@ -199,16 +199,19 @@ function scheduleRotation() {
   }, 8000);
 }
 
-function warningColor(usage: UsageSnapshot, settings: CockpitSettings): vscode.ThemeColor | undefined {
-  const pct = totalUsagePercent(usage);
-  if (pct === undefined) return undefined;
-  if (pct >= settings.criticalThreshold) {
-    return new vscode.ThemeColor('statusBarItem.errorBackground');
+function applyStatusBarAppearance(usage: UsageSnapshot, settings: CockpitSettings) {
+  const health = usageHealth(usage, settings.warningThreshold, settings.criticalThreshold);
+  if (health === 'critical') {
+    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.errorBackground');
+    statusBarItem.color = undefined;
+  } else if (health === 'warning') {
+    statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+    statusBarItem.color = undefined;
+  } else {
+    // VS Code only allows error/warning backgrounds; healthy uses teal text so the item is not colorless.
+    statusBarItem.backgroundColor = undefined;
+    statusBarItem.color = '#3dd68c';
   }
-  if (pct >= settings.warningThreshold) {
-    return new vscode.ThemeColor('statusBarItem.warningBackground');
-  }
-  return undefined;
 }
 
 function buildTooltip(auth: CursorAuthData, usage: UsageSnapshot, settings: CockpitSettings): string {
@@ -250,7 +253,7 @@ async function refresh(context: vscode.ExtensionContext) {
     statusBarItem.command = 'cursorTokenMonitor.openDashboard';
     applyStatusBarText();
     statusBarItem.tooltip = buildTooltip(auth, lastUsage, settings);
-    statusBarItem.backgroundColor = warningColor(lastUsage, settings);
+    applyStatusBarAppearance(lastUsage, settings);
     pushViewModel(context);
   } catch (err: any) {
     const message = err?.message ?? String(err);
@@ -263,6 +266,7 @@ async function refresh(context: vscode.ExtensionContext) {
           : '$(warning) Cursor usage';
     statusBarItem.tooltip = `Failed to fetch Cursor usage:\n${message}\n\nClick for setup help, or run "Cursor Token Monitor: Check Connection".`;
     statusBarItem.backgroundColor = new vscode.ThemeColor('statusBarItem.warningBackground');
+    statusBarItem.color = undefined;
     statusBarItem.command = 'cursorTokenMonitor.checkConnection';
     postError(message);
 

@@ -1,3 +1,10 @@
+## [1.9.1] - 2026-08-18
+
+### Changed
+- Restored the original **dark-glass** cockpit palette (teal / cyan on charcoal) — removed the purple synthwave theme
+- Restored marketplace description screenshots from 1.8.0
+- Status bar is colored again from **total usage**: teal text when healthy, amber background at 65%+, red background at 85%+
+
 ## [1.9.0] - 2026-08-18
 
 ### Changed
