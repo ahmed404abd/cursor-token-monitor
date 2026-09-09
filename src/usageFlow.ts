@@ -54,14 +54,14 @@ export interface UsageFlowView {
 }
 
 const MODEL_COLORS = [
-  '#3ecfbf',
-  '#5b9dff',
-  '#b86adf',
-  '#f0b429',
-  '#ff6b6b',
-  '#3dd68c',
-  '#79d8ff',
-  '#c792ea',
+  '#c43c3c',
+  '#e85d4c',
+  '#a63c3c',
+  '#c9893a',
+  '#ff2d2d',
+  '#8b1e1e',
+  '#d4785a',
+  '#b05040',
 ];
 
 function startOfLocalDay(d = new Date()): Date {

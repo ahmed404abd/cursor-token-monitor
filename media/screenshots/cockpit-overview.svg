@@ -4,53 +4,53 @@
 
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
 
-      <stop stop-color="#0a101a"/>
+      <stop stop-color="#0c0c0c"/>
 
-      <stop offset="1" stop-color="#070b12"/>
+      <stop offset="1" stop-color="#050505"/>
 
     </linearGradient>
 
     <radialGradient id="glowL" cx="0.1" cy="0" r="0.55">
 
-      <stop stop-color="#3ecfbf" stop-opacity=".22"/>
+      <stop stop-color="#e85d4c" stop-opacity=".22"/>
 
-      <stop offset="1" stop-color="#070b12" stop-opacity="0"/>
+      <stop offset="1" stop-color="#050505" stop-opacity="0"/>
 
     </radialGradient>
 
     <radialGradient id="glowR" cx="0.95" cy="0.05" r="0.5">
 
-      <stop stop-color="#5b9dff" stop-opacity=".18"/>
+      <stop stop-color="#c43c3c" stop-opacity=".18"/>
 
-      <stop offset="1" stop-color="#070b12" stop-opacity="0"/>
+      <stop offset="1" stop-color="#050505" stop-opacity="0"/>
 
     </radialGradient>
 
     <linearGradient id="brand" x1="0" y1="0" x2="1" y2="1">
 
-      <stop stop-color="#3ecfbf"/>
+      <stop stop-color="#e85d4c"/>
 
-      <stop offset=".55" stop-color="#5b9dff"/>
+      <stop offset=".55" stop-color="#c43c3c"/>
 
-      <stop offset="1" stop-color="#3dd68c"/>
+      <stop offset="1" stop-color="#a67c6d"/>
 
     </linearGradient>
 
     <linearGradient id="barOk" x1="0" y1="0" x2="1" y2="0">
 
-      <stop stop-color="#1aa896"/><stop offset="1" stop-color="#79d8ff"/>
+      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#e85d4c"/>
 
     </linearGradient>
 
     <linearGradient id="barCrit" x1="0" y1="0" x2="1" y2="0">
 
-      <stop stop-color="#c43c3c"/><stop offset="1" stop-color="#ffb4b4"/>
+      <stop stop-color="#c43c3c"/><stop offset="1" stop-color="#ff8a8a"/>
 
     </linearGradient>
 
     <linearGradient id="btn" x1="0" y1="0" x2="1" y2="1">
 
-      <stop stop-color="#22c3b0"/><stop offset="1" stop-color="#1a8fd6"/>
+      <stop stop-color="#c43c3c"/><stop offset="1" stop-color="#8b1e1e"/>
 
     </linearGradient>
 
@@ -58,13 +58,13 @@
 
     <style>
 
-      text{font-family:Segoe UI,Arial,sans-serif;fill:#e8eef7}
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
 
-      .muted{fill:#8fa0b8}.tiny{font-size:11px}.small{font-size:13px}.label{font-size:10px;letter-spacing:1.6px}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.small{font-size:13px}.label{font-size:10px;letter-spacing:1.6px}
 
       .title{font-size:22px;font-weight:700}.h2{font-size:15px;font-weight:700}.strong{font-weight:700}
 
-      .card{fill:#101826;stroke:#2a3a52}.teal{fill:#3ecfbf}.blue{fill:#5b9dff}.green{fill:#3dd68c}.orange{fill:#f0b429}.red{fill:#ff6b6b}
+      .card{fill:#141414;stroke:#2a1a1a}.teal{fill:#e85d4c}.blue{fill:#c43c3c}.green{fill:#a67c6d}.orange{fill:#c9893a}.red{fill:#ff2d2d}
 
     </style>
 
@@ -98,23 +98,23 @@
 
     <text x="144" y="22" text-anchor="middle" class="tiny teal">Group: Model</text>
 
-    <rect x="210" width="96" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <rect x="210" width="96" height="34" rx="17" fill="#152033" stroke="#2a1a1a"/>
 
     <text x="258" y="22" text-anchor="middle" class="tiny">Reset Order</text>
 
-    <rect x="316" width="48" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <rect x="316" width="48" height="34" rx="17" fill="#152033" stroke="#2a1a1a"/>
 
     <text x="340" y="22" text-anchor="middle" class="tiny">CSV</text>
 
-    <rect x="374" width="54" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <rect x="374" width="54" height="34" rx="17" fill="#152033" stroke="#2a1a1a"/>
 
     <text x="401" y="22" text-anchor="middle" class="tiny">JSON</text>
 
-    <rect x="438" width="48" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <rect x="438" width="48" height="34" rx="17" fill="#152033" stroke="#2a1a1a"/>
 
     <text x="462" y="22" text-anchor="middle" class="tiny">MD</text>
 
-    <rect x="496" width="78" height="34" rx="17" fill="#152033" stroke="#2a3a52"/>
+    <rect x="496" width="78" height="34" rx="17" fill="#152033" stroke="#2a1a1a"/>
 
     <text x="535" y="22" text-anchor="middle" class="tiny">Settings</text>
 
@@ -128,9 +128,9 @@
 
 
 
-  <circle cx="112" cy="210" r="54" fill="none" stroke="#1a2433" stroke-width="12"/>
+  <circle cx="112" cy="210" r="54" fill="none" stroke="#1a1212" stroke-width="12"/>
 
-  <circle cx="112" cy="210" r="54" fill="none" stroke="#ff6b6b" stroke-width="12" stroke-linecap="round" stroke-dasharray="339 339" transform="rotate(-90 112 210)"/>
+  <circle cx="112" cy="210" r="54" fill="none" stroke="#ff2d2d" stroke-width="12" stroke-linecap="round" stroke-dasharray="339 339" transform="rotate(-90 112 210)"/>
 
   <text x="112" y="206" text-anchor="middle" class="title">100%</text>
 
@@ -142,7 +142,7 @@
 
   <text x="200" y="180" class="title">Signed-in Cursor account</text>
 
-  <rect x="478" y="158" width="98" height="28" rx="14" fill="#12363a" stroke="#2f7a72"/>
+  <rect x="478" y="158" width="98" height="28" rx="14" fill="#1a1212" stroke="#5a2020"/>
 
   <text x="527" y="176" text-anchor="middle" class="tiny teal strong">Pro - $20/mo</text>
 
@@ -156,7 +156,7 @@
 
   <text x="200" y="258" class="tiny muted">Composer / Grok / Auto pool</text>
 
-  <rect x="200" y="268" width="500" height="12" rx="6" fill="#1a2433"/>
+  <rect x="200" y="268" width="500" height="12" rx="6" fill="#1a1212"/>
 
   <rect x="200" y="268" width="160" height="12" rx="6" fill="url(#barOk)"/>
 
@@ -168,7 +168,7 @@
 
   <text x="200" y="324" class="tiny muted">Included API dollar allowance      $20.00 / $20.00</text>
 
-  <rect x="200" y="334" width="500" height="12" rx="6" fill="#1a2433"/>
+  <rect x="200" y="334" width="500" height="12" rx="6" fill="#1a1212"/>
 
   <rect x="200" y="334" width="500" height="12" rx="6" fill="url(#barCrit)"/>
 
@@ -176,25 +176,25 @@
 
   <g transform="translate(760 140)">
 
-    <rect width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <rect width="390" height="40" rx="12" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="14" y="25" class="tiny muted">Other Models used</text>
 
     <text x="372" y="25" text-anchor="end" class="small strong">$20.00</text>
 
-    <rect y="48" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <rect y="48" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="14" y="73" class="tiny muted">Other Models limit</text>
 
     <text x="372" y="73" text-anchor="end" class="small strong">$20.00</text>
 
-    <rect y="96" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <rect y="96" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="14" y="121" class="tiny muted">API remaining</text>
 
     <text x="372" y="121" text-anchor="end" class="small strong red">$0.00</text>
 
-    <rect y="144" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a3a52"/>
+    <rect y="144" width="390" height="40" rx="12" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="14" y="169" class="tiny muted">Reset in</text>
 
@@ -216,7 +216,7 @@
 
   <g transform="translate(42 510)">
 
-    <rect width="360" height="36" rx="10" fill="#0c1522" stroke="#2a3a52"/>
+    <rect width="360" height="36" rx="10" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="14" y="23" class="tiny muted">Cursor Models now</text>
 
@@ -228,7 +228,7 @@
 
     <text x="720" y="23" text-anchor="end" class="small strong red">100%</text>
 
-    <rect x="760" width="380" height="36" rx="10" fill="#0c1522" stroke="#2a3a52"/>
+    <rect x="760" width="380" height="36" rx="10" fill="#0c1522" stroke="#2a1a1a"/>
 
     <text x="774" y="23" class="tiny muted">Projected Cursor Models</text>
 

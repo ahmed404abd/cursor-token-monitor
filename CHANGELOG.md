@@ -1,3 +1,11 @@
+## [1.10.0] - 2026-09-09
+
+### Changed
+- **Matte black + crimson dark aesthetic** — replaced teal glass theme with solid charcoal panels and red-family accents
+- Charts, Sankey ribbons, heatmap, share bars, and trend lines restyled for the dark-red palette
+- Marketplace description screenshots regenerated
+- Status bar healthy tint uses warm taupe (`#a67c6d`); warning/critical still amber/red backgrounds at 65% / 85%
+
 ## [1.9.1] - 2026-08-18
 
 ### Changed

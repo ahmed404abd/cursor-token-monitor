@@ -210,7 +210,7 @@ function applyStatusBarAppearance(usage: UsageSnapshot, settings: CockpitSetting
   } else {
     // VS Code only allows error/warning backgrounds; healthy uses teal text so the item is not colorless.
     statusBarItem.backgroundColor = undefined;
-    statusBarItem.color = '#3dd68c';
+    statusBarItem.color = '#a67c6d';
   }
 }
 

@@ -107,7 +107,7 @@
 
   const INFO_TIPS = {
     binding:
-      'The ring follows total included usage for this billing cycle. Green = comfortable, amber = elevated (65%+), red = critical (85%+). Individual pool bars below still show Cursor Models vs Other Models.',
+      'The ring follows total included usage for this billing cycle. Warm taupe = comfortable, copper = elevated (65%+), crimson = critical (85%+). Individual pool bars below still show Cursor Models vs Other Models.',
     cursorModels:
       'Cursor Models is the included Composer / Grok / Auto pool. This percentage is pool usage for the billing cycle, not a dollar invoice line.',
     otherModels:
@@ -169,9 +169,9 @@
   }
 
   function healthColor(health) {
-    if (health === 'critical') return '#ff6b6b';
-    if (health === 'warning') return '#f0b429';
-    return '#3dd68c';
+    if (health === 'critical') return '#ff2d2d';
+    if (health === 'warning') return '#c9893a';
+    return '#a67c6d';
   }
 
   function renderQuotaBars(buckets) {
@@ -316,7 +316,7 @@
     const midNodes = layoutNodes(models, midX, top, rowH, gap);
     const leafSource = rightNodes.length
       ? rightNodes
-      : [{ id: 'empty', label: 'No downstream', percent: 100, value: 0, color: '#445' }];
+      : [{ id: 'empty', label: 'No downstream', percent: 100, value: 0, color: '#3a2a2a' }];
     const leafNodes = layoutNodes(leafSource, rightX, top, rowH, gap);
     const sourceH = Math.max(72, Math.min(height - top - 24, midNodes.length * (rowH + gap) - gap));
     const sourceY = top + Math.max(0, (midNodes[midNodes.length - 1].y + midNodes[midNodes.length - 1].h - top - sourceH) / 2);
@@ -334,7 +334,7 @@
         const thickness = Math.max(3, (node.percent / maxPct) * 28);
         const hot = !hotId || hotId === node.id;
         const cls = hotId ? (hot ? 'is-hot' : 'is-dim') : '';
-        return `<path class="flow-link ${cls}" data-model-id="${esc(node.id)}" d="${sankeyPath(leftX + barW, sourceCy, midX, node.cy, thickness)}" fill="${esc(node.color || '#3ecfbf')}"></path>`;
+        return `<path class="flow-link ${cls}" data-model-id="${esc(node.id)}" d="${sankeyPath(leftX + barW, sourceCy, midX, node.cy, thickness)}" fill="${esc(node.color || '#c43c3c')}"></path>`;
       })
       .join('');
 
@@ -342,7 +342,7 @@
       ? leafNodes
           .map((leaf) => {
             const thickness = Math.max(3, ((leaf.percent || 0) / 100) * 22);
-            return `<path class="flow-link is-hot" d="${sankeyPath(midX + barW, nodeCy(midNodes, active.id), rightX, leaf.cy, thickness)}" fill="${esc(active.color || '#3ecfbf')}"></path>`;
+            return `<path class="flow-link is-hot" d="${sankeyPath(midX + barW, nodeCy(midNodes, active.id), rightX, leaf.cy, thickness)}" fill="${esc(active.color || '#c43c3c')}"></path>`;
           })
           .join('')
       : '';
@@ -352,7 +352,7 @@
         const hot = !hotId || hotId === node.id;
         const cls = hotId ? (hot ? 'is-hot' : 'is-dim') : '';
         return `<g class="flow-node" data-model-id="${esc(node.id)}">
-          <rect class="flow-node-bar ${cls}" x="${midX}" y="${node.y}" width="${barW}" height="${node.h}" fill="${esc(node.color || '#3ecfbf')}"></rect>
+          <rect class="flow-node-bar ${cls}" x="${midX}" y="${node.y}" width="${barW}" height="${node.h}" fill="${esc(node.color || '#c43c3c')}"></rect>
           <text class="flow-node-label" x="${midX + barW + 10}" y="${node.cy - 4}">${esc(node.label)}</text>
           <text class="flow-node-sub" x="${midX + barW + 10}" y="${node.cy + 10}">${node.percent.toFixed(0)}% · ${esc(formatFlowValue(node.value, flow.metric))}</text>
         </g>`;
@@ -361,7 +361,7 @@
 
     const rightBars = leafNodes
       .map((node) => {
-        const color = node.color || active?.color || '#5b9dff';
+        const color = node.color || active?.color || '#e85d4c';
         return `<g>
           <rect class="flow-node-bar" x="${rightX}" y="${node.y}" width="${barW}" height="${node.h}" fill="${esc(color)}"></rect>
           <text class="flow-node-label" x="${rightX + barW + 10}" y="${node.cy - 4}">${esc(node.label)}</text>
@@ -400,7 +400,7 @@
       .map((m) => {
         const width = Math.max(8, (m.percent / maxModel) * 100);
         const on = selected === m.id ? 'is-active' : selected ? 'is-dim' : '';
-        return `<button type="button" class="flow-model ${on}" data-model-id="${esc(m.id)}" style="--flow-color:${esc(m.color || '#3ecfbf')}">
+        return `<button type="button" class="flow-model ${on}" data-model-id="${esc(m.id)}" style="--flow-color:${esc(m.color || '#c43c3c')}">
           <span class="flow-model__swatch"></span>
           <span class="flow-model__meta">
             <strong>${esc(m.label)}</strong>
@@ -662,8 +662,8 @@
         <svg viewBox="0 0 ${width} ${height}" class="chart chart--trend" role="img">
           <defs>
             <linearGradient id="trendFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stop-color="#ff8a3d" stop-opacity="0.35"></stop>
-              <stop offset="100%" stop-color="#ff8a3d" stop-opacity="0.02"></stop>
+              <stop offset="0%" stop-color="#e85d4c" stop-opacity="0.35"></stop>
+              <stop offset="100%" stop-color="#e85d4c" stop-opacity="0.02"></stop>
             </linearGradient>
           </defs>
           ${grid}${band}

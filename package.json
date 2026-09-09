@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit — dark glass theme, total-usage health colors, Sankey flow, observability charts.",
+  "description": "Private Cursor AI usage cockpit — matte black dark aesthetic with crimson accents, total-usage health, Sankey flow.",
   "publisher": "ahmed404abd",
-  "version": "1.9.1",
+  "version": "1.10.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -38,7 +38,7 @@
     "observability"
   ],
   "galleryBanner": {
-    "color": "#070b12",
+    "color": "#050505",
     "theme": "dark"
   },
   "activationEvents": [
