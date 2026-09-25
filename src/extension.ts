@@ -179,11 +179,12 @@ function applyStatusBarText() {
   if (!lastUsage || !extensionContext) return;
   const settings = loadSettings();
   const prefs = loadPreferences(extensionContext);
+  const dailySpend = computeDailySpend(lastUsage);
   if (settings.statusBarMode !== 'rotate') {
-    statusBarItem.text = formatStatusBar(lastUsage, settings, prefs.pinnedModelIds);
+    statusBarItem.text = formatStatusBar(lastUsage, settings, prefs.pinnedModelIds, dailySpend);
     return;
   }
-  const variants = statusBarVariants(lastUsage, settings, prefs.pinnedModelIds);
+  const variants = statusBarVariants(lastUsage, settings, prefs.pinnedModelIds, dailySpend);
   statusBarItem.text = variants[rotateIndex % variants.length];
 }
 
@@ -210,7 +211,7 @@ function applyStatusBarAppearance(usage: UsageSnapshot, settings: CockpitSetting
   } else {
     // VS Code only allows error/warning backgrounds; healthy uses teal text so the item is not colorless.
     statusBarItem.backgroundColor = undefined;
-    statusBarItem.color = '#a67c6d';
+    statusBarItem.color = '#8f5a52';
   }
 }
 

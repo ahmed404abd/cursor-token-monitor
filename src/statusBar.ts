@@ -1,6 +1,8 @@
 import { UsageSnapshot, displayModelName } from './cursorApi';
 import { centsToDollars, formatPercent, totalUsagePercent, usageHealth } from './usageIntelligence';
+import { buildBurnForecast } from './forecast';
 import { CockpitSettings, StatusBarFormat } from './webview/preferences';
+import { DaySpend } from './historyStore';
 
 export type HealthTone = 'safe' | 'warning' | 'critical';
 
@@ -39,7 +41,8 @@ export function resolveNamedModel(
 export function formatStatusBar(
   usage: UsageSnapshot,
   settings: CockpitSettings,
-  pinnedModelIds: string[] = []
+  pinnedModelIds: string[] = [],
+  dailySpend: DaySpend[] = []
 ): string {
   const plan = usage.planUsage;
   const pct = totalUsagePercent(usage);
@@ -55,6 +58,7 @@ export function formatStatusBar(
   const limit = centsToDollars(plan.limit);
   const pctText = formatPercent(pct);
   const format: StatusBarFormat = settings.statusBarFormat;
+  const burn = buildBurnForecast(usage, dailySpend, settings.weeklyBudgetCents);
 
   switch (format) {
     case 'icon':
@@ -67,10 +71,27 @@ export function formatStatusBar(
       return `${healthDot(health)} ${pctText}`;
     case 'namePercent':
       return `${icon} ${named?.label ?? 'Usage'} ${pctText}`;
+    case 'runway': {
+      if (!burn) return `${icon} ${pctText}`;
+      const days =
+        burn.runwayDays === null
+          ? `${Math.ceil(burn.daysRemaining)}d cycle`
+          : burn.runwayDays <= 0
+            ? 'limit hit'
+            : `~${Math.ceil(burn.runwayDays)}d left`;
+      const pace =
+        burn.paceLevel === 'alert' ? 'hot' : burn.paceLevel === 'warn' ? 'fast' : 'ok';
+      return `${icon} ${burn.bindingLabel} ${days} · ${pace}`;
+    }
     case 'full':
     default: {
       const auto = plan.autoPercentUsed;
       const api = plan.apiPercentUsed;
+      if (burn?.runwayDays !== null && burn?.runwayDays !== undefined && burn.runwayDays <= burn.daysRemaining) {
+        const d = Math.ceil(burn.runwayDays);
+        if (d <= 0) return `${icon} Limit risk • ${used}/${limit}`;
+        return `${icon} ~${d}d runway · ${pctText}`;
+      }
       if (auto !== undefined && api !== undefined) {
         const binding = api >= auto ? 'Other' : 'Cursor';
         if (health === 'critical') {
@@ -89,9 +110,10 @@ export function formatStatusBar(
 export function statusBarVariants(
   usage: UsageSnapshot,
   settings: CockpitSettings,
-  pinnedModelIds: string[] = []
+  pinnedModelIds: string[] = [],
+  dailySpend: DaySpend[] = []
 ): string[] {
-  const primary = formatStatusBar(usage, settings, pinnedModelIds);
+  const primary = formatStatusBar(usage, settings, pinnedModelIds, dailySpend);
   const variants = [primary];
   const named = resolveNamedModel(usage, pinnedModelIds);
   if (named) {
@@ -103,6 +125,12 @@ export function statusBarVariants(
   const tokens = (usage.totalInputTokens ?? 0) + (usage.totalOutputTokens ?? 0);
   if (tokens > 0) {
     variants.push(`$(zap) ${compactTokens(tokens)} tokens`);
+  }
+  const burn = buildBurnForecast(usage, dailySpend, settings.weeklyBudgetCents);
+  if (burn?.runwayDays !== null && burn?.runwayDays !== undefined) {
+    variants.push(
+      formatStatusBar(usage, { ...settings, statusBarFormat: 'runway' }, pinnedModelIds, dailySpend)
+    );
   }
   return variants;
 }

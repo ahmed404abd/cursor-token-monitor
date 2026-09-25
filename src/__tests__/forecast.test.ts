@@ -61,4 +61,27 @@ describe('burn forecast', () => {
     assert.equal(other?.daysUntilExhausted, 0);
     assert.equal(other?.level, 'alert');
   });
+
+  it('exposes runway and pace vs linear burn', () => {
+    const forecast = buildBurnForecast(
+      usage({
+        planUsage: {
+          totalSpend: 1500,
+          includedSpend: 1500,
+          remaining: 500,
+          limit: 2000,
+          autoPercentUsed: 20,
+          apiPercentUsed: 75,
+          totalPercentUsed: 40,
+        },
+      }),
+      [{ date: new Date().toISOString().slice(0, 10), label: 'today', chargedCents: 400, eventCount: 2, inputTokens: 1, outputTokens: 1 }],
+      500
+    );
+    assert.ok(forecast);
+    assert.ok(forecast!.paceRatio > 0);
+    assert.ok(forecast!.expectedPercentByNow > 0);
+    assert.ok(forecast!.weeklyBudget);
+    assert.equal(forecast!.weeklyBudget!.budgetCents, 500);
+  });
 });

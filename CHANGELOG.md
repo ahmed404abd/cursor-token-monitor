@@ -1,3 +1,15 @@
+## [1.11.0] - 2026-09-25
+
+### Added
+- **Burn runway** panel: days until binding pool exhausts, pace vs straight-line burn, optional weekly $ budget
+- Status bar format `runway` (+ runway hint in `full` when the binding pool will hit 100% before cycle end)
+- Setting `weeklyBudgetCents` (also editable in cockpit Settings as weekly $)
+
+### Changed
+- Heatmap uses a **crimson intensity scale** (removed orange warning cells)
+- Marketplace screenshots regenerated on a solid black canvas (no white letterboxing)
+- Warning accent shifted from copper/orange to muted crimson for a darker aesthetic
+
 ## [1.10.0] - 2026-09-09
 
 ### Changed

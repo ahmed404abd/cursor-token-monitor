@@ -98,6 +98,7 @@ const baseSettings: CockpitSettings = {
   viewMode: 'card',
   displayMode: 'dashboard',
   refreshIntervalSeconds: 60,
+  weeklyBudgetCents: 0,
 };
 
 describe('preferences helpers', () => {

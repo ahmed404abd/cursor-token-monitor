@@ -13,7 +13,8 @@ export type StatusBarFormat =
   | 'percent'
   | 'dotPercent'
   | 'namePercent'
-  | 'full';
+  | 'full'
+  | 'runway';
 
 export interface CockpitPreferences {
   groupMode: GroupMode;
@@ -33,6 +34,8 @@ export interface CockpitSettings {
   viewMode: ViewMode;
   displayMode: DisplayMode;
   refreshIntervalSeconds: number;
+  /** Soft weekly attributed-spend budget in cents (0 = off) */
+  weeklyBudgetCents: number;
 }
 
 const PREFS_KEY = 'cursorTokenMonitor.cockpitPrefs';
@@ -93,6 +96,7 @@ export function loadSettings(): CockpitSettings {
     viewMode: cfg.get<ViewMode>('viewMode', 'card'),
     displayMode: cfg.get<DisplayMode>('displayMode', 'dashboard'),
     refreshIntervalSeconds: cfg.get<number>('refreshIntervalSeconds', 60),
+    weeklyBudgetCents: Math.max(0, Math.round(cfg.get<number>('weeklyBudgetCents', 0))),
   };
 }
 
@@ -105,6 +109,7 @@ export interface SettingsPatch {
   viewMode?: ViewMode;
   displayMode?: DisplayMode;
   refreshIntervalSeconds?: number;
+  weeklyBudgetCents?: number;
 }
 
 export async function updateSettings(patch: SettingsPatch): Promise<CockpitSettings> {
@@ -140,6 +145,9 @@ export async function updateSettings(patch: SettingsPatch): Promise<CockpitSetti
   }
   if (patch.refreshIntervalSeconds !== undefined) {
     await cfg.update('refreshIntervalSeconds', patch.refreshIntervalSeconds, target);
+  }
+  if (patch.weeklyBudgetCents !== undefined) {
+    await cfg.update('weeklyBudgetCents', Math.max(0, Math.round(patch.weeklyBudgetCents)), target);
   }
 
   return loadSettings();

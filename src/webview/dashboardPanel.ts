@@ -136,8 +136,28 @@ function htmlShell(
   </section>
 
   <section class="section">
-    <div class="section__head"><div><h2>Burn-rate forecast</h2><p>Projected included-pool usage for this billing cycle</p></div></div>
+    <div class="section__head"><div><h2>Burn runway</h2><p>Days of quota left · pace vs straight-line burn · optional weekly budget</p></div></div>
     <div class="panel forecast-panel" id="forecastPanel">
+      <div class="runway-hero" id="runwayHero">
+        <div class="runway-hero__days">
+          <span class="runway-hero__label">Runway</span>
+          <strong id="runwayDays">—</strong>
+          <span class="runway-hero__sub" id="runwayBinding">—</span>
+        </div>
+        <div class="runway-hero__pace">
+          <span class="runway-hero__label">Pace</span>
+          <strong id="runwayPaceRatio">—</strong>
+          <span class="runway-hero__sub" id="runwayPaceLabel">—</span>
+          <div class="pace-track" aria-hidden="true"><span id="runwayPaceFill"></span></div>
+          <div class="pace-meta"><span id="runwayExpected">—</span><span id="runwayActual">—</span></div>
+        </div>
+        <div class="runway-hero__cycle">
+          <span class="runway-hero__label">Cycle</span>
+          <strong id="runwayCycleLeft">—</strong>
+          <span class="runway-hero__sub" id="weeklyBudgetLabel">Set a weekly $ budget in Settings</span>
+          <div class="pace-track budget-track" id="weeklyBudgetTrack" hidden><span id="weeklyBudgetFill"></span></div>
+        </div>
+      </div>
       <div class="forecast-headline" id="forecastHeadline">—</div>
       <div class="forecast-detail" id="forecastDetail">—</div>
       <div class="forecast-grid" id="forecastGrid"></div>
@@ -299,6 +319,7 @@ function htmlShell(
             <option value="dotPercent">Dot + percent</option>
             <option value="namePercent">Name + percent</option>
             <option value="full">Full</option>
+            <option value="runway">Runway (days left)</option>
           </select>
         </div>
         <div class="form-row">
@@ -319,6 +340,10 @@ function htmlShell(
         <div class="form-row">
           <label for="criticalThreshold">Critical threshold (%)</label>
           <input type="number" id="criticalThreshold" name="criticalThreshold" min="2" max="100" />
+        </div>
+        <div class="form-row">
+          <label for="weeklyBudgetDollars">Weekly spend budget ($)</label>
+          <input type="number" id="weeklyBudgetDollars" name="weeklyBudgetDollars" min="0" step="0.5" placeholder="0 = off" />
         </div>
         <div class="form-row">
           <label for="viewMode">View mode</label>

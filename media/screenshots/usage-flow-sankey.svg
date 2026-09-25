@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <rect id="pageBg" width="100%" height="100%" fill="#000000"/>
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0c0c0c"/><stop offset="1" stop-color="#050505"/></linearGradient>
     <radialGradient id="glow" cx=".15" cy="0" r=".55"><stop stop-color="#e85d4c" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/></radialGradient>
@@ -9,8 +10,8 @@
       .card{fill:#141414;stroke:#2a1a1a}
     </style>
   </defs>
-  <rect width="1200" height="640" rx="20" fill="url(#bg)"/>
-  <rect width="1200" height="640" rx="20" fill="url(#glow)"/>
+  <rect width="1200" height="640" rx="0" fill="url(#bg)"/>
+  <rect width="1200" height="640" rx="0" fill="url(#glow)"/>
   <text x="28" y="40" class="title">Usage flow</text>
   <text x="28" y="60" class="tiny muted">Interactive Sankey   Plan to Models to Chats / Workspaces</text>
   <g transform="translate(780 28)">
@@ -36,9 +37,9 @@
   <path d="M62 270 C180 270 180 190 320 190" fill="none" stroke="#c43c3c" stroke-width="14" opacity=".35"/>
   <path d="M62 270 C180 270 180 240 320 240" fill="none" stroke="#e85d4c" stroke-width="10" opacity=".32"/>
   <path d="M62 270 C180 270 180 290 320 290" fill="none" stroke="#b86adf" stroke-width="10" opacity=".32"/>
-  <path d="M62 270 C180 270 180 340 320 340" fill="none" stroke="#c9893a" stroke-width="8" opacity=".3"/>
+  <path d="M62 270 C180 270 180 340 320 340" fill="none" stroke="#b04040" stroke-width="8" opacity=".3"/>
   <path d="M62 270 C180 270 180 390 320 390" fill="none" stroke="#ff2d2d" stroke-width="7" opacity=".3"/>
-  <path d="M62 270 C180 270 180 440 320 440" fill="none" stroke="#a67c6d" stroke-width="6" opacity=".28"/>
+  <path d="M62 270 C180 270 180 440 320 440" fill="none" stroke="#6e2828" stroke-width="6" opacity=".28"/>
 
   <rect x="320" y="124" width="14" height="32" rx="5" fill="#e85d4c"/>
   <text x="344" y="138" class="small strong">Auto</text>
@@ -56,7 +57,7 @@
   <text x="344" y="288" class="small strong">Composer 2.5 Fast</text>
   <text x="344" y="304" class="tiny muted">8%   $11.06</text>
 
-  <rect x="320" y="324" width="14" height="32" rx="5" fill="#c9893a"/>
+  <rect x="320" y="324" width="14" height="32" rx="5" fill="#b04040"/>
   <text x="344" y="338" class="small strong">Claude Sonnet 5 Thinking Medium</text>
   <text x="344" y="354" class="tiny muted">4%   $5.40</text>
 
@@ -64,7 +65,7 @@
   <text x="344" y="388" class="small strong">GPT 5.6 Sol Medium</text>
   <text x="344" y="404" class="tiny muted">2%   $2.80</text>
 
-  <rect x="320" y="424" width="14" height="32" rx="5" fill="#a67c6d"/>
+  <rect x="320" y="424" width="14" height="32" rx="5" fill="#6e2828"/>
   <text x="344" y="438" class="small strong">cursor-small</text>
   <text x="344" y="454" class="tiny muted">1%   $1.44</text>
 
@@ -73,7 +74,7 @@
   <rect x="760" y="184" width="14" height="32" rx="5" fill="#b86adf"/>
   <text x="784" y="198" class="small strong">frontend-app</text>
   <text x="784" y="214" class="tiny muted">50%</text>
-  <rect x="760" y="264" width="14" height="32" rx="5" fill="#c9893a"/>
+  <rect x="760" y="264" width="14" height="32" rx="5" fill="#b04040"/>
   <text x="784" y="278" class="small strong">backend-api</text>
   <text x="784" y="294" class="tiny muted">50%</text>
 

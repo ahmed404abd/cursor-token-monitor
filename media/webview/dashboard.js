@@ -36,6 +36,18 @@
     forecastHeadline: document.getElementById('forecastHeadline'),
     forecastDetail: document.getElementById('forecastDetail'),
     forecastGrid: document.getElementById('forecastGrid'),
+    runwayDays: document.getElementById('runwayDays'),
+    runwayBinding: document.getElementById('runwayBinding'),
+    runwayPaceRatio: document.getElementById('runwayPaceRatio'),
+    runwayPaceLabel: document.getElementById('runwayPaceLabel'),
+    runwayPaceFill: document.getElementById('runwayPaceFill'),
+    runwayExpected: document.getElementById('runwayExpected'),
+    runwayActual: document.getElementById('runwayActual'),
+    runwayCycleLeft: document.getElementById('runwayCycleLeft'),
+    weeklyBudgetLabel: document.getElementById('weeklyBudgetLabel'),
+    weeklyBudgetTrack: document.getElementById('weeklyBudgetTrack'),
+    weeklyBudgetFill: document.getElementById('weeklyBudgetFill'),
+    runwayHero: document.getElementById('runwayHero'),
     cardGrid: document.getElementById('cardGrid'),
     modelsGraph: document.getElementById('modelsGraph'),
     modelsSub: document.getElementById('modelsSub'),
@@ -953,9 +965,38 @@
 
     if (vm.forecast) {
       els.forecastPanel.style.display = '';
-      els.forecastHeadline.textContent = vm.forecast.headline;
-      els.forecastDetail.textContent = vm.forecast.detail;
-      els.forecastGrid.innerHTML = (vm.forecast.quotas || [])
+      const f = vm.forecast;
+      if (els.runwayHero) {
+        els.runwayHero.classList.remove('is-info', 'is-warn', 'is-alert');
+        els.runwayHero.classList.add(`is-${f.paceLevel || 'info'}`);
+      }
+      if (els.runwayDays) els.runwayDays.textContent = f.runwayLabel || '—';
+      if (els.runwayBinding) els.runwayBinding.textContent = f.bindingLabel || 'Binding pool';
+      if (els.runwayPaceRatio) els.runwayPaceRatio.textContent = f.paceRatioLabel || '—';
+      if (els.runwayPaceLabel) els.runwayPaceLabel.textContent = f.paceLabel || '—';
+      if (els.runwayExpected) els.runwayExpected.textContent = `Expected ${f.expectedPercentLabel || '—'}`;
+      if (els.runwayActual) els.runwayActual.textContent = `Actual ${f.actualPercentLabel || '—'}`;
+      if (els.runwayCycleLeft) els.runwayCycleLeft.textContent = f.daysRemainingLabel || '—';
+      if (els.runwayPaceFill) {
+        const ratio = Number(String(f.paceRatioLabel || '1').replace('×', '')) || 1;
+        const pacePct = Math.min(100, Math.max(8, ratio * 50));
+        els.runwayPaceFill.style.width = `${pacePct}%`;
+        els.runwayPaceFill.className = f.paceLevel === 'alert' ? 'alert' : f.paceLevel === 'warn' ? 'warn' : '';
+      }
+      if (f.weeklyBudget) {
+        if (els.weeklyBudgetLabel) els.weeklyBudgetLabel.textContent = f.weeklyBudget.label;
+        if (els.weeklyBudgetTrack) {
+          els.weeklyBudgetTrack.hidden = false;
+          els.weeklyBudgetFill.style.width = `${Math.min(100, f.weeklyBudget.pct || 0)}%`;
+          els.weeklyBudgetFill.className = f.weeklyBudget.overBudget ? 'alert' : '';
+        }
+      } else {
+        if (els.weeklyBudgetLabel) els.weeklyBudgetLabel.textContent = 'Set a weekly $ budget in Settings';
+        if (els.weeklyBudgetTrack) els.weeklyBudgetTrack.hidden = true;
+      }
+      els.forecastHeadline.textContent = f.headline;
+      els.forecastDetail.textContent = f.detail;
+      els.forecastGrid.innerHTML = (f.quotas || [])
         .map(
           (q) => `<article class="forecast-card ${esc(q.level)}">
             <div class="forecast-card__label">${esc(q.label)}</div>
@@ -1041,6 +1082,9 @@
     form.criticalThreshold.value = settings.criticalThreshold;
     form.viewMode.value = settings.viewMode;
     form.displayMode.value = settings.displayMode;
+    if (form.weeklyBudgetDollars) {
+      form.weeklyBudgetDollars.value = ((settings.weeklyBudgetCents || 0) / 100).toFixed(2);
+    }
   }
 
   function openSettings() {
@@ -1194,6 +1238,7 @@
       els.stateBanner.classList.add('visible');
       return;
     }
+    const dollars = Number(form.weeklyBudgetDollars?.value || 0);
     vscode.postMessage({
       type: 'updateSettings',
       settings: {
@@ -1204,6 +1249,7 @@
         criticalThreshold: critical,
         viewMode: form.viewMode.value,
         displayMode: form.displayMode.value,
+        weeklyBudgetCents: Math.max(0, Math.round((Number.isFinite(dollars) ? dollars : 0) * 100)),
       },
     });
     closeSettings();

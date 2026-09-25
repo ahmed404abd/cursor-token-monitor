@@ -4,9 +4,9 @@
 
 Cursor Token Monitor is a private, model-aware usage cockpit for Cursor. It turns your signed-in account data into plan health, dual Pro quotas, burn-rate forecasts, model comparisons, trends, a 90-day heatmap, and alerts — without sending usage to a third-party service.
 
-The dashboard uses a **matte black** dark aesthetic with crimson / ember accents — solid panels (no glass blur), dual quota bars, and KPI tiles so plan risk reads clearly.
+The dashboard uses a **matte black** dark aesthetic with crimson accents — solid panels, dual quota bars, and KPI tiles. Heatmap intensity is a crimson scale (no orange).
 
-**New in 1.10:** black + crimson theme across cockpit, charts, Sankey, and marketplace screenshots. Total-usage health still reserves bright red for 85%+.
+**New in 1.11:** **Burn runway** — days until the binding pool hits 100%, pace vs straight-line burn, optional weekly $ budget, and a `runway` status-bar format.
 
 ![Cursor Token Cockpit overview](media/screenshots/cockpit-overview.png)
 
@@ -14,6 +14,7 @@ The dashboard uses a **matte black** dark aesthetic with crimson / ember accents
 
 - Which model is consuming the most of my allowance?
 - At this burn rate, when will Cursor Models / Other Models hit 100%?
+- How many days of runway do I have, and am I ahead of linear pace?
 - Was today's activity normal, unusually high, or already beyond my warning threshold?
 - Which days and models drove a spike?
 - How much did this editor session use?
@@ -67,8 +68,9 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 - **Dual Pro quotas** matching Cursor's dashboard:
   - **Cursor Models** (Composer / Grok / Auto pool) percent used
   - **Other Models** (included API dollar allowance) percent + $ used / $ limit
-  - Ring + status bar colors follow **total included usage** (warm taupe → copper → crimson at 85%+)
-- **Burn-rate forecast**: projected included-pool % by cycle end and countdown to 100%
+  - Ring + status bar colors follow **total included usage** (muted rose → crimson at 85%+)
+- **Burn runway**: days until the binding pool hits 100%, pace vs straight-line burn for the cycle, optional soft weekly $ budget (Settings)
+- **Burn-rate forecast cards**: projected included-pool % by cycle end and countdown to 100% per pool
 
 ### A GitHub-style heatmap, built for AI usage
 
@@ -78,9 +80,9 @@ The rolling 90-day heatmap adds signals that a plain contribution count cannot:
 
 - **Rich hover details** — date, spend, request count, top model, allowance signal, and a model breakdown
 - **Per-model filtering** — isolate activity for one model without losing account-level threshold context
-- **Threshold overlays** — copper and crimson days reuse the configured warning (65%) and critical (85%) thresholds
+- **Threshold overlays** — elevated and critical days use crimson shades on a dark contribution-style grid (no orange)
 - **Meaningful empty states** — dashed cells mean no local history; dark cells mean history exists with $0 spend
-- **Cockpit-native scale** — healthy activity uses the warm taupe palette; bright red only for critical days
+- **Cockpit-native scale** — activity intensity uses a crimson ladder; bright red reserved for critical days
 
 History is kept locally for 90 days. Earlier cells remain visibly unavailable until the extension has observed enough data.
 
@@ -100,9 +102,10 @@ Six formats via `cursorTokenMonitor.statusBarFormat`:
 | `percent` | icon + % |
 | `dotPercent` | dot + % |
 | `namePercent` | pinned/top model + % |
-| `full` | Safe · $4.12/$20.00 |
+| `full` | Safe · $4.12/$20.00 (shows runway days when binding pool will exhaust) |
+| `runway` | Other Models ~5d left · fast |
 
-Set `statusBarMode` to `rotate` to cycle spend / model / tokens.
+Set `statusBarMode` to `rotate` to cycle spend / model / tokens / runway.
 
 ### QuickPick mode
 
@@ -123,6 +126,7 @@ Configurable warning/critical thresholds (defaults 65% / 85%). Can be disabled w
 | `notificationsEnabled` | `true` | Allowance / spend alerts |
 | `warningThreshold` | `65` | Warning % (must be &lt; critical) |
 | `criticalThreshold` | `85` | Critical % — red styling above this |
+| `weeklyBudgetCents` | `0` | Soft weekly attributed-spend budget in cents (`0` = off) |
 | `viewMode` | `card` | `card` or `list` |
 | `displayMode` | `dashboard` | `dashboard` or `quickpick` |
 

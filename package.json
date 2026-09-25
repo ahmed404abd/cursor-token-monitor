@@ -1,9 +1,9 @@
 {
   "name": "cursor-token-monitor",
   "displayName": "Cursor Token Monitor",
-  "description": "Private Cursor AI usage cockpit — matte black dark aesthetic with crimson accents, total-usage health, Sankey flow.",
+  "description": "Private Cursor AI usage cockpit — burn runway, dark crimson aesthetic, Sankey flow, 90-day heatmap.",
   "publisher": "ahmed404abd",
-  "version": "1.10.0",
+  "version": "1.11.0",
   "license": "MIT",
   "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
   "bugs": {
@@ -133,7 +133,8 @@
             "percent",
             "dotPercent",
             "namePercent",
-            "full"
+            "full",
+            "runway"
           ],
           "default": "full",
           "enumDescriptions": [
@@ -142,7 +143,8 @@
             "Icon + percent",
             "Dot + percent",
             "Pinned/top model name + percent",
-            "Full spend vs allowance with health label"
+            "Full spend vs allowance with health label",
+            "Binding pool runway (days until limit)"
           ],
           "description": "Status bar text format."
         },
@@ -150,6 +152,12 @@
           "type": "boolean",
           "default": true,
           "description": "Show allowance and unusual-spend notifications."
+        },
+        "cursorTokenMonitor.weeklyBudgetCents": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Soft weekly attributed-spend budget in cents (0 = off). Tracks Monday–Sunday spend against this cap."
         },
         "cursorTokenMonitor.warningThreshold": {
           "type": "number",

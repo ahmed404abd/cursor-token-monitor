@@ -11,11 +11,11 @@
   --accent: #c43c3c;
   --accent-2: #e85d4c;
   --accent-strong: #8b1e1e;
-  --ok: #a67c6d;
-  --warn: #c9893a;
+  --ok: #8f5a52;
+  --warn: #a84848;
   --err: #ff2d2d;
-  --glow-ok: rgba(166, 124, 109, 0.35);
-  --glow-warn: rgba(201, 137, 58, 0.4);
+  --glow-ok: rgba(143, 90, 82, 0.35);
+  --glow-warn: rgba(168, 72, 72, 0.4);
   --glow-err: rgba(255, 45, 45, 0.45);
   --glow-accent: rgba(196, 60, 60, 0.35);
   --radius: 12px;
@@ -251,7 +251,7 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   background: linear-gradient(90deg, transparent, var(--ok), #e85d4c, transparent);
 }
 .plan-card.is-warning::before {
-  background: linear-gradient(90deg, transparent, var(--warn), #ffe08a, transparent);
+  background: linear-gradient(90deg, transparent, var(--warn), #c85858, transparent);
 }
 .plan-card.is-critical::before {
   background: linear-gradient(90deg, transparent, var(--err), #ffb4b4, transparent);
@@ -423,7 +423,7 @@ button:disabled { opacity: 0.5; cursor: default; transform: none; }
   box-shadow: 0 0 12px var(--glow-accent);
 }
 .quota-bar__track > span.warning {
-  background: linear-gradient(90deg, #b07a08, var(--warn), #ffe08a);
+  background: linear-gradient(90deg, #6e2828, var(--warn), #c85858);
   box-shadow: 0 0 12px var(--glow-warn);
 }
 .quota-bar__track > span.critical {
@@ -763,18 +763,18 @@ button.heatmap-cell:focus-visible {
   border-style: dashed;
   opacity: 0.65;
 }
-.heatmap-cell.zero { background: #1a1212; }
-.heatmap-cell.level-1 { background: color-mix(in srgb, var(--ok) 24%, #0e0e0e); }
-.heatmap-cell.level-2 { background: color-mix(in srgb, var(--ok) 45%, #0e0e0e); }
-.heatmap-cell.level-3 { background: color-mix(in srgb, var(--ok) 70%, #0e0e0e); }
-.heatmap-cell.level-4 { background: var(--ok); }
+.heatmap-cell.zero { background: #121010; }
+.heatmap-cell.level-1 { background: #2a1414; }
+.heatmap-cell.level-2 { background: #4a1c1c; }
+.heatmap-cell.level-3 { background: #6e2828; }
+.heatmap-cell.level-4 { background: #943434; }
 .heatmap-cell.warning {
-  background: var(--warn);
-  border-color: color-mix(in srgb, var(--warn) 60%, white);
+  background: #b04040;
+  border-color: color-mix(in srgb, #c85858 55%, white);
 }
 .heatmap-cell.critical {
-  background: var(--err);
-  border-color: color-mix(in srgb, var(--err) 65%, white);
+  background: #ff2d2d;
+  border-color: color-mix(in srgb, #ff2d2d 65%, white);
 }
 .heatmap-blank {
   width: 14px;
@@ -884,6 +884,66 @@ button.heatmap-cell:focus-visible {
   margin-top: 5px;
   color: var(--muted);
   font-size: 12.5px;
+}
+.runway-hero {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
+@media (max-width: 900px) {
+  .runway-hero { grid-template-columns: 1fr; }
+}
+.runway-hero > div {
+  padding: 14px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #0c0c0c;
+}
+.runway-hero.is-warn > div { border-color: color-mix(in srgb, var(--warn) 40%, var(--border)); }
+.runway-hero.is-alert > div { border-color: color-mix(in srgb, var(--err) 45%, var(--border)); }
+.runway-hero__label {
+  display: block;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.runway-hero strong {
+  display: block;
+  margin-top: 6px;
+  font-size: 28px;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.runway-hero__sub {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+}
+.pace-track {
+  margin-top: 10px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  overflow: hidden;
+}
+.pace-track > span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #6e2828, #c43c3c);
+}
+.pace-track > span.warn { background: linear-gradient(90deg, #7a3030, #a84848); }
+.pace-track > span.alert { background: linear-gradient(90deg, #a02020, #ff2d2d); }
+.pace-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 11px;
 }
 .forecast-grid {
   display: grid;

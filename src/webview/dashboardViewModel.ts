@@ -129,6 +129,22 @@ export interface CockpitViewModel {
   forecast?: {
     headline: string;
     detail: string;
+    runwayDays: number | null;
+    runwayLabel: string;
+    bindingLabel: string;
+    daysRemainingLabel: string;
+    expectedPercentLabel: string;
+    actualPercentLabel: string;
+    paceRatioLabel: string;
+    paceLevel: string;
+    paceLabel: string;
+    weeklyBudget?: {
+      label: string;
+      spentLabel: string;
+      budgetLabel: string;
+      pct: number;
+      overBudget: boolean;
+    };
     quotas: {
       id: string;
       label: string;
@@ -472,7 +488,7 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
   const planHealth = toCardHealth(ringPct, settings.warningThreshold, settings.criticalThreshold);
   const reset = resetCountdown(usage.billingCycleEndMs);
   const insights = buildUsageInsights(usage, settings.warningThreshold, settings.criticalThreshold);
-  const burn = buildBurnForecast(usage, dailySpend);
+  const burn = buildBurnForecast(usage, dailySpend, settings.weeklyBudgetCents);
   const autoEstimate = estimateAutoModels(usage);
   const quotaBuckets = (usage.quotaBuckets ?? []).map((bucket) => {
     const health = toCardHealth(
@@ -544,6 +560,34 @@ export function buildCockpitViewModel(input: BuildViewModelInput): CockpitViewMo
       ? {
           headline: burn.headline,
           detail: burn.detail,
+          runwayDays: burn.runwayDays,
+          runwayLabel:
+            burn.runwayDays === null
+              ? 'Through cycle end'
+              : burn.runwayDays <= 0
+                ? 'Exhausted'
+                : burn.runwayDays < 1
+                  ? '< 1 day'
+                  : `~${Math.ceil(burn.runwayDays)}d`,
+          bindingLabel: burn.bindingLabel,
+          daysRemainingLabel: `${Math.ceil(burn.daysRemaining)}d left in cycle`,
+          expectedPercentLabel: formatPercent(burn.expectedPercentByNow),
+          actualPercentLabel: formatPercent(burn.actualPercent),
+          paceRatioLabel: `${burn.paceRatio.toFixed(2)}×`,
+          paceLevel: burn.paceLevel,
+          paceLabel: burn.paceLabel,
+          weeklyBudget: burn.weeklyBudget
+            ? {
+                label: burn.weeklyBudget.label,
+                spentLabel: centsToDollars(burn.weeklyBudget.spentCents),
+                budgetLabel: centsToDollars(burn.weeklyBudget.budgetCents),
+                pct: Math.min(
+                  100,
+                  (burn.weeklyBudget.spentCents / Math.max(1, burn.weeklyBudget.budgetCents)) * 100
+                ),
+                overBudget: burn.weeklyBudget.overBudget,
+              }
+            : undefined,
           quotas: burn.quotas.map((q) => ({
             id: q.id,
             label: q.label,

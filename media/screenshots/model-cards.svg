@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="580" viewBox="0 0 1200 580">
+  <rect id="pageBg" width="100%" height="100%" fill="#000000"/>
 
   <defs>
 
@@ -16,7 +17,7 @@
 
     <linearGradient id="ringG" x1="0" y1="0" x2="1" y2="1">
 
-      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#a67c6d"/>
+      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#6e2828"/>
 
     </linearGradient>
 
@@ -34,7 +35,7 @@
 
     <linearGradient id="tokOut" x1="0" y1="0" x2="1" y2="0">
 
-      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#a67c6d"/>
+      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#6e2828"/>
 
     </linearGradient>
 
@@ -48,15 +49,15 @@
 
       .strong{font-weight:700}.card{fill:#141414;stroke:#2a1a1a}
 
-      .green{fill:#a67c6d}.orange{fill:#c9893a}.teal{fill:#e85d4c}
+      .green{fill:#6e2828}.orange{fill:#b04040}.teal{fill:#e85d4c}
 
     </style>
 
   </defs>
 
-  <rect width="1200" height="580" rx="20" fill="url(#bg)"/>
+  <rect width="1200" height="580" rx="0" fill="url(#bg)"/>
 
-  <rect width="1200" height="580" rx="20" fill="url(#glow)"/>
+  <rect width="1200" height="580" rx="0" fill="url(#glow)"/>
 
   <text x="28" y="42" class="title">Quota cards</text>
 
@@ -124,7 +125,7 @@
 
     <circle cx="72" cy="128" r="40" fill="none" stroke="#1a1212" stroke-width="9"/>
 
-    <circle cx="72" cy="128" r="40" fill="none" stroke="#c9893a" stroke-width="9" stroke-linecap="round" stroke-dasharray="112 251" transform="rotate(-90 72 128)"/>
+    <circle cx="72" cy="128" r="40" fill="none" stroke="#b04040" stroke-width="9" stroke-linecap="round" stroke-dasharray="112 251" transform="rotate(-90 72 128)"/>
 
     <text x="72" y="133" text-anchor="middle" class="small strong">28%</text>
 
@@ -226,7 +227,7 @@
 
       <rect x="490" y="60" width="48" height="70" rx="6" fill="#c43c3c" opacity=".6"/>
 
-      <rect x="560" y="20" width="48" height="110" rx="6" fill="#c9893a" opacity=".85"/>
+      <rect x="560" y="20" width="48" height="110" rx="6" fill="#b04040" opacity=".85"/>
 
       <rect x="630" y="45" width="48" height="85" rx="6" fill="#e85d4c" opacity=".75"/>
 
