@@ -1,3 +1,10 @@
+## [1.11.1] - 2026-09-25
+
+### Changed
+- Marketplace screenshots re-rendered at exact SVG size on solid black (no white letterboxing)
+- Heatmap screenshot uses the live crimson intensity ladder (removed leftover green cells)
+- Added **Burn runway** screenshot to README / Open VSX description
+
 ## [1.11.0] - 2026-09-25
 
 ### Added

@@ -63,11 +63,11 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#1a1212"/>
 
@@ -77,17 +77,17 @@
 
     <g transform="translate(22)">
 
-      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#b04040"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="120" width="16" height="16" rx="3" fill="#1a1212"/>
 
@@ -99,47 +99,47 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#ff2d2d"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
     </g>
 
     <g transform="translate(66)">
 
-      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#6e2828"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#b04040"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#2a1414"/>
 
     </g>
 
     <g transform="translate(88)">
 
-      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#1a1212"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#ff2d2d"/>
 
@@ -151,17 +151,17 @@
 
       <rect width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#b04040"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
     </g>
 
@@ -169,13 +169,13 @@
 
       <rect width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#b04040"/>
 
@@ -185,27 +185,27 @@
 
     <g transform="translate(154)">
 
-      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#ff2d2d"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#2a1414"/>
 
     </g>
 
     <g transform="translate(176)">
 
-      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#6e2828"/>
 
@@ -213,7 +213,7 @@
 
       <rect y="80" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="120" width="16" height="16" rx="3" fill="#6e2828"/>
 
@@ -225,15 +225,15 @@
 
       <rect y="20" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
-      <rect y="60" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="80" width="16" height="16" rx="3" fill="#ff2d2d"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
     </g>
 
@@ -241,9 +241,9 @@
 
       <rect width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#6e2828"/>
 
@@ -251,21 +251,21 @@
 
       <rect y="100" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
     </g>
 
     <g transform="translate(242)">
 
-      <rect width="16" height="16" rx="3" fill="#247a52"/>
+      <rect width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="20" width="16" height="16" rx="3" fill="#6e2828"/>
 
-      <rect y="40" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#2a1414"/>
 
       <rect y="60" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="80" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="100" width="16" height="16" rx="3" fill="#6e2828"/>
 
@@ -275,9 +275,9 @@
 
     <g transform="translate(264)">
 
-      <rect width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect width="16" height="16" rx="3" fill="#2a1414"/>
 
-      <rect y="20" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
       <rect y="40" width="16" height="16" rx="3" fill="#ff2d2d"/>
 
@@ -285,9 +285,9 @@
 
       <rect y="80" width="16" height="16" rx="3" fill="#1a1212"/>
 
-      <rect y="100" width="16" height="16" rx="3" fill="#247a52"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#4a1c1c"/>
 
-      <rect y="120" width="16" height="16" rx="3" fill="#1a4a36"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#2a1414"/>
 
     </g>
 
@@ -331,9 +331,9 @@
 
     <text x="148" y="14">Less</text>
 
-    <rect x="178" y="2" width="14" height="14" rx="3" fill="#1a4a36"/>
+    <rect x="178" y="2" width="14" height="14" rx="3" fill="#2a1414"/>
 
-    <rect x="198" y="2" width="14" height="14" rx="3" fill="#247a52"/>
+    <rect x="198" y="2" width="14" height="14" rx="3" fill="#4a1c1c"/>
 
     <rect x="218" y="2" width="14" height="14" rx="3" fill="#6e2828"/>
 

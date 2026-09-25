@@ -72,6 +72,15 @@ Works in **Cursor** (VS Code–compatible). It reads your existing local Cursor 
 - **Burn runway**: days until the binding pool hits 100%, pace vs straight-line burn for the cycle, optional soft weekly $ budget (Settings)
 - **Burn-rate forecast cards**: projected included-pool % by cycle end and countdown to 100% per pool
 
+### Burn runway
+
+![Burn runway panel with runway days, pace multiplier, and dual-pool projections](media/screenshots/burn-runway.png)
+
+- Binding-pool runway in days (which pool runs out first)
+- Pace vs straight-line burn for the current cycle
+- Optional weekly $ budget progress (Settings → `weeklyBudgetCents`)
+- Per-pool projected % by cycle end and time-to-100%
+
 ### A GitHub-style heatmap, built for AI usage
 
 ![90-day model-aware usage heatmap](media/screenshots/usage-heatmap.png)

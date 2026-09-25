@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <rect width="1200" height="420" fill="#000000"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#0c0c0c"/><stop offset="1" stop-color="#050505"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.1" cy="0" r="0.55">
+      <stop stop-color="#c43c3c" stop-opacity=".18"/><stop offset="1" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="pace" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#6e2828"/><stop offset="1" stop-color="#c43c3c"/>
+    </linearGradient>
+    <linearGradient id="budget" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#8b1e1e"/><stop offset="1" stop-color="#e85d4c"/>
+    </linearGradient>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.small{font-size:13px}
+      .title{font-size:20px;font-weight:700}.label{font-size:10px;letter-spacing:1.4px}
+      .big{font-size:34px;font-weight:800}.card{fill:#121212;stroke:#2a1a1a}
+    </style>
+  </defs>
+  <rect width="1200" height="420" fill="url(#bg)"/>
+  <rect width="1200" height="420" fill="url(#glow)"/>
+
+  <text x="28" y="38" class="title">Burn runway</text>
+  <text x="28" y="58" class="tiny muted">Days of quota left · pace vs straight-line burn · optional weekly budget</text>
+
+  <rect x="28" y="82" width="360" height="130" rx="12" class="card"/>
+  <text x="48" y="108" class="label muted">RUNWAY</text>
+  <text x="48" y="150" class="big">~5d</text>
+  <text x="48" y="178" class="small muted">Other Models · binding pool</text>
+
+  <rect x="408" y="82" width="360" height="130" rx="12" class="card"/>
+  <text x="428" y="108" class="label muted">PACE</text>
+  <text x="428" y="150" class="big">1.4×</text>
+  <text x="428" y="178" class="small muted">Ahead of linear pace</text>
+  <rect x="428" y="190" width="300" height="8" rx="4" fill="#1a1212"/>
+  <rect x="428" y="190" width="210" height="8" rx="4" fill="url(#pace)"/>
+
+  <rect x="788" y="82" width="384" height="130" rx="12" class="card"/>
+  <text x="808" y="108" class="label muted">CYCLE</text>
+  <text x="808" y="150" class="big">12d left</text>
+  <text x="808" y="178" class="small muted">$6.40 of $10.00 this week</text>
+  <rect x="808" y="190" width="340" height="8" rx="4" fill="#1a1212"/>
+  <rect x="808" y="190" width="218" height="8" rx="4" fill="url(#budget)"/>
+
+  <text x="28" y="250" class="small" font-weight="700">Other Models quota runs out in ~5d at this pace</text>
+  <text x="28" y="272" class="tiny muted">Projected 118% by cycle end · 12d left in cycle.</text>
+
+  <rect x="28" y="295" width="560" height="100" rx="12" class="card"/>
+  <text x="48" y="322" class="label muted">CURSOR MODELS</text>
+  <text x="48" y="352" class="big" style="font-size:26px">23%</text>
+  <text x="140" y="348" class="tiny muted">used</text>
+  <text x="48" y="372" class="tiny muted">Projected by cycle end</text>
+  <text x="280" y="372" class="tiny" text-anchor="end">41%</text>
+  <text x="48" y="388" class="tiny muted">Hits 100% in</text>
+  <text x="280" y="388" class="tiny" text-anchor="end">Not before cycle end</text>
+
+  <rect x="612" y="295" width="560" height="100" rx="12" class="card" stroke="#a84848"/>
+  <text x="632" y="322" class="label muted">OTHER MODELS</text>
+  <text x="632" y="352" class="big" style="font-size:26px;fill:#e85d4c">75%</text>
+  <text x="740" y="348" class="tiny muted">used</text>
+  <text x="632" y="372" class="tiny muted">Projected by cycle end</text>
+  <text x="900" y="372" class="tiny" text-anchor="end" style="fill:#e85d4c">118%</text>
+  <text x="632" y="388" class="tiny muted">Hits 100% in</text>
+  <text x="900" y="388" class="tiny" text-anchor="end" style="fill:#e85d4c">~5d</text>
+</svg>
