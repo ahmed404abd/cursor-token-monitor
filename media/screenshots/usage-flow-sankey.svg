@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="640" viewBox="0 0 1200 640">
+  <rect width="1200" height="640" fill="#000"/>
+  <defs>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.title{font-size:18px;font-weight:700}
+      .card{fill:#121212;stroke:#2a2a2a}
+    </style>
+  </defs>
+  <text x="28" y="36" class="title">Usage flow</text>
+  <text x="28" y="56" class="tiny muted">Interactive Sankey · Plan → Models → Chats / Workspaces</text>
+
+  <rect x="48" y="160" width="14" height="220" rx="5" fill="#64748b"/>
+  <text x="40" y="150" class="tiny muted">Total</text>
+  <text x="55" y="400" class="tiny" text-anchor="middle">$109</text>
+
+  <!-- ribbons -->
+  <path d="M62 200 C180 200 180 140 320 140" fill="none" stroke="#2dd4bf" stroke-width="36" opacity=".4"/>
+  <path d="M62 260 C180 260 180 220 320 220" fill="none" stroke="#3b82f6" stroke-width="16" opacity=".4"/>
+  <path d="M62 300 C180 300 180 280 320 280" fill="none" stroke="#a855f7" stroke-width="14" opacity=".4"/>
+  <path d="M62 330 C180 330 180 340 320 340" fill="none" stroke="#eab308" stroke-width="10" opacity=".4"/>
+  <path d="M62 350 C180 350 180 400 320 400" fill="none" stroke="#f87171" stroke-width="8" opacity=".4"/>
+
+  <rect x="320" y="120" width="14" height="44" rx="5" fill="#2dd4bf"/>
+  <text x="344" y="140" class="tiny">Auto 73%</text>
+  <rect x="320" y="200" width="14" height="36" rx="5" fill="#3b82f6"/>
+  <text x="344" y="220" class="tiny">Sonnet 12%</text>
+  <rect x="320" y="260" width="14" height="32" rx="5" fill="#a855f7"/>
+  <text x="344" y="280" class="tiny">Grok 11%</text>
+  <rect x="320" y="320" width="14" height="24" rx="5" fill="#eab308"/>
+  <text x="344" y="338" class="tiny">Grok 4.7 4%</text>
+  <rect x="320" y="380" width="14" height="20" rx="5" fill="#f87171"/>
+  <text x="344" y="396" class="tiny">Composer 1%</text>
+
+  <path d="M334 142 C520 142 520 180 760 180" fill="none" stroke="#2dd4bf" stroke-width="20" opacity=".3"/>
+  <path d="M334 142 C520 142 520 260 760 260" fill="none" stroke="#2dd4bf" stroke-width="16" opacity=".28"/>
+  <path d="M334 218 C520 218 520 340 760 340" fill="none" stroke="#3b82f6" stroke-width="12" opacity=".3"/>
+  <path d="M334 276 C520 276 520 400 760 400" fill="none" stroke="#a855f7" stroke-width="10" opacity=".3"/>
+
+  <rect x="760" y="160" width="14" height="40" rx="5" fill="#2dd4bf"/>
+  <text x="784" y="184" class="tiny muted">dairy-enteligen-ui</text>
+  <rect x="760" y="240" width="14" height="36" rx="5" fill="#3b82f6"/>
+  <text x="784" y="262" class="tiny muted">dairy-enteligen-api</text>
+  <rect x="760" y="320" width="14" height="28" rx="5" fill="#a855f7"/>
+  <text x="784" y="340" class="tiny muted">serviceapis</text>
+  <rect x="760" y="380" width="14" height="24" rx="5" fill="#eab308"/>
+  <text x="784" y="398" class="tiny muted">other</text>
+
+  <rect x="48" y="480" width="360" height="120" rx="12" class="card"/>
+  <circle cx="72" cy="512" r="5" fill="#2dd4bf"/>
+  <text x="88" y="516" class="small" style="font-size:14px;font-weight:700">Auto</text>
+  <text x="88" y="538" class="tiny muted">73% · $79.13</text>
+  <rect x="72" y="556" width="300" height="10" rx="5" fill="#1a1a1a"/>
+  <rect x="72" y="556" width="220" height="10" rx="5" fill="#2dd4bf"/>
+</svg>

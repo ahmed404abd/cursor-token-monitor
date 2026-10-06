@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="520" viewBox="0 0 1200 520">
+  <rect width="1200" height="520" fill="#000"/>
+  <defs>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.title{font-size:18px;font-weight:700}
+      .card{fill:#121212;stroke:#2a2a2a}
+    </style>
+  </defs>
+  <text x="28" y="36" class="title">Models</text>
+  <text x="28" y="56" class="tiny muted">Multi-series trends + share bars · switch to Cards to pin and reorder</text>
+
+  <rect x="28" y="80" width="200" height="72" rx="12" class="card"/>
+  <text x="48" y="106" class="tiny muted">WINDOW REQUESTS</text>
+  <text x="48" y="136" style="font-size:28px;font-weight:800">283</text>
+  <rect x="244" y="80" width="200" height="72" rx="12" class="card"/>
+  <text x="264" y="106" class="tiny muted">TOP MODEL SHARE</text>
+  <text x="264" y="136" style="font-size:28px;font-weight:800">73%</text>
+
+  <rect x="28" y="220" width="10" height="10" rx="2" fill="#2dd4bf"/>
+  <text x="44" y="229" class="tiny muted">Auto</text>
+  <rect x="100" y="220" width="10" height="10" rx="2" fill="#3b82f6"/>
+  <text x="116" y="229" class="tiny muted">Grok 4.6</text>
+  <rect x="190" y="220" width="10" height="10" rx="2" fill="#a855f7"/>
+  <text x="206" y="229" class="tiny muted">Sonnet</text>
+  <rect x="280" y="220" width="10" height="10" rx="2" fill="#eab308"/>
+  <text x="296" y="229" class="tiny muted">Grok 4.7</text>
+  <rect x="380" y="220" width="10" height="10" rx="2" fill="#f87171"/>
+  <text x="396" y="229" class="tiny muted">Composer</text>
+
+  <rect x="28" y="248" width="1144" height="240" rx="12" fill="#0a0a0a" stroke="#2a2a2a"/>
+  <g transform="translate(48 268)">
+    <line x1="0" y1="40" x2="1100" y2="40" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="80" x2="1100" y2="80" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="120" x2="1100" y2="120" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="160" x2="1100" y2="160" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <path d="M0 130 L140 100 L280 40 L420 90 L560 70 L700 110 L840 95 L980 80 L1100 100 L1100 180 L0 180 Z" fill="#2dd4bf" fill-opacity=".2"/>
+    <path d="M0 130 L140 100 L280 40 L420 90 L560 70 L700 110 L840 95 L980 80 L1100 100" fill="none" stroke="#2dd4bf" stroke-width="2.6"/>
+    <path d="M0 155 L280 150 L560 140 L700 120 L840 145 L1100 150" fill="none" stroke="#3b82f6" stroke-width="2.2"/>
+    <path d="M0 160 L420 155 L700 100 L840 130 L1100 140" fill="none" stroke="#a855f7" stroke-width="2.2"/>
+    <path d="M0 165 L560 160 L840 150 L1100 155" fill="none" stroke="#eab308" stroke-width="2"/>
+    <path d="M0 170 L700 168 L1100 165" fill="none" stroke="#f87171" stroke-width="2"/>
+    <text x="0" y="198" class="tiny muted">Sep 22</text>
+    <text x="280" y="198" class="tiny muted">Sep 27</text>
+    <text x="560" y="198" class="tiny muted">Oct 1</text>
+    <text x="840" y="198" class="tiny muted">Oct 5</text>
+    <text x="1080" y="198" class="tiny muted" text-anchor="end">Oct 7</text>
+  </g>
+</svg>

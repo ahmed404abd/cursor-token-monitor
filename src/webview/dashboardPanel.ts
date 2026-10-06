@@ -1,0 +1,480 @@
+import * as vscode from 'vscode';
+import * as path from 'path';
+import { CockpitViewModel } from './dashboardViewModel';
+
+export type HostToWebviewMessage =
+  | { type: 'usageUpdate'; data: CockpitViewModel }
+  | { type: 'error'; message: string };
+
+export type WebviewToHostMessage =
+  | { type: 'ready' }
+  | { type: 'refresh' }
+  | { type: 'reorder'; order: string[]; groupMode: 'model' | 'workspace' }
+  | { type: 'resetOrder' }
+  | { type: 'setGroupMode'; groupMode: 'model' | 'workspace' }
+  | { type: 'setQuotaLayout'; quotaLayout: 'graph' | 'cards' }
+  | { type: 'setFlowFilters'; window: 'today' | '7d' | '30d' | 'cycle'; metric: 'spend' | 'tokens' | 'requests' }
+  | { type: 'updateSettings'; settings: Record<string, unknown> }
+  | { type: 'renameModel'; modelId: string; alias: string }
+  | { type: 'togglePin'; modelId: string }
+  | { type: 'exportCsv' }
+  | { type: 'exportJson' }
+  | { type: 'exportMarkdown' }
+  | { type: 'copyReport' }
+  | { type: 'openIssues' };
+
+export type MessageHandler = (msg: WebviewToHostMessage) => void | Promise<void>;
+
+let panel: vscode.WebviewPanel | undefined;
+let lastVm: CockpitViewModel | undefined;
+
+function nonce(): string {
+  return `${Date.now()}${Math.random().toString(36).slice(2)}`;
+}
+
+function htmlShell(
+  webview: vscode.Webview,
+  extensionUri: vscode.Uri,
+  n: string
+): string {
+  const cssUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(extensionUri, 'media', 'webview', 'dashboard.css')
+  );
+  const jsUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(extensionUri, 'media', 'webview', 'dashboard.js')
+  );
+  const sortableUri = webview.asWebviewUri(
+    vscode.Uri.joinPath(extensionUri, 'media', 'vendor', 'Sortable.min.js')
+  );
+  const csp = [
+    `default-src 'none'`,
+    `style-src ${webview.cspSource} 'unsafe-inline'`,
+    `script-src ${webview.cspSource} 'nonce-${n}'`,
+    `img-src ${webview.cspSource} https: data:`,
+    `font-src ${webview.cspSource}`,
+  ].join('; ');
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="${csp}" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="${cssUri}" />
+  <title>Cursor Token Cockpit</title>
+</head>
+<body>
+  <div id="stateBanner" class="state-banner"></div>
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="brand__icon" aria-hidden="true">CT</div>
+      <div>
+        <div class="brand__title">Cursor Token Cockpit</div>
+        <div class="brand__sub" id="groupLabel">Grouped by model</div>
+      </div>
+    </div>
+    <div class="topbar__actions">
+      <button type="button" class="primary" id="btnRefresh">Refresh</button>
+      <button type="button" id="btnGroup">Group: Model</button>
+      <button type="button" id="btnResetOrder">Reset Order</button>
+      <button type="button" id="btnExportCsv">CSV</button>
+      <button type="button" id="btnExportJson">JSON</button>
+      <button type="button" id="btnExportMd">MD</button>
+      <button type="button" id="btnCopy">Copy</button>
+      <button type="button" id="btnSettings" title="Settings">Settings</button>
+    </div>
+  </div>
+
+  <section class="plan-card">
+    <div class="plan-card__top">
+      <div class="ring-wrap">
+        <svg viewBox="0 0 120 120" class="ring" aria-hidden="true">
+          <circle class="ring-bg" cx="60" cy="60" r="52"></circle>
+          <circle id="planRingFg" class="ring-fg" cx="60" cy="60" r="52"
+            stroke-dasharray="326.7256" stroke-dashoffset="326.7256"></circle>
+        </svg>
+        <div class="ring-center">
+          <div><strong id="planRingPct">0%</strong><span id="planRingCaption">used</span></div>
+        </div>
+      </div>
+      <div class="plan-meta">
+        <div class="eyebrow">Plan details <button type="button" class="info-btn" data-info-key="binding" aria-label="About binding usage" title="About binding usage">i</button> <span class="trust-slot" data-trust="quotas"></span></div>
+        <h1><span id="accountEmail">—</span> <span class="plan-chip" id="planChip">—</span></h1>
+        <p class="lede" id="planMessage">Loading usage…</p>
+        <div class="quota-bars" id="quotaBars"></div>
+      </div>
+      <div class="plan-kpis">
+        <div class="kpi"><div class="label">Other Models used <span class="trust-slot" data-trust="usedLimit"></span></div><div class="value" id="usedLabel">—</div></div>
+        <div class="kpi"><div class="label">Other Models limit <span class="trust-slot" data-trust="usedLimit"></span></div><div class="value" id="limitLabel">—</div></div>
+        <div class="kpi"><div class="label">API remaining <span class="trust-slot" data-trust="usedLimit"></span></div><div class="value" id="remainingLabel">—</div></div>
+        <div class="kpi"><div class="label">Billing cycle <span class="trust-slot" data-trust="reset"></span></div><div class="value" id="billingCycle">—</div></div>
+        <div class="kpi"><div class="label">Reset in <span class="trust-slot" data-trust="reset"></span></div><div class="value" id="resetIn">—</div></div>
+        <div class="kpi"><div class="label">Reset time <span class="trust-slot" data-trust="reset"></span></div><div class="value" id="resetTime">—</div></div>
+        <div class="kpi"><div class="label">Updated <span class="trust-slot" data-trust="planPercent"></span></div><div class="value" id="updatedLabel">—</div></div>
+      </div>
+    </div>
+    <div class="trust-legend" id="trustLegend" aria-label="Data trust legend"></div>
+    <details class="plan-more">
+      <summary>Show more details</summary>
+      <div class="stats" style="margin-top:12px">
+        <article class="stat"><div class="stat__label">Today</div><div class="stat__value" id="todaySpend">—</div></article>
+        <article class="stat"><div class="stat__label">Yesterday</div><div class="stat__value" id="yesterdaySpend">—</div></article>
+        <article class="stat"><div class="stat__label">7-day avg</div><div class="stat__value" id="avg7Spend">—</div></article>
+        <article class="stat"><div class="stat__label">7-day total</div><div class="stat__value" id="total7Spend">—</div></article>
+      </div>
+    </details>
+  </section>
+
+  <section class="section" id="sessionSection" style="display:none">
+    <div class="section__head"><div><h2>This session</h2><p>Usage since this editor window opened</p></div></div>
+    <div class="stats">
+      <article class="stat"><div class="stat__label">Started</div><div class="stat__value" id="sessionStarted">—</div></article>
+      <article class="stat"><div class="stat__label">Requests</div><div class="stat__value" id="sessionEvents">—</div></article>
+      <article class="stat"><div class="stat__label">Tokens</div><div class="stat__value" id="sessionTokens">—</div></article>
+      <article class="stat"><div class="stat__label">Spend</div><div class="stat__value" id="sessionSpend">—</div></article>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Burn runway <span class="trust-slot" data-trust="runway"></span></h2><p>Days of quota left · pace vs straight-line burn · optional weekly budget</p></div></div>
+    <div class="panel forecast-panel" id="forecastPanel">
+      <div class="runway-hero" id="runwayHero">
+        <div class="runway-hero__days">
+          <span class="runway-hero__label">Runway</span>
+          <strong id="runwayDays">—</strong>
+          <span class="runway-hero__sub" id="runwayBinding">—</span>
+        </div>
+        <div class="runway-hero__pace">
+          <span class="runway-hero__label">Pace</span>
+          <strong id="runwayPaceRatio">—</strong>
+          <span class="runway-hero__sub" id="runwayPaceLabel">—</span>
+          <div class="pace-track" aria-hidden="true"><span id="runwayPaceFill"></span></div>
+          <div class="pace-meta"><span id="runwayExpected">—</span><span id="runwayActual">—</span></div>
+        </div>
+        <div class="runway-hero__cycle">
+          <span class="runway-hero__label">Cycle</span>
+          <strong id="runwayCycleLeft">—</strong>
+          <span class="runway-hero__sub" id="weeklyBudgetLabel">Set a weekly $ budget in Settings</span>
+          <div class="pace-track budget-track" id="weeklyBudgetTrack" hidden><span id="weeklyBudgetFill"></span></div>
+        </div>
+      </div>
+      <div class="forecast-headline" id="forecastHeadline">—</div>
+      <div class="forecast-detail" id="forecastDetail">—</div>
+      <div class="forecast-grid" id="forecastGrid"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head">
+      <div>
+        <h2>Cache efficiency <span class="trust-badge trust-badge--official" title="From Cursor event tokenUsage.cacheReadTokens">Official</span></h2>
+        <p>How much prompt-cache reads are saving you this cycle</p>
+      </div>
+    </div>
+    <div class="panel cache-panel" id="cachePanel">
+      <div class="cache-kpis">
+        <article class="cache-kpi">
+          <div class="cache-kpi__label">Hit rate</div>
+          <div class="cache-kpi__value" id="cacheHitRate">—</div>
+        </article>
+        <article class="cache-kpi">
+          <div class="cache-kpi__label">Cache reads</div>
+          <div class="cache-kpi__value" id="cacheReads">—</div>
+        </article>
+        <article class="cache-kpi">
+          <div class="cache-kpi__label">New input</div>
+          <div class="cache-kpi__value" id="cacheInput">—</div>
+        </article>
+        <article class="cache-kpi">
+          <div class="cache-kpi__label">Output</div>
+          <div class="cache-kpi__value" id="cacheOutput">—</div>
+        </article>
+      </div>
+      <div class="cache-summary" id="cacheSummary">—</div>
+      <div class="cache-chart" id="cacheChart"></div>
+      <div class="cache-hit-track" aria-hidden="true"><span id="cacheHitFill"></span></div>
+      <div class="cache-models" id="cacheModels"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Usage intelligence</h2><p>Risk signals for this billing cycle</p></div></div>
+    <div class="insight-grid" id="insightGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>Usage flow <button type="button" class="info-btn" data-info-key="flowTotal" aria-label="About usage flow" title="About usage flow">i</button></h2>
+        <p>Interactive Sankey · Plan → Models → Chats / Workspaces</p>
+      </div>
+      <div class="flow-controls">
+        <div class="seg" id="flowWindow" role="group" aria-label="Time window">
+          <button type="button" data-window="today">Today</button>
+          <button type="button" data-window="7d">7D</button>
+          <button type="button" data-window="30d">30D</button>
+          <button type="button" data-window="cycle" class="active">Cycle</button>
+        </div>
+        <div class="seg" id="flowMetric" role="group" aria-label="Metric">
+          <button type="button" data-metric="spend" class="active">Spend</button>
+          <button type="button" data-metric="tokens">Tokens</button>
+          <button type="button" data-metric="requests">Requests</button>
+        </div>
+      </div>
+    </div>
+    <div class="panel flow-panel" id="flowPanel"></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>Models</h2>
+        <p id="modelsSub">Observability graphs · switch to Cards to pin and reorder</p>
+      </div>
+      <div class="seg" id="quotaLayout" role="group" aria-label="Models layout">
+        <button type="button" data-layout="graph" class="active">Graph</button>
+        <button type="button" data-layout="cards">Cards</button>
+      </div>
+    </div>
+    <div id="modelsGraph" class="models-graph"></div>
+    <div class="card-grid" id="cardGrid" hidden></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Usage over time</h2><p>Actual vs expected · anomaly callouts like an observability tool</p></div></div>
+    <div class="panel trend-panel" id="trendPanel"></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Token trends</h2><p>Daily token volume</p></div></div>
+    <div class="panel"><div id="tokenChart"></div></div>
+  </section>
+
+  <section class="section">
+    <div class="section__head heatmap-head">
+      <div>
+        <h2>90-day usage heatmap <span class="trust-slot" data-trust="heatmap"></span></h2>
+        <p>GitHub-style greens · spike days outlined only</p>
+      </div>
+      <label class="heatmap-filter">
+        <span>Model</span>
+        <select id="heatmapModel" aria-label="Filter heatmap by model">
+          <option value="">All models</option>
+        </select>
+      </label>
+    </div>
+    <div class="panel heatmap-panel">
+      <div class="heatmap-scroll">
+        <div class="heatmap-weekdays" aria-hidden="true">
+          <span>Mon</span><span></span><span>Wed</span><span></span><span>Fri</span><span></span><span>Sun</span>
+        </div>
+        <div>
+          <div class="heatmap-months" id="heatmapMonths"></div>
+          <div class="heatmap-grid" id="heatmapGrid" role="grid" aria-label="Daily AI usage over the last 90 days"></div>
+        </div>
+      </div>
+      <div class="heatmap-footer">
+        <span id="heatmapCoverage"></span>
+        <div class="heatmap-legend" aria-label="Heatmap legend">
+          <span>No history</span><i class="heatmap-cell unavailable"></i>
+          <span>$0</span><i class="heatmap-cell zero"></i>
+          <span>Less</span><i class="heatmap-cell level-1"></i><i class="heatmap-cell level-2"></i><i class="heatmap-cell level-3"></i><i class="heatmap-cell level-4"></i><span>More</span>
+          <i class="heatmap-cell level-3 warning"></i><span>Spike</span>
+          <i class="heatmap-cell level-4 critical"></i><span>Big spike</span>
+        </div>
+      </div>
+      <div class="heatmap-tooltip" id="heatmapTooltip" role="tooltip"></div>
+    </div>
+  </section>
+
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Live activity</h2>
+        <p>Latest billable requests</p>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="panel feed" id="activityFeed"></div>
+    </div>
+  </details>
+
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Top spending days</h2>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="table-wrap"><table><thead><tr><th>Day</th><th class="num">Spend</th><th class="num">Events</th></tr></thead><tbody id="topDaysBody"></tbody></table></div>
+    </div>
+  </details>
+
+  <details class="fold section-fold">
+    <summary>
+      <div>
+        <h2>Longest AI sessions</h2>
+      </div>
+    </summary>
+    <div class="fold-body">
+      <div class="table-wrap"><table><thead><tr><th>Chat</th><th class="num">Duration</th><th class="num">Events</th><th class="num">Charged</th></tr></thead><tbody id="sessionsBody"></tbody></table></div>
+    </div>
+  </details>
+
+  <section class="section">
+    <div class="section__head"><div><h2>Auto estimate</h2><p>Heuristic only</p></div></div>
+    <div class="panel" id="autoCard"></div>
+  </section>
+
+  <section class="stats">
+    <article class="stat"><div class="stat__label">Events</div><div class="stat__value" id="totalEvents">—</div></article>
+    <article class="stat"><div class="stat__label">Chats</div><div class="stat__value" id="totalChats">—</div></article>
+    <article class="stat"><div class="stat__label">Tokens in</div><div class="stat__value" id="totalIn">—</div></article>
+    <article class="stat"><div class="stat__label">Tokens out</div><div class="stat__value" id="totalOut">—</div></article>
+  </section>
+
+  <footer class="footer">
+    <div>Enjoying this? Star the repo or report issues.</div>
+    <a href="#" id="issuesLink">Report issue on GitHub</a>
+  </footer>
+
+  <div class="overlay" id="settingsOverlay">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
+      <h2 id="settingsTitle">Cockpit settings</h2>
+      <p>Status bar, alerts, and display preferences</p>
+      <form id="settingsForm">
+        <div class="form-row">
+          <label for="statusBarFormat">Status bar format</label>
+          <select id="statusBarFormat" name="statusBarFormat">
+            <option value="icon">Icon only</option>
+            <option value="dot">Dot only</option>
+            <option value="percent">Percent only</option>
+            <option value="dotPercent">Dot + percent</option>
+            <option value="namePercent">Name + percent</option>
+            <option value="full">Full</option>
+            <option value="runway">Runway (days left)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="statusBarMode">Status bar mode</label>
+          <select id="statusBarMode" name="statusBarMode">
+            <option value="spend">Static</option>
+            <option value="rotate">Rotate metrics</option>
+          </select>
+        </div>
+        <div class="form-row check">
+          <input type="checkbox" id="notificationsEnabled" name="notificationsEnabled" />
+          <label for="notificationsEnabled">Enable usage notifications</label>
+        </div>
+        <div class="form-row">
+          <label for="warningThreshold">Warning threshold (%)</label>
+          <input type="number" id="warningThreshold" name="warningThreshold" min="1" max="99" />
+        </div>
+        <div class="form-row">
+          <label for="criticalThreshold">Critical threshold (%)</label>
+          <input type="number" id="criticalThreshold" name="criticalThreshold" min="2" max="100" />
+        </div>
+        <div class="form-row">
+          <label for="weeklyBudgetDollars">Weekly spend budget ($)</label>
+          <input type="number" id="weeklyBudgetDollars" name="weeklyBudgetDollars" min="0" step="0.5" placeholder="0 = off" />
+        </div>
+        <div class="form-row">
+          <label for="viewMode">View mode</label>
+          <select id="viewMode" name="viewMode">
+            <option value="card">Card</option>
+            <option value="list">List</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="displayMode">Display mode</label>
+          <select id="displayMode" name="displayMode">
+            <option value="dashboard">Dashboard webview</option>
+            <option value="quickpick">QuickPick</option>
+          </select>
+        </div>
+      </form>
+      <div class="modal__actions">
+        <button type="button" id="btnCloseSettings">Cancel</button>
+        <button type="button" class="primary" id="btnSaveSettings">Save</button>
+      </div>
+    </div>
+  </div>
+
+  <script nonce="${n}" src="${sortableUri}"></script>
+  <script nonce="${n}" src="${jsUri}"></script>
+</body>
+</html>`;
+}
+
+export function getDashboardPanel(): vscode.WebviewPanel | undefined {
+  return panel;
+}
+
+export function postUsageUpdate(vm: CockpitViewModel): void {
+  lastVm = vm;
+  panel?.webview.postMessage({ type: 'usageUpdate', data: vm } satisfies HostToWebviewMessage);
+}
+
+export function postError(message: string): void {
+  panel?.webview.postMessage({ type: 'error', message } satisfies HostToWebviewMessage);
+}
+
+export function showDashboardPanel(
+  context: vscode.ExtensionContext,
+  onMessage: MessageHandler,
+  initialVm?: CockpitViewModel
+): vscode.WebviewPanel {
+  if (panel) {
+    panel.reveal(vscode.ViewColumn.Beside);
+    if (initialVm || lastVm) {
+      postUsageUpdate(initialVm ?? lastVm!);
+    }
+    return panel;
+  }
+
+  const created = vscode.window.createWebviewPanel(
+    'cursorTokenMonitorCockpit',
+    'Cursor Token Cockpit',
+    vscode.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true,
+      localResourceRoots: [
+        vscode.Uri.joinPath(context.extensionUri, 'media'),
+      ],
+    }
+  );
+  panel = created;
+
+  created.webview.html = htmlShell(created.webview, context.extensionUri, nonce());
+
+  created.onDidDispose(() => {
+    panel = undefined;
+  });
+
+  created.webview.onDidReceiveMessage(async (msg: WebviewToHostMessage) => {
+    await onMessage(msg);
+  });
+
+  if (initialVm || lastVm) {
+    // slight delay so client script can attach listeners
+    setTimeout(() => postUsageUpdate(initialVm ?? lastVm!), 50);
+  }
+
+  return created;
+}
+
+export function disposeDashboardPanel(): void {
+  panel?.dispose();
+  panel = undefined;
+}
+
+/** For diagnostics / packaging checks */
+export function mediaPaths(extensionPath: string): string[] {
+  return [
+    path.join(extensionPath, 'media', 'webview', 'dashboard.css'),
+    path.join(extensionPath, 'media', 'webview', 'dashboard.js'),
+    path.join(extensionPath, 'media', 'vendor', 'Sortable.min.js'),
+  ];
+}

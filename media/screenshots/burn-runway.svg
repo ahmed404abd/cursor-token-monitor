@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="420" viewBox="0 0 1200 420">
+  <rect width="1200" height="420" fill="#000"/>
+  <defs>
+    <linearGradient id="pace" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#eab308"/><stop offset="1" stop-color="#f87171"/>
+    </linearGradient>
+    <linearGradient id="budget" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#2dd4bf"/><stop offset="1" stop-color="#3b82f6"/>
+    </linearGradient>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.small{font-size:13px}
+      .title{font-size:20px;font-weight:700}.label{font-size:10px;letter-spacing:1.4px}
+      .big{font-size:34px;font-weight:800}.card{fill:#121212;stroke:#2a2a2a}
+    </style>
+  </defs>
+
+  <text x="28" y="38" class="title">Burn runway</text>
+  <text x="28" y="58" class="tiny muted">Days of quota left · pace vs straight-line burn · optional weekly budget</text>
+
+  <rect x="28" y="82" width="360" height="130" rx="12" class="card"/>
+  <text x="48" y="108" class="label muted">RUNWAY</text>
+  <text x="48" y="150" class="big" style="fill:#f87171">~5d</text>
+  <text x="48" y="178" class="small muted">Other Models · binding pool</text>
+
+  <rect x="408" y="82" width="360" height="130" rx="12" class="card"/>
+  <text x="428" y="108" class="label muted">PACE</text>
+  <text x="428" y="150" class="big" style="fill:#eab308">1.4×</text>
+  <text x="428" y="178" class="small muted">Ahead of linear pace</text>
+  <rect x="428" y="190" width="300" height="8" rx="4" fill="#1a1a1a"/>
+  <rect x="428" y="190" width="210" height="8" rx="4" fill="url(#pace)"/>
+
+  <rect x="788" y="82" width="384" height="130" rx="12" class="card"/>
+  <text x="808" y="108" class="label muted">CYCLE</text>
+  <text x="808" y="150" class="big" style="fill:#2dd4bf">12d left</text>
+  <text x="808" y="178" class="small muted">$6.40 of $10.00 this week</text>
+  <rect x="808" y="190" width="340" height="8" rx="4" fill="#1a1a1a"/>
+  <rect x="808" y="190" width="218" height="8" rx="4" fill="url(#budget)"/>
+
+  <text x="28" y="250" class="small" font-weight="700">Other Models quota runs out in ~5d at this pace</text>
+  <text x="28" y="272" class="tiny muted">Projected 118% by cycle end · 12d left in cycle.</text>
+
+  <rect x="28" y="300" width="560" height="90" rx="12" class="card"/>
+  <text x="48" y="330" class="small strong" style="font-weight:700">Cursor Models</text>
+  <text x="48" y="354" class="tiny muted">On track · ~18d runway</text>
+  <rect x="48" y="368" width="500" height="8" rx="4" fill="#1a1a1a"/>
+  <rect x="48" y="368" width="280" height="8" rx="4" fill="#2dd4bf"/>
+
+  <rect x="612" y="300" width="560" height="90" rx="12" class="card"/>
+  <text x="632" y="330" class="small" style="font-weight:700;fill:#f87171">Other Models</text>
+  <text x="632" y="354" class="tiny muted">Binding · ~5d runway</text>
+  <rect x="632" y="368" width="500" height="8" rx="4" fill="#1a1a1a"/>
+  <rect x="632" y="368" width="420" height="8" rx="4" fill="#f87171"/>
+</svg>

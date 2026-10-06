@@ -1,0 +1,15 @@
+.vscode/**
+.vscode-test/**
+node_modules/**
+src/**
+out/**/*.map
+out/__tests__/**
+tsconfig.json
+.gitignore
+**/*.vsix
+**/.DS_Store
+scripts/_probe_*.py
+scripts/_probe_*.js
+**/*.tsbuildinfo
+media/cover-source.png
+media/screenshots/*.svg

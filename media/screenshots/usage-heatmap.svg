@@ -1,0 +1,161 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460">
+  <rect width="1200" height="460" fill="#000"/>
+  <defs>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.title{font-size:18px;font-weight:700}
+      .card{fill:#141414;stroke:#2a2a2a}
+    </style>
+  </defs>
+  <text x="28" y="40" class="title">90-day usage heatmap</text>
+  <text x="28" y="60" class="tiny muted">GitHub-style greens · spike days outlined only</text>
+  <rect x="900" y="28" width="270" height="34" rx="10" class="card"/>
+  <text x="920" y="50" class="tiny muted">Model</text>
+  <text x="980" y="50" class="tiny">All models</text>
+
+  <g transform="translate(56 100)" font-size="10" fill="#8a7f7a">
+    <text y="14">Mon</text><text y="54">Wed</text><text y="94">Fri</text><text y="134">Sun</text>
+  </g>
+
+  <!-- sample green grid -->
+  <g transform="translate(100 100)">
+    <!-- cols of 7 -->
+    <g>
+      <rect width="16" height="16" rx="3" fill="transparent" stroke="#30363d" stroke-dasharray="2 2"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#39d353"/>
+    </g>
+    <g transform="translate(22 0)">
+      <rect width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#39d353" stroke="#f85149" stroke-width="2"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#26a641"/>
+    </g>
+    <g transform="translate(44 0)">
+      <rect width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#26a641" stroke="#d29922" stroke-width="1.5"/>
+    </g>
+    <g transform="translate(66 0)">
+      <rect width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#0e4429"/>
+    </g>
+    <g transform="translate(88 0)">
+      <rect width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#161b22"/>
+    </g>
+    <g transform="translate(110 0)">
+      <rect width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#39d353" stroke="#f85149" stroke-width="2"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#006d32"/>
+    </g>
+    <g transform="translate(132 0)">
+      <rect width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#0e4429"/>
+    </g>
+    <g transform="translate(154 0)">
+      <rect width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#0e4429"/>
+    </g>
+    <g transform="translate(176 0)">
+      <rect width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#26a641"/>
+    </g>
+    <g transform="translate(198 0)">
+      <rect width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#26a641" stroke="#d29922" stroke-width="1.5"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#006d32"/>
+    </g>
+    <g transform="translate(220 0)">
+      <rect width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#26a641"/>
+    </g>
+    <g transform="translate(242 0)">
+      <rect width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="20" width="16" height="16" rx="3" fill="#0e4429"/>
+      <rect y="40" width="16" height="16" rx="3" fill="#26a641"/>
+      <rect y="60" width="16" height="16" rx="3" fill="#161b22"/>
+      <rect y="80" width="16" height="16" rx="3" fill="#006d32"/>
+      <rect y="100" width="16" height="16" rx="3" fill="#39d353"/>
+      <rect y="120" width="16" height="16" rx="3" fill="#0e4429"/>
+    </g>
+  </g>
+
+  <rect x="820" y="130" width="300" height="170" rx="12" fill="#0a0a0a" stroke="#2dd4bf" stroke-opacity=".35"/>
+  <text x="840" y="160" style="font-weight:700">Oct 2, 2026</text>
+  <text x="840" y="190" class="tiny muted">Spend</text>
+  <text x="1090" y="190" text-anchor="end" style="font-weight:700">$4.82</text>
+  <text x="840" y="214" class="tiny muted">Requests</text>
+  <text x="1090" y="214" text-anchor="end" style="font-weight:700">27</text>
+  <text x="840" y="238" class="tiny muted">Top model</text>
+  <text x="1090" y="238" text-anchor="end" style="font-weight:700;fill:#2dd4bf">Auto</text>
+  <text x="840" y="262" class="tiny muted">Activity</text>
+  <text x="1090" y="262" text-anchor="end" style="font-weight:700;fill:#39d353">High</text>
+
+  <g transform="translate(100 380)">
+    <text x="0" y="14" class="tiny muted">No history</text>
+    <rect x="70" y="2" width="14" height="14" rx="3" fill="transparent" stroke="#30363d" stroke-dasharray="2 2"/>
+    <text x="96" y="14" class="tiny muted">$0</text>
+    <rect x="118" y="2" width="14" height="14" rx="3" fill="#161b22"/>
+    <text x="144" y="14" class="tiny muted">Less</text>
+    <rect x="176" y="2" width="14" height="14" rx="3" fill="#0e4429"/>
+    <rect x="194" y="2" width="14" height="14" rx="3" fill="#006d32"/>
+    <rect x="212" y="2" width="14" height="14" rx="3" fill="#26a641"/>
+    <rect x="230" y="2" width="14" height="14" rx="3" fill="#39d353"/>
+    <text x="252" y="14" class="tiny muted">More</text>
+    <rect x="296" y="2" width="14" height="14" rx="3" fill="#26a641" stroke="#d29922" stroke-width="1.5"/>
+    <text x="316" y="14" class="tiny muted">Spike</text>
+    <rect x="360" y="2" width="14" height="14" rx="3" fill="#39d353" stroke="#f85149" stroke-width="2"/>
+    <text x="382" y="14" class="tiny muted">Big spike</text>
+  </g>
+  <text x="1090" y="400" text-anchor="end" class="tiny muted">90 days retained locally</text>
+</svg>

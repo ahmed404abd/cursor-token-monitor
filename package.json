@@ -1,0 +1,215 @@
+{
+  "name": "cursor-token-monitor",
+  "displayName": "Cursor Token Monitor",
+  "description": "Bottom status bar usage meter for Cursor (e.g. Auto $x.xx) — click to open the private Token Cockpit: burn runway, cache efficiency, Sankey, heatmap.",
+  "publisher": "ahmed404abd",
+  "version": "1.12.3",
+  "license": "MIT",
+  "homepage": "https://github.com/ahmed404abd/cursor-token-monitor",
+  "bugs": {
+    "url": "https://github.com/ahmed404abd/cursor-token-monitor/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ahmed404abd/cursor-token-monitor.git"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Visualization",
+    "Other"
+  ],
+  "keywords": [
+    "cursor",
+    "usage",
+    "tokens",
+    "billing",
+    "status bar",
+    "ai",
+    "spend",
+    "pro",
+    "export",
+    "dashboard",
+    "cockpit",
+    "forecast",
+    "heatmap",
+    "sankey",
+    "observability"
+  ],
+  "galleryBanner": {
+    "color": "#050505",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "icon": "media/icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "cursorTokenMonitor.refresh",
+        "title": "Cursor Token Monitor: Refresh Usage"
+      },
+      {
+        "command": "cursorTokenMonitor.showDetails",
+        "title": "Cursor Token Monitor: Show Details"
+      },
+      {
+        "command": "cursorTokenMonitor.openDashboard",
+        "title": "Cursor Token Monitor: Open Usage Dashboard"
+      },
+      {
+        "command": "cursorTokenMonitor.openQuickPick",
+        "title": "Cursor Token Monitor: Open QuickPick"
+      },
+      {
+        "command": "cursorTokenMonitor.copyUsageReport",
+        "title": "Cursor Token Monitor: Copy Usage Report"
+      },
+      {
+        "command": "cursorTokenMonitor.exportCsv",
+        "title": "Cursor Token Monitor: Export CSV"
+      },
+      {
+        "command": "cursorTokenMonitor.exportJson",
+        "title": "Cursor Token Monitor: Export JSON"
+      },
+      {
+        "command": "cursorTokenMonitor.exportMarkdown",
+        "title": "Cursor Token Monitor: Export Markdown"
+      },
+      {
+        "command": "cursorTokenMonitor.exportData",
+        "title": "Cursor Token Monitor: Export Usage Data…"
+      },
+      {
+        "command": "cursorTokenMonitor.resetCache",
+        "title": "Cursor Token Monitor: Reset Cache"
+      },
+      {
+        "command": "cursorTokenMonitor.checkConnection",
+        "title": "Cursor Token Monitor: Check Connection"
+      },
+      {
+        "command": "cursorTokenMonitor.privacyAudit",
+        "title": "Cursor Token Monitor: Run Privacy Audit"
+      }
+    ],
+    "configuration": {
+      "title": "Cursor Token Monitor",
+      "properties": {
+        "cursorTokenMonitor.refreshIntervalSeconds": {
+          "type": "number",
+          "default": 60,
+          "minimum": 15,
+          "maximum": 3600,
+          "description": "How often to refresh usage data, in seconds."
+        },
+        "cursorTokenMonitor.customDatabasePath": {
+          "type": "string",
+          "default": "",
+          "description": "Override path to Cursor's state.vscdb file. Leave empty to auto-detect."
+        },
+        "cursorTokenMonitor.statusBarMode": {
+          "type": "string",
+          "enum": [
+            "spend",
+            "rotate"
+          ],
+          "default": "spend",
+          "enumDescriptions": [
+            "Keep a single status-bar format.",
+            "Rotate every few seconds between formatted spend, top/pinned model, and total tokens."
+          ],
+          "description": "Whether the status bar stays fixed or rotates metrics."
+        },
+        "cursorTokenMonitor.statusBarFormat": {
+          "type": "string",
+          "enum": [
+            "icon",
+            "dot",
+            "percent",
+            "dotPercent",
+            "namePercent",
+            "full",
+            "runway"
+          ],
+          "default": "full",
+          "enumDescriptions": [
+            "Icon only",
+            "Health dot + icon",
+            "Icon + percent",
+            "Dot + percent",
+            "Pinned/top model name + percent",
+            "Full spend vs allowance with health label",
+            "Binding pool runway (days until limit)"
+          ],
+          "description": "Status bar text format."
+        },
+        "cursorTokenMonitor.notificationsEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show allowance and unusual-spend notifications."
+        },
+        "cursorTokenMonitor.weeklyBudgetCents": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Soft weekly attributed-spend budget in cents (0 = off). Tracks Monday–Sunday spend against this cap."
+        },
+        "cursorTokenMonitor.warningThreshold": {
+          "type": "number",
+          "default": 65,
+          "minimum": 1,
+          "maximum": 99,
+          "description": "Percent of total included usage that triggers warning styling/alerts. Must be lower than criticalThreshold."
+        },
+        "cursorTokenMonitor.criticalThreshold": {
+          "type": "number",
+          "default": 85,
+          "minimum": 2,
+          "maximum": 100,
+          "description": "Percent of total included usage that triggers critical (red) styling/alerts."
+        },
+        "cursorTokenMonitor.viewMode": {
+          "type": "string",
+          "enum": [
+            "card",
+            "list"
+          ],
+          "default": "card",
+          "description": "Cockpit card layout: grid of cards or denser list rows."
+        },
+        "cursorTokenMonitor.displayMode": {
+          "type": "string",
+          "enum": [
+            "dashboard",
+            "quickpick"
+          ],
+          "default": "dashboard",
+          "description": "Open the webview cockpit or a keyboard-friendly QuickPick list."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "tsc -p ./ && node --test out/__tests__/*.js",
+    "package": "vsce package --no-dependencies",
+    "publish:marketplace": "vsce publish --no-dependencies"
+  },
+  "dependencies": {
+    "sortablejs": "^1.15.6"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/sortablejs": "^1.15.8",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^2.32.0",
+    "typescript": "^5.4.0"
+  }
+}

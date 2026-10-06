@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="480" viewBox="0 0 1200 480">
+  <rect width="1200" height="480" fill="#000000"/>
+  <defs>
+    <style>
+      text{font-family:Segoe UI,Arial,sans-serif;fill:#f2ebe8}
+      .muted{fill:#8a7f7a}.tiny{font-size:11px}.small{font-size:13px}.title{font-size:20px;font-weight:700}
+      .kpi{fill:#121212;stroke:#2a1a1a}
+    </style>
+  </defs>
+  <text x="28" y="36" class="title">Cache efficiency</text>
+  <text x="28" y="56" class="tiny muted">How much prompt-cache reads are saving you this cycle</text>
+
+  <rect x="28" y="78" width="270" height="88" rx="12" class="kpi"/>
+  <text x="48" y="104" class="tiny muted">HIT RATE</text>
+  <text x="48" y="140" style="font-size:32px;font-weight:800">62%</text>
+
+  <rect x="314" y="78" width="270" height="88" rx="12" class="kpi"/>
+  <text x="334" y="104" class="tiny muted">CACHE READS</text>
+  <text x="334" y="140" style="font-size:32px;font-weight:800">1.8M</text>
+
+  <rect x="600" y="78" width="270" height="88" rx="12" class="kpi"/>
+  <text x="620" y="104" class="tiny muted">NEW INPUT</text>
+  <text x="620" y="140" style="font-size:32px;font-weight:800">1.1M</text>
+
+  <rect x="886" y="78" width="286" height="88" rx="12" class="kpi"/>
+  <text x="906" y="104" class="tiny muted">OUTPUT</text>
+  <text x="906" y="140" style="font-size:32px;font-weight:800">420k</text>
+
+  <text x="28" y="198" class="small muted">1.8M tokens served from cache (62% hit rate)  strong reuse this cycle.</text>
+
+  <!-- legend -->
+  <rect x="28" y="220" width="10" height="10" rx="2" fill="#2dd4bf"/>
+  <text x="44" y="229" class="tiny muted">Auto</text>
+  <rect x="100" y="220" width="10" height="10" rx="2" fill="#3b82f6"/>
+  <text x="116" y="229" class="tiny muted">GPT-5</text>
+  <rect x="180" y="220" width="10" height="10" rx="2" fill="#a855f7"/>
+  <text x="196" y="229" class="tiny muted">Sonnet</text>
+  <rect x="270" y="220" width="10" height="10" rx="2" fill="#eab308"/>
+  <text x="286" y="229" class="tiny muted">Composer</text>
+  <rect x="380" y="220" width="10" height="10" rx="2" fill="#f87171"/>
+  <text x="396" y="229" class="tiny muted">Opus</text>
+
+  <!-- multi-line area chart -->
+  <rect x="28" y="248" width="1144" height="200" rx="12" fill="#0a0a0a" stroke="#2a1a1a"/>
+  <g transform="translate(48 268)">
+    <line x1="0" y1="40" x2="1100" y2="40" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="80" x2="1100" y2="80" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="120" x2="1100" y2="120" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <line x1="0" y1="160" x2="1100" y2="160" stroke="#ffffff14" stroke-dasharray="4 4"/>
+    <path d="M0 140 L140 120 L280 90 L420 100 L560 70 L700 50 L840 80 L980 40 L1100 55 L1100 160 L0 160 Z" fill="#2dd4bf" fill-opacity=".18"/>
+    <path d="M0 140 L140 120 L280 90 L420 100 L560 70 L700 50 L840 80 L980 40 L1100 55" fill="none" stroke="#2dd4bf" stroke-width="2.5"/>
+    <path d="M0 150 L140 145 L280 130 L420 125 L560 110 L700 95 L840 105 L980 90 L1100 100 L1100 160 L0 160 Z" fill="#3b82f6" fill-opacity=".16"/>
+    <path d="M0 150 L140 145 L280 130 L420 125 L560 110 L700 95 L840 105 L980 90 L1100 100" fill="none" stroke="#3b82f6" stroke-width="2.5"/>
+    <path d="M0 155 L140 150 L280 148 L420 140 L560 135 L700 120 L840 115 L980 130 L1100 125" fill="none" stroke="#a855f7" stroke-width="2.2"/>
+    <path d="M0 158 L280 150 L560 145 L840 130 L1100 140" fill="none" stroke="#eab308" stroke-width="2.2"/>
+    <path d="M0 159 L420 155 L840 150 L1100 148" fill="none" stroke="#f87171" stroke-width="2"/>
+    <text x="0" y="178" class="tiny muted">Jul 22</text>
+    <text x="280" y="178" class="tiny muted">Jul 28</text>
+    <text x="560" y="178" class="tiny muted">Aug 3</text>
+    <text x="840" y="178" class="tiny muted">Aug 11</text>
+    <text x="1080" y="178" class="tiny muted" text-anchor="end">Aug 13</text>
+  </g>
+</svg>
